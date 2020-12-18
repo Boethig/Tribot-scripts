@@ -1,0 +1,9 @@
+rootProject.name = "multi-script-template"
+
+// libraries
+include("libraries:dax_api")
+include("libraries:boe_api")
+include("libraries:rsitem_services")
+
+// scripts
+include("scripts:TTrekker")
