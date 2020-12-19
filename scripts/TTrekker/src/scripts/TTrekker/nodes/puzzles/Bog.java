@@ -26,8 +26,8 @@ public class Bog extends Puzzle {
             primaryActionCompleted = false;
             path.clear();
         } else {
-            Vars.get().subStatus = "Searching for Path";
             if (path == null || path.isEmpty()) {
+                Vars.get().subStatus = "Searching for Path";
                 path = foundPath();
             } else {
                 Vars.get().subStatus = "Walking Path";
@@ -55,9 +55,5 @@ public class Bog extends Puzzle {
             }
         }
         return path;
-    }
-
-    public String status() {
-        return super.status();
     }
 }

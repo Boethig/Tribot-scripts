@@ -120,10 +120,6 @@ public class Bridge extends Puzzle {
         }
     }
 
-    public String status() {
-        return super.status();
-    }
-
     public boolean isBridgeFixed(final RSObject bridge) {
         return bridge != null && Arrays.stream(Constants.FIXED_BRIDGES).anyMatch(id -> id == bridge.getID());
     }

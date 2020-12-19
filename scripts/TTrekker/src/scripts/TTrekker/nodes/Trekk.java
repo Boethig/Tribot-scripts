@@ -26,7 +26,7 @@ public class Trekk extends ParentNode {
     }
 
     public boolean validate() {
-        return Vars.get().escorts.findInInstance().length > 0 || Utils.isInTrekk();
+        return Utils.isInTrekk();
     }
 
     @Override

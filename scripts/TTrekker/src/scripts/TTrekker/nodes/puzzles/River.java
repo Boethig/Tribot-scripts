@@ -169,8 +169,4 @@ public class River extends Puzzle {
             Timing.waitCondition(() -> Game.getItemSelectionState() != 1, General.random(1500, 2500));
         }
     }
-
-    public String status() {
-        return super.status();
-    }
 }

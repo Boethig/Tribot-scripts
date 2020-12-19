@@ -23,8 +23,4 @@ public class Combat extends Puzzle {
             //TODO: medium/hard escorts
         }
     }
-
-    public String status() {
-        return super.status();
-    }
 }

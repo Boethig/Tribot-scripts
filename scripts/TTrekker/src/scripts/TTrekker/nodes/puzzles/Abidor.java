@@ -54,8 +54,4 @@ public class Abidor extends Puzzle {
     }
 
     public boolean hasBeenHealed() { return Combat.getHP() > Combat.getMaxHP(); }
-
-    public String status() {
-        return super.status();
-    }
 }
