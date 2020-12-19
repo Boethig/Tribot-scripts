@@ -25,47 +25,23 @@ public abstract class Puzzle extends Node {
     public Puzzle(final ACamera aCamera) { super(aCamera); }
 
     public boolean continueTrek() {
-        RSObject path = Entities.find(ObjectEntity::new)
-                .nameEquals("Path")
-                .actionsContains("Continue-trek")
-                .getFirstResult();
-        if (path != null) {
-            final RSTile ctPosition = path.getPosition();
-            if (!path.isClickable() || !path.isOnScreen()) {
-                Camera.turnToTile(ctPosition);
-            }
-            if (Player.getPosition().distanceTo(ctPosition) < 12) {
-                Vars.get().subStatus = "Leaving";
-                if (AccurateMouse.click(path, "Continue-trek")) {
-                    return Timing.waitCondition(() -> {
-                        General.sleep(General.randomSD(100, 300, 2));
-                        return Utils.isInTrekkRoute() || NPCInteraction.isConversationWindowUp();
-                    }, General.randomLong(8050 + Vars.get().sleepOffset, 10005 + Vars.get().sleepOffset));
-                }
-            } else if (AccurateMouse.clickMinimap(ctPosition)) {
-                Vars.get().subStatus = "Clicking on Minimap";
-                Timing.waitCondition(() -> {
-                    General.sleep(General.randomSD(100, 300, 2));
-                    return Player.getPosition().distanceTo(ctPosition) < General.random(3, 7);
-                }, General.random(2000 + Vars.get().sleepOffset, 4000 + Vars.get().sleepOffset));
-            } else {
-                Vars.get().subStatus = "Webwalking";
-                WebWalking.walkTo(ctPosition, () -> path.isOnScreen() && ctPosition.isClickable(), General.random(200, 400));
-            }
-        }
-        return false;
+        return takePathAction("Continue-trek");
     }
 
     public boolean evadePath() {
+        return takePathAction("Evade-event");
+    }
+
+    private boolean takePathAction(String action) {
         RSObject path = Entities.find(ObjectEntity::new)
                 .nameEquals("Path")
-                .actionsContains("Evade-event")
+                .actionsContains(action)
                 .getFirstResult();
         if (path == null) { return false; }
         if (!path.isOnScreen() || !path.isClickable()) {
             Camera.turnToTile(path);
         }
-        if (AccurateMouse.click(path, "Evade-event")) {
+        if (AccurateMouse.click(path, action)) {
             return Timing.waitCondition(() -> {
                 General.sleep(General.randomSD(100, 300, 2));
                 return Utils.isInTrekkRoute() || NPCInteraction.isConversationWindowUp();
@@ -76,7 +52,7 @@ public abstract class Puzzle extends Node {
                 return Player.getPosition().distanceTo(path.getPosition()) < General.randomSD(5, 3) || path.isOnScreen();
             }, General.random(4000, 6000));
         } else {
-           WebWalking.walkTo(path.getPosition(), () -> path.isClickable() && path.isOnScreen(), General.random(300, 500));
+            WebWalking.walkTo(path.getPosition(), () -> path.isClickable() && path.isOnScreen(), General.random(300, 500));
         }
         return false;
     }
