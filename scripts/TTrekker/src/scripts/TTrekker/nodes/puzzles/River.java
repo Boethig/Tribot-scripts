@@ -2,6 +2,7 @@ package scripts.TTrekker.nodes.puzzles;
 
 import org.tribot.api.General;
 import org.tribot.api.Timing;
+import org.tribot.api.interfaces.Positionable;
 import org.tribot.api2007.*;
 import org.tribot.api2007.types.RSItem;
 import org.tribot.api2007.types.RSObject;
@@ -31,11 +32,13 @@ public class River extends Puzzle {
     }
 
     public void execute() {
-        final RSObject vine = Entities.find(ObjectEntity::new).idEquals(Constants.SWING_VINE).getFirstResult();
+        final RSObject swampTreeBranch = Entities.find(ObjectEntity::new)
+                .actionsContains("Swing-from")
+                .getFirstResult();
         if (Objects.findNearest(10, 13832).length > 0) {
             continueTrek();
-        } else if (vine != null) {
-            this.swingOnVine(vine);
+        } else if (swampTreeBranch != null) {
+            this.swingOnVine(swampTreeBranch);
         } else if (Inventory.getCount(7777) > 0) {
             this.attachRope();
         } else {
@@ -43,9 +46,11 @@ public class River extends Puzzle {
                 if (Inventory.getCount(7778) >= 3) {
                     this.createRope();
                 } else {
-                    final RSObject tree = this.getSwampTree();
-                    if (tree != null) {
-                        this.collectVine(tree);
+                    RSObject swampTree = Entities.find(ObjectEntity::new)
+                            .actionsContains("Cut-vine")
+                            .getFirstResult();
+                    if (swampTree != null) {
+                        this.collectVine(swampTree);
                     }
                 }
             } else {
@@ -97,16 +102,18 @@ public class River extends Puzzle {
 
     public void attachRope() {
         Vars.get().subStatus = "Attaching Rope";
-        final RSObject swing = this.getSwingTree();
-        if (swing != null) {
-            swing.setClickHeight(80);
+        RSObject swampTreeBranch = Entities.find(ObjectEntity::new)
+                .nameContains("Swamp tree branch")
+                .sortByDistance()
+                .getFirstResult();
+        if (swampTreeBranch != null) {
             if (Game.getItemSelectionState() == 1 && Game.getSelectedItemName().equals("Long vine")) {
-                if (!swing.isOnScreen() || !swing.isClickable()) {
+                if (!swampTreeBranch.isOnScreen() || !swampTreeBranch.isClickable()) {
                     this.aCamera.setCameraAngle(General.random(60, 100));
                     this.aCamera.setCameraRotation(General.random(215, 315));
                 }
-                if (swing.isOnScreen() && swing.isClickable()) {
-                    if (AccurateMouse.click(swing, "Use Long vine")) {
+                if (swampTreeBranch.isOnScreen() && swampTreeBranch.isClickable()) {
+                    if (AccurateMouse.click(swampTreeBranch, "Use Long vine")) {
                         Timing.waitCondition(() -> {
                             General.sleep(General.randomSD(100, 300, 2));
                             return Objects.find(10, 13846).length > 0 && Game.getItemSelectionState() != 1;
@@ -153,14 +160,14 @@ public class River extends Puzzle {
             Camera.turnToTile(vine);
         }
         if (Game.getItemSelectionState() != 1) {
-            if (AccurateMouse.click(vine, "Swing-on")) {
+            if (AccurateMouse.click(vine,"Swing-from")) {
 //                Antiban.get().generateTrackers(Math.calculateAverage(Vars.get().abc2WaitTimes));
                 Timing.waitCondition(() -> {
                     General.sleep(General.randomSD(100, 300, 2));
                     return Interfaces.isInterfaceSubstantiated(NPCChat.getClickContinueInterface());
                 }, General.random(4005 + Vars.get().sleepOffset, 8005 + Vars.get().sleepOffset));
             } else {
-                this.aCamera.turnToTile(vine.getPosition());
+                aCamera.turnToTile(vine.getPosition());
             }
         } else if (AccurateMouse.click(vine, "Use")) {
             Timing.waitCondition(() -> Game.getItemSelectionState() != 1, General.random(1500, 2500));
@@ -168,18 +175,6 @@ public class River extends Puzzle {
     }
 
     public String status() {
-        return "River Puzzle:";
-    }
-
-    private RSObject getSwingTree() {
-        final RSObject[] trees = Objects.find(15, rsObject -> rsObject.getID() == 13845);
-        Arrays.sort(trees, (o1, o2) -> o2.getPosition().getX() - o1.getPosition().getX());
-        return (trees.length > 0) ? trees[0] : null;
-    }
-
-    private RSObject getSwampTree() {
-        final RSObject[] trees = Objects.find(25, rsObject -> Arrays.stream(Constants.SWAMP_TREE).anyMatch(tree -> rsObject.getID() == tree));
-        Arrays.sort(trees, (o1, o2) -> o2.getPosition().getX() - o1.getPosition().getX());
-        return (trees.length > 0) ? trees[0] : null;
+        return super.status();
     }
 }

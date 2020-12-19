@@ -31,7 +31,7 @@ public class Trekk extends ParentNode {
 
     @Override
     protected ArrayList<Node> setChildren() {
-        return new ArrayList<Node>() {{
+        return new ArrayList<>() {{
             add(new Route());
             add(new Combat(aCamera));
             add(new Bridge(aCamera));

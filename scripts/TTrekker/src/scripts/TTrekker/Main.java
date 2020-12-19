@@ -7,11 +7,13 @@ import org.tribot.api2007.Login;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Arguments;
 import org.tribot.script.interfaces.Breaking;
+import org.tribot.script.interfaces.Painting;
 import org.tribot.script.interfaces.PreBreaking;
 import scripts.TTrekker.data.Constants;
 import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.nodes.*;
 import scripts.TTrekker.nodes.puzzles.Combat;
+import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.framework.Node;
 import scripts.boe_api.listeners.varbit.VarBitListener;
 import scripts.boe_api.listeners.varbit.VarBitObserver;
@@ -22,11 +24,12 @@ import java.awt.*;
 import java.util.Collections;
 import java.util.HashMap;
 
-@ScriptManifest(authors = {"Boe123"}, category = "Minigames", name = "TTrekker")
-public class Main extends BoeScript implements VarBitListener, Breaking, PreBreaking, Arguments {
+@ScriptManifest(authors = {"Boe123"}, category = "TTrekker", name = "TTrekker")
+public class Main extends BoeScript implements Painting, VarBitListener, Breaking, PreBreaking, Arguments {
 
-    private final int bowStringPrice = GrandExchange.getPrice(Constants.BOWSTRING);
+//    private final int bowStringPrice = GrandExchange.getPrice(Constants.BOWSTRING);
 
+    @Override
     public void run() {
         Collections.addAll(this.nodes, new Trekk(this.aCamera), new StartTrekk(this.aCamera), new Claim(), new Walking(), new Bank());
         this.setAntiban();
@@ -45,10 +48,13 @@ public class Main extends BoeScript implements VarBitListener, Breaking, PreBrea
 
     @Override
     protected String[] scriptSpecificPaint() {
-        return new String[0];
+        return new String[]{ "Status: " + Vars.get().status + " " + Vars.get().subStatus };
     }
 
+    @Override
     public void onStart() {
+        this.aCamera = new ACamera();
+        super.onStart();
         Vars.get().runTime = System.currentTimeMillis();
         Vars.get().status = "Initializing Script.....";
         final VarBitObserver varBitObserver = new VarBitObserver(Constants.IN_TREKK);
@@ -60,8 +66,11 @@ public class Main extends BoeScript implements VarBitListener, Breaking, PreBrea
 
     public void setAntiban() {
         Mouse.setSpeed(General.random(100, 110));
-        Vars.get().sleepOffset = General.random(3, 152);
         Vars.get().abc2WaitTimes.add(General.random(105, 350));
+    }
+
+    public void onPaint(Graphics g) {
+        super.onPaint(g);
     }
 
 //    public void onPaint(final Graphics gg) {
@@ -104,8 +113,7 @@ public class Main extends BoeScript implements VarBitListener, Breaking, PreBrea
         }
     }
 
-    public void onBreakEnd() {
-    }
+    public void onBreakEnd() { }
 
     public void onBreakStart(final long l) {
         final Vars value = Vars.get();

@@ -122,7 +122,7 @@ public class Bridge extends Puzzle {
     }
 
     public String status() {
-        return "Bridge Puzzle:";
+        return super.status();
     }
 
     public boolean isBridgeFixed(final RSObject bridge) {
@@ -139,7 +139,7 @@ public class Bridge extends Puzzle {
             this.aCamera.turnToTile(bridge.getPosition());
         }
         if (Game.getItemSelectionState() != 1) {
-            if (AccurateMouse.click(bridge, "Walk-across")) {
+            if (AccurateMouse.click(bridge, "Cross")) {
                 Timing.waitCondition(() -> {
                     General.sleep(General.randomSD(100, 300, 2));
                     return Vars.get().walked && Player.getPosition().getX() > bridge.getPosition().getX();

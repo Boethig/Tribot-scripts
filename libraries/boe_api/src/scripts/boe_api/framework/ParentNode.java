@@ -32,6 +32,6 @@ public abstract class ParentNode extends Node {
 
     @Override
     public String status() {
-        return currentNode.status();
+        return currentNode != null ? currentNode.status() : "";
     }
 }

@@ -41,7 +41,7 @@ public class Utils {
     }
 
     public static boolean hasTools() {
-        return hasAxe() && hasHammer() && hasKnife() && hasRingOfLife() && (!Vars.get().useStaminas || hasStamina());
+        return hasAxe() && hasHammer() && hasKnife() && (!Vars.get().useStaminas || hasStamina());
     }
 
     public static boolean hasAxe() {

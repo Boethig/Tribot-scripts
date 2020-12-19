@@ -26,10 +26,10 @@ public abstract class BoeScript extends Script implements Paintable, Painting, S
 
     public ArrayList<Node> nodes;
     public final ScriptManifest MANIFEST = this.getClass().getAnnotation(ScriptManifest.class);
-    protected final ACamera aCamera;
+    protected ACamera aCamera;
 
     @Getter
-    public transient BoePaint paint = new BoePaint(this, Color.BLACK);
+    public transient BoePaint paint = new BoePaint(this, Color.WHITE);
 
     protected abstract String[] scriptSpecificPaint();
 

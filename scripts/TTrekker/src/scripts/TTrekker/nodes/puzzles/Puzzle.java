@@ -80,4 +80,8 @@ public abstract class Puzzle extends Node {
         }
         return false;
     }
+
+    public String status() {
+        return this.getClass().getSimpleName() + " Puzzle:";
+    }
 }

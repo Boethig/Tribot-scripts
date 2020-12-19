@@ -27,6 +27,7 @@ public class Bog extends Puzzle {
         if (NPCInteraction.isConversationWindowUp()) {
             NPCInteraction.handleConversation();
         } else if (hasTraversed) {
+            Vars.get().subStatus = "Continuing Trek";
             if (continueTrek()) {
                 hasTraversed = false;
                 path.clear();
@@ -64,6 +65,6 @@ public class Bog extends Puzzle {
     }
 
     public String status() {
-        return "Bog Puzzle:";
+        return super.status();
     }
 }

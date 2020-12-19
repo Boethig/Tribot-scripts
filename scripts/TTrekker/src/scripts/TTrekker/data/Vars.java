@@ -31,6 +31,7 @@ public class Vars {
     public int sleepOffset;
     public List<Integer> abc2WaitTimes;
     public boolean lootNails;
+    public Routes route;
 
     private Vars() {
         this.status = "";
@@ -49,6 +50,7 @@ public class Vars {
         this.escorts = Escorts.EASY;
         this.abc2WaitTimes = new ArrayList<Integer>();
         this.lootNails = false;
+        this.route = Routes.EASY;
     }
 
     public void reset() {

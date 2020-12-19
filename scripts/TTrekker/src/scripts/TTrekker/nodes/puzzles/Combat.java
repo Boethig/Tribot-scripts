@@ -58,6 +58,6 @@ public class Combat extends Puzzle {
     }
 
     public String status() {
-        return "Combat Puzzle:";
+        return super.status();
     }
 }
