@@ -20,7 +20,11 @@ public class StartTrekk extends Node {
     }
 
     public boolean validate() {
-        return Utils.isInStartingArea() && !Inventory.isFull() && !Utils.isInTrekk() && Inventory.getCount(Constants.REWARDS_TOKEN) < Vars.get().claimCount && Utils.hasTools();
+        return Utils.isInStartingArea()
+                && !Inventory.isFull()
+                && !Utils.isInTrekk()
+                && Inventory.getCount(Constants.REWARDS_TOKEN) < Vars.get().claimCount
+                && Utils.hasTools();
     }
 
     public void execute() {

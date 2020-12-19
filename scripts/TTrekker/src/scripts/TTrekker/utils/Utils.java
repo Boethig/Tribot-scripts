@@ -29,11 +29,13 @@ public class Utils {
     }
 
     public static boolean isInTrekkPuzzle() {
-        return RSVarBit.get(6719).getValue() > 2;
+        return RSVarBit.get(Constants.IN_TREKK).getValue() > 2;
     }
 
     public static boolean isInTrekkRoute() {
-        return (Interfaces.isInterfaceSubstantiated(329) || Objects.findNearest(5, "Signpost").length > 0) && RSVarBit.get(6719).getValue() == 2;
+        return Interfaces.isInterfaceSubstantiated(329)
+                || Objects.findNearest(5, "Signpost").length > 0
+                || RSVarBit.get(Constants.IN_TREKK).getValue() == 2;
     }
 
     public static boolean isInTrekkCombatPuzzle() {

@@ -2,13 +2,11 @@ package scripts.TTrekker.nodes.puzzles;
 
 import org.tribot.api.General;
 import org.tribot.api.Timing;
-import org.tribot.api.interfaces.Positionable;
 import org.tribot.api2007.*;
 import org.tribot.api2007.types.RSItem;
 import org.tribot.api2007.types.RSObject;
 import scripts.TTrekker.data.Constants;
 import scripts.TTrekker.data.Vars;
-import scripts.TTrekker.nodes.Trekk;
 import scripts.TTrekker.utils.Utils;
 import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.entities.Entities;
@@ -18,8 +16,6 @@ import scripts.boe_api.utilities.Antiban;
 import scripts.boe_api.utilities.Math;
 import scripts.dax_api.walker.utils.AccurateMouse;
 import scripts.dax_api.walker_engine.interaction_handling.NPCInteraction;
-
-import java.util.Arrays;
 
 public class River extends Puzzle {
 

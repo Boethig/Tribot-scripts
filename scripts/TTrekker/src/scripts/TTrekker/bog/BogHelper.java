@@ -66,7 +66,6 @@ public class BogHelper {
             }
         }
         if (Player.getPosition().equals(destination) && Objects.find(5, 13832).length > 0) {
-            General.println("Player position: " + Player.getPosition() + "equals" + destination);
             hasReachedDestination = true;
         }
         return hasReachedDestination;

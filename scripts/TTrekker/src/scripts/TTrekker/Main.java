@@ -97,15 +97,11 @@ public class Main extends BoeScript implements Painting, VarBitListener, Breakin
     public void serverMessageReceived(final String arg0) {
         if (arg0.equals("You walk across the fixed bridge.")) {
             Vars.get().walked = true;
-        } else if (arg0.equals("Your rotten food has been changed into stew.")) {
-            Vars.get().talkedWithAbidor = true;
         }
     }
 
-    public void varBitChanged(final int varbit, final int newValue) {
-        if (newValue == 3) {
-            Vars.get().hasSelectedRoute = true;
-        } else if (newValue == 2) {
+    public void varBitChanged(final int varBit, final int newValue) {
+        if (newValue == 2) {
             Vars.get().inTrekk = true;
         } else if (newValue == 0) {
             Vars.get().reset();

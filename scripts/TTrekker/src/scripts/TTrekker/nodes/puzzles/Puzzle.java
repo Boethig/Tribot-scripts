@@ -7,35 +7,36 @@ import org.tribot.api2007.Player;
 import org.tribot.api2007.WebWalking;
 import org.tribot.api2007.types.RSObject;
 import org.tribot.api2007.types.RSTile;
-import scripts.TTrekker.data.Constants;
 import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.utils.Utils;
 import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.framework.Node;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.ObjectEntity;
-import scripts.boe_api.utilities.Antiban;
 import scripts.dax_api.walker.utils.AccurateMouse;
 import scripts.dax_api.walker_engine.interaction_handling.NPCInteraction;
 
 public abstract class Puzzle extends Node {
+
+    protected boolean primaryActionCompleted;
 
     public Puzzle() {}
 
     public Puzzle(final ACamera aCamera) { super(aCamera); }
 
     public boolean continueTrek() {
-        RSObject continueTrekk = Entities.find(ObjectEntity::new)
-                .idEquals(Constants.CONTINUE_TREK)
+        RSObject path = Entities.find(ObjectEntity::new)
+                .nameEquals("Path")
+                .actionsContains("Continue-trek")
                 .getFirstResult();
-        if (continueTrekk != null) {
-            final RSTile ctPosition = continueTrekk.getPosition();
-            if (!continueTrekk.isClickable() || !continueTrekk.isOnScreen()) {
+        if (path != null) {
+            final RSTile ctPosition = path.getPosition();
+            if (!path.isClickable() || !path.isOnScreen()) {
                 Camera.turnToTile(ctPosition);
             }
             if (Player.getPosition().distanceTo(ctPosition) < 12) {
                 Vars.get().subStatus = "Leaving";
-                if (AccurateMouse.click(continueTrekk, "Continue-trek")) {
+                if (AccurateMouse.click(path, "Continue-trek")) {
                     return Timing.waitCondition(() -> {
                         General.sleep(General.randomSD(100, 300, 2));
                         return Utils.isInTrekkRoute() || NPCInteraction.isConversationWindowUp();
@@ -49,18 +50,17 @@ public abstract class Puzzle extends Node {
                 }, General.random(2000 + Vars.get().sleepOffset, 4000 + Vars.get().sleepOffset));
             } else {
                 Vars.get().subStatus = "Webwalking";
-                WebWalking.walkTo(ctPosition, () -> continueTrekk.isOnScreen() && ctPosition.isClickable(), General.random(200, 400));
+                WebWalking.walkTo(ctPosition, () -> path.isOnScreen() && ctPosition.isClickable(), General.random(200, 400));
             }
         }
         return false;
     }
 
     public boolean evadePath() {
-        Antiban.get().activateRun();
         RSObject path = Entities.find(ObjectEntity::new)
-                .idEquals(Constants.EVADE_PATH)
+                .nameEquals("Path")
+                .actionsContains("Evade-event")
                 .getFirstResult();
-
         if (path == null) { return false; }
         if (!path.isOnScreen() || !path.isClickable()) {
             Camera.turnToTile(path);

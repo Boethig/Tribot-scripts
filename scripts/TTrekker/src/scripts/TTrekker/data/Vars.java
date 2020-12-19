@@ -19,19 +19,18 @@ public class Vars {
     public long runTime;
     public long breakTimes;
     public boolean inTrekk;
-    public boolean hasSelectedRoute;
     public boolean walked;
-    public boolean talkedWithAbidor;
-    public boolean bogTraversed;
     public int claimCount;
     public boolean shouldRun;
     public boolean shouldPray;
-    public boolean useStaminas;
-    public Escorts escorts;
     public int sleepOffset;
     public List<Integer> abc2WaitTimes;
-    public boolean lootNails;
+
+    // GUI Variables
+    public Escorts escorts;
     public Routes route;
+    public boolean useStaminas;
+    public boolean lootNails;
 
     private Vars() {
         this.status = "";
@@ -39,10 +38,7 @@ public class Vars {
         this.completed = 0;
         this.bogAttempts = 0;
         this.inTrekk = false;
-        this.hasSelectedRoute = false;
         this.walked = false;
-        this.talkedWithAbidor = false;
-        this.bogTraversed = false;
         this.claimCount = 1;
         this.shouldRun = true;
         this.shouldPray = false;
@@ -54,10 +50,7 @@ public class Vars {
     }
 
     public void reset() {
-        this.hasSelectedRoute = false;
         this.inTrekk = false;
         this.walked = false;
-        this.talkedWithAbidor = false;
-        this.bogTraversed = false;
     }
 }
