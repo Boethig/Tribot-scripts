@@ -35,7 +35,7 @@ public class Bridge extends Puzzle {
 
     public void execute() {
         if (this.primaryActionCompleted) {
-            continueTrek();
+            this.primaryActionCompleted = !continueTrek();
         } else {
             RSObject bridge = Entities.find(ObjectEntity::new)
                     .nameContains("bridge")
@@ -43,7 +43,7 @@ public class Bridge extends Puzzle {
             if (bridge != null) {
                 if (isBridgeFixed(bridge)) {
                     walkAcrossBridge(bridge);
-                } else if (isBridgeFixable(bridge) || this.doWeHaveMaterials()) {
+                } else if (isBridgeFixable(bridge) || doWeHaveMaterials()) {
                         if (bridge.isOnScreen() && bridge.isClickable()) {
                             if (Game.getItemSelectionState() == 1) {
                                 Vars.get().subStatus = "Fixing Bridge";
@@ -122,7 +122,7 @@ public class Bridge extends Puzzle {
     }
 
     public boolean isBridgeFixable(RSObject bridge) {
-        return Arrays.asList(bridge.getDefinition().getActions()).contains("Inspect");
+        return !bridge.getDefinition().getName().contains("Broken") && Arrays.asList(bridge.getDefinition().getActions()).contains("Inspect");
     }
 
     public boolean doWeHaveMaterials() {

@@ -15,7 +15,7 @@ public class Route extends Puzzle {
     }
 
     public void execute() {
-        if (!primaryActionCompleted) {
+        if (!Vars.get().hasSelectedRoute) {
             RSInterface routeSelect = Entities.find(InterfaceEntity::new)
                     .textEquals(Vars.get().route.getName())
                     .actionEquals("Select")
@@ -24,7 +24,7 @@ public class Route extends Puzzle {
                 Vars.get().subStatus = "Selecting " + Vars.get().route.getName();
                 Antiban.get().getReactionTime();
                 if (AccurateMouse.click(routeSelect)) {
-                    primaryActionCompleted = true;
+                    Vars.get().hasSelectedRoute = true;
                     Antiban.get().sleepReactionTime();
                 }
             }

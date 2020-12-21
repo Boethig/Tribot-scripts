@@ -19,6 +19,7 @@ public class Vars {
     public long runTime;
     public long breakTimes;
     public boolean inTrekk;
+    public boolean hasSelectedRoute;
     public int claimCount;
     public boolean shouldRun;
     public boolean shouldPray;
@@ -42,12 +43,13 @@ public class Vars {
         this.shouldPray = false;
         this.useStaminas = false;
         this.escorts = Escorts.EASY;
-        this.abc2WaitTimes = new ArrayList<Integer>();
+        this.abc2WaitTimes = new ArrayList<>();
         this.lootNails = false;
         this.route = Routes.EASY;
     }
 
     public void reset() {
         this.inTrekk = false;
+        this.hasSelectedRoute = false;
     }
 }

@@ -48,7 +48,10 @@ public class Main extends BoeScript implements Painting, VarBitListener, Breakin
 
     @Override
     protected String[] scriptSpecificPaint() {
-        return new String[]{ "Status: " + Vars.get().status + " " + Vars.get().subStatus };
+        return new String[]{
+                "Status: " + Vars.get().status + " " + Vars.get().subStatus,
+                "Trekks Completed: " + Vars.get().completed + " (" + this.getPaint().getPerHour(Vars.get().completed) + ")"
+        };
     }
 
     @Override

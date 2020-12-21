@@ -26,8 +26,8 @@ public class Abidor extends Puzzle {
     }
 
     public void execute() {
-        if (primaryActionCompleted && continueTrek()) {
-            primaryActionCompleted = false;
+        if (primaryActionCompleted) {
+            primaryActionCompleted = !continueTrek();
         } else {
             RSNPC abidor = Entities.find(NpcEntity::new)
                     .idEquals(Constants.ABIDOR)

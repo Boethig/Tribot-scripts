@@ -21,9 +21,9 @@ public class Bog extends Puzzle {
     }
 
     public void execute() {
-        if (primaryActionCompleted && continueTrek()) {
+        if (primaryActionCompleted) {
             Vars.get().subStatus = "Continuing Trek";
-            primaryActionCompleted = false;
+            primaryActionCompleted = !continueTrek();
             path.clear();
         } else {
             if (path == null || path.isEmpty()) {
