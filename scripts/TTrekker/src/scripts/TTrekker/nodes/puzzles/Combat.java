@@ -17,7 +17,7 @@ public class Combat extends Puzzle {
 
     public void execute() {
         Vars.get().subStatus = "Evading";
-        if (Vars.get().escorts.equals(Escorts.EASY) && Vars.get().shouldEvadeEasyCombat) {
+        if (Vars.get().escorts.equals(Escorts.EASY) && Vars.get().shouldEvadeCombat) {
             evadePath();
         } else {
             //TODO: medium/hard escorts

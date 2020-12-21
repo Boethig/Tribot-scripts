@@ -2,18 +2,13 @@ package scripts.TTrekker;
 
 import org.tribot.api.General;
 import org.tribot.api.input.Mouse;
-import org.tribot.api2007.Camera;
 import org.tribot.api2007.Login;
 import org.tribot.script.ScriptManifest;
-import org.tribot.script.interfaces.Arguments;
-import org.tribot.script.interfaces.Breaking;
-import org.tribot.script.interfaces.Painting;
-import org.tribot.script.interfaces.PreBreaking;
+import org.tribot.script.interfaces.*;
 import scripts.TTrekker.data.Constants;
 import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.nodes.*;
 import scripts.TTrekker.nodes.puzzles.Combat;
-import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.framework.Node;
 import scripts.boe_api.listeners.varbit.VarBitListener;
 import scripts.boe_api.listeners.varbit.VarBitObserver;
@@ -25,7 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 @ScriptManifest(authors = {"Boe123"}, category = "TTrekker", name = "TTrekker")
-public class Main extends BoeScript implements Painting, VarBitListener, Breaking, PreBreaking, Arguments {
+public class Main extends BoeScript implements Starting, Painting, VarBitListener, Breaking, PreBreaking, Arguments {
 
 //    private final int bowStringPrice = GrandExchange.getPrice(Constants.BOWSTRING);
 
@@ -50,16 +45,15 @@ public class Main extends BoeScript implements Painting, VarBitListener, Breakin
     protected String[] scriptSpecificPaint() {
         return new String[]{
                 "Status: " + Vars.get().status + " " + Vars.get().subStatus,
-                "Trekks Completed: " + Vars.get().completed + " (" + this.getPaint().getPerHour(Vars.get().completed) + ")"
+                "Trekks Completed: " + Vars.get().completed + " (" + (int) this.getPaint().getPerHour(Vars.get().completed) + ")"
         };
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Vars.get().runTime = System.currentTimeMillis();
         Vars.get().status = "Initializing Script.....";
-        final VarBitObserver varBitObserver = new VarBitObserver(Constants.IN_TREKK);
+        VarBitObserver varBitObserver = new VarBitObserver(Constants.IN_TREKK);
         varBitObserver.addListener(this);
         varBitObserver.start();
     }
@@ -87,14 +81,14 @@ public class Main extends BoeScript implements Painting, VarBitListener, Breakin
 //        this.drawString("Status: " + Vars.get().status + " " + Vars.get().subStatus, 195, 326, g);
 //    }
 
-    public void drawString(final String s, final int x, final int y, final Graphics g) {
-        g.setColor(new Color(0, 0, 0, 155));
-        g.fillRect(x - 3, y - 12, 325, 17);
-        g.setColor(new Color(Math.abs((Mouse.getPos().x - 100) / 3), Math.abs((Mouse.getPos().y - 100) / 3), (int) (Camera.getCameraRotation() * 0.7), 122));
-        g.drawRect(x - 3, y - 12, 325, 17);
-        g.setColor(Color.WHITE);
-        g.drawString(s, x, y);
-    }
+//    public void drawString(final String s, final int x, final int y, final Graphics g) {
+//        g.setColor(new Color(0, 0, 0, 155));
+//        g.fillRect(x - 3, y - 12, 325, 17);
+//        g.setColor(new Color(Math.abs((Mouse.getPos().x - 100) / 3), Math.abs((Mouse.getPos().y - 100) / 3), (int) (Camera.getCameraRotation() * 0.7), 122));
+//        g.drawRect(x - 3, y - 12, 325, 17);
+//        g.setColor(Color.WHITE);
+//        g.drawString(s, x, y);
+//    }
 
     public void varBitChanged(final int varBit, final int newValue) {
         if (newValue == 2) {

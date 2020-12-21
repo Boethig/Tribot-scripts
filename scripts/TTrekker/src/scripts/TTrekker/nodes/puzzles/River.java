@@ -60,7 +60,7 @@ public class River extends Puzzle {
         RSItem knife = OSInventory.findFirstNearestToMouse(Constants.KNIFE);
         if (knife != null && !Inventory.isFull()) {
             if (Game.getItemSelectionState() == 1) {
-                final int count = Inventory.getCount(Constants.VINE);
+                int count = Inventory.getCount(Constants.VINE);
                 if (!tree.isClickable() || !tree.isOnScreen()) {
                     aCamera.turnToTile(tree);
                 }

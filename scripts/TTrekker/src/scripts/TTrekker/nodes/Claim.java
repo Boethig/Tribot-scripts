@@ -23,52 +23,52 @@ public class Claim extends Node {
     }
 
     public void execute() {
-        RSItem[] tokens = OSInventory.findNearestToMouse("Reward token");
-        for (final RSItem token : tokens) {
-            if (NPCInteraction.isConversationWindowUp()) {
-                NPCInteraction.handleConversation();
-            } else if (token != null) {
-                if (Interfaces.isInterfaceSubstantiated(Constants.REWARDS)) {
-                    RSInterface claimReward = Entities.find(InterfaceEntity::new)
-                            .inMaster(Constants.REWARDS)
-                            .isSubstantiated()
-                            .actionContains("Claim")
-                            .getFirstResult();
-                    if (claimReward != null) {
-                        Vars.get().subStatus = "Claiming";
-                        if (AccurateMouse.click(claimReward, "Claim")) {
-                            Timing.waitCondition(() -> {
-                                Antiban.get().waitItemInteractionDelay();
-                                return NPCInteraction.isConversationWindowUp();
-                            }, General.random(3000 + Vars.get().sleepOffset, 5000 + Vars.get().sleepOffset));
-                        }
-                    } else {
-                        Vars.get().subStatus = "Selecting Reward";
-                        RSInterface rewardSelect = Entities.find(InterfaceEntity::new)
-                                .inMaster(Constants.REWARDS)
-                                .isSubstantiated()
-                                .textContains(Vars.get().reward.getName())
-                                .getFirstResult();
-                        if (rewardSelect != null) {
-                            if (AccurateMouse.click(rewardSelect, "Details")) {
-                                Timing.waitCondition(() -> Interfaces.isInterfaceSubstantiated(Constants.REWARDS, Constants.CLAIMCHILD), General.random(2000 + Vars.get().sleepOffset, 4000 + Vars.get().sleepOffset));
-                            }
-                        }
-                    }
-                } else {
-                    Vars.get().subStatus = "Opening up Interface";
-                    if (AccurateMouse.click(token, "Look-at")) {
+        RSItem token = OSInventory.findFirstNearestToMouse("Reward token");
+        if (NPCInteraction.isConversationWindowUp()) {
+            NPCInteraction.handleConversation();
+        } else if (token != null) {
+            if (Interfaces.isInterfaceSubstantiated(Constants.REWARDS)) {
+                RSInterface claimReward = Entities.find(InterfaceEntity::new)
+                        .inMaster(Constants.REWARDS)
+                        .isSubstantiated()
+                        .actionContains("Claim")
+                        .getFirstResult();
+                if (claimReward != null) {
+                    Vars.get().subStatus = "Claiming";
+                    //TODO: add antiban reaction times
+                    if (AccurateMouse.click(claimReward, "Claim")) {
                         Timing.waitCondition(() -> {
                             Antiban.get().waitItemInteractionDelay();
-                            return Interfaces.isInterfaceSubstantiated(Constants.REWARDS);
+                            return NPCInteraction.isConversationWindowUp();
                         }, General.random(3000 + Vars.get().sleepOffset, 5000 + Vars.get().sleepOffset));
                     }
+                } else {
+                    Vars.get().subStatus = "Selecting Reward";
+                    RSInterface rewardSelect = Entities.find(InterfaceEntity::new)
+                            .inMaster(Constants.REWARDS)
+                            .isSubstantiated()
+                            .textContains(Vars.get().reward.getName())
+                            .getFirstResult();
+                    if (rewardSelect != null) {
+                        //TODO: add antiban reaction times
+                        if (AccurateMouse.click(rewardSelect, "Details")) {
+                            Timing.waitCondition(() -> Interfaces.isInterfaceSubstantiated(Constants.REWARDS, Constants.CLAIMCHILD), General.random(2000 + Vars.get().sleepOffset, 4000 + Vars.get().sleepOffset));
+                        }
+                    }
+                }
+            } else {
+                Vars.get().subStatus = "Opening up Interface";
+                if (AccurateMouse.click(token, "Look-at")) {
+                    Timing.waitCondition(() -> {
+                        Antiban.get().waitItemInteractionDelay();
+                        return Interfaces.isInterfaceSubstantiated(Constants.REWARDS);
+                    }, General.random(3000 + Vars.get().sleepOffset, 5000 + Vars.get().sleepOffset));
                 }
             }
         }
     }
 
     public String status() {
-        return "Claiming Tokens..";
+        return "Claiming Rewards: ";
     }
 }

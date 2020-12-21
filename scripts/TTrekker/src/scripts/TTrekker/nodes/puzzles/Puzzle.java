@@ -13,6 +13,7 @@ import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.framework.Node;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.ObjectEntity;
+import scripts.boe_api.utilities.Antiban;
 import scripts.dax_api.walker.utils.AccurateMouse;
 import scripts.dax_api.walker_engine.interaction_handling.NPCInteraction;
 
@@ -33,13 +34,17 @@ public abstract class Puzzle extends Node {
     }
 
     private boolean takePathAction(String action) {
-        RSObject path = Entities.find(ObjectEntity::new)
+        RSObject path = Antiban.get().selectNextTarget(Entities.find(ObjectEntity::new)
                 .nameEquals("Path")
                 .actionsContains(action)
-                .getFirstResult();
+                .getResults());
         if (path == null) { return false; }
         if (!path.isOnScreen() || !path.isClickable()) {
-            Camera.turnToTile(path);
+            if (aCamera != null) {
+                aCamera.turnToTile(path);
+            } else {
+                Camera.turnToTile(path);
+            }
         }
         if (AccurateMouse.click(path, action)) {
             return Timing.waitCondition(() -> {

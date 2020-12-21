@@ -21,10 +21,10 @@ public class Bog extends Puzzle {
     }
 
     public void execute() {
-        if (primaryActionCompleted) {
+        if (primaryActionCompleted && continueTrek()) {
             Vars.get().subStatus = "Continuing Trek";
             path.clear();
-            primaryActionCompleted = !continueTrek();
+            primaryActionCompleted = false;
         } else {
             if (path == null || path.isEmpty()) {
                 Vars.get().subStatus = "Searching for Path";
@@ -42,11 +42,11 @@ public class Bog extends Puzzle {
         if (bog.length > 0) {
             Point start = new Point(BogHelper.getMinX(bog), BogHelper.getMinY(bog));
             Point end = new Point(BogHelper.getMaxX(bog), BogHelper.getMaxY(bog));
-            ArrayList<RSObject> startObj = BogHelper.getStarting(bog);
-            ArrayList<RSObject> destObj = BogHelper.getDestinations(bog);
-            for (final RSObject s : startObj) {
-                for (final RSObject d : destObj) {
-                    path = new AStar(bog, s, d, start, end).findPath();
+            ArrayList<RSObject> startPositions = BogHelper.getStarting(bog);
+            ArrayList<RSObject> endPositions = BogHelper.getDestinations(bog);
+            for (final RSObject startPosition : startPositions) {
+                for (final RSObject endPosition : endPositions) {
+                    path = new AStar(bog, startPosition, endPosition, start, end).findPath();
                     if (!path.isEmpty()) {
                         Vars.get().subStatus = "A Path has been found";
                         return path;

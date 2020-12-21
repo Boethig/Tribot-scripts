@@ -51,7 +51,7 @@ public class Bridge extends Puzzle {
                                     Timing.waitCondition(() -> {
                                         General.sleep(General.randomSD(100, 300, 2));
                                         return Objects.find(10, bridge.getID() + 1).length > 0 && Game.getItemSelectionState() != 1;
-                                    }, General.random(4505 + Vars.get().sleepOffset, 6010 + Vars.get().sleepOffset));
+                                    }, General.random(5000, 6000));
                                 } else {
                                     Vars.get().subStatus = "Rotating camera";
                                     Camera.turnToTile(bridge);
@@ -149,10 +149,10 @@ public class Bridge extends Puzzle {
 
     private void collectAxe() {
         Vars.get().subStatus = "Collecting Axe";
-        final RSNPC zombie = Entities.find(NpcEntity::new).idEquals(Constants.ZOMBIE).getFirstResult();
+        RSNPC zombie = Entities.find(NpcEntity::new).idEquals(Constants.ZOMBIE).getFirstResult();
         if (zombie != null) {
             if (!zombie.isOnScreen() || !zombie.isClickable()) {
-                Camera.turnToTile(zombie);
+                aCamera.turnToTile(zombie);
             }
             if (AccurateMouse.click(zombie, "Attack")) {
                 Timing.waitCondition(() -> {
@@ -163,15 +163,15 @@ public class Bridge extends Puzzle {
         }
     }
 
-    private void chopTree(final RSObject tree) {
+    private void chopTree(RSObject tree) {
         Vars.get().subStatus = "Chopping Trees";
         if (!Inventory.isFull()) {
             if (!tree.isOnScreen() || !tree.isClickable()) {
-                aCamera.turnToTile(tree.getPosition());
+                aCamera.turnToTile(tree);
             }
             if (AccurateMouse.click(tree, "Chop down")) {
                 while (Player.isMoving() && tree.getModel() != null) {
-                    General.sleep(50);
+                    General.sleep(70);
                 }
                 Timing.waitCondition(() -> Player.getAnimation() != -1, General.random(1750, 2750));
                 while (Player.getAnimation() != -1) {

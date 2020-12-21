@@ -18,12 +18,11 @@ public class Vars {
     public int completed;
     public double profit;
     public int bogAttempts;
-    public long runTime;
     public long breakTimes;
     public boolean inTrekk;
     public boolean hasSelectedRoute;
     public int claimCount;
-    public boolean shouldEvadeEasyCombat;
+    public boolean shouldEvadeCombat;
     public boolean shouldRun;
     public boolean shouldPray;
     public int sleepOffset;
@@ -44,7 +43,7 @@ public class Vars {
         this.inTrekk = false;
         this.claimCount = 1;
         this.shouldRun = true;
-        this.shouldEvadeEasyCombat = true;
+        this.shouldEvadeCombat = true;
         this.shouldPray = false;
         this.useStaminas = false;
         this.escorts = Escorts.EASY;

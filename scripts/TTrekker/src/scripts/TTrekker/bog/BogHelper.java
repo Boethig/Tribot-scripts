@@ -52,7 +52,6 @@ public class BogHelper {
         final RSTile destination = path.get(path.size() - 1).getPosition();
         final int playerIndex = getPlayerIndex(path);
         final int start = (playerIndex == -1) ? 0 : (playerIndex + 1);
-        General.println("Starting index: " + start);
         for (int i = start; i < path.size(); ++i) {
             final RSObject bog = path.get(i).getBog();
             if (bog != null) {
