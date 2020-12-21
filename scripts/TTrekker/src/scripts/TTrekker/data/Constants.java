@@ -33,13 +33,9 @@ public class Constants {
     public static final int[] SLIGHT_BRIDGE;
     public static final int[] FIXED_BRIDGES;
     public static final int[] BRIDGEINSTANCES;
-    public static final int DEADTREE = 1365;
     public static final int BOG = 13838;
-    public static final int BUSH = 13840;
     public static final int BACKPACK = 13872;
     public static final int[] SWAMP_TREE;
-    public static final int SWING_TREE = 13845;
-    public static final int SWING_VINE = 13846;
     public static final int[] REWARDS_TOKEN;
     public static final int[] OUTFIT;
     public static final int BOWSTRING = 1777;

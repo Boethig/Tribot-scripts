@@ -19,7 +19,6 @@ public class Vars {
     public long runTime;
     public long breakTimes;
     public boolean inTrekk;
-    public boolean walked;
     public int claimCount;
     public boolean shouldRun;
     public boolean shouldPray;
@@ -38,7 +37,6 @@ public class Vars {
         this.completed = 0;
         this.bogAttempts = 0;
         this.inTrekk = false;
-        this.walked = false;
         this.claimCount = 1;
         this.shouldRun = true;
         this.shouldPray = false;
@@ -51,6 +49,5 @@ public class Vars {
 
     public void reset() {
         this.inTrekk = false;
-        this.walked = false;
     }
 }

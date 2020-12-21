@@ -1,5 +1,7 @@
 package scripts.boe_api.framework;
 
+import scripts.boe_api.camera.ACamera;
+
 import java.util.ArrayList;
 
 public abstract class ParentNode extends Node {
@@ -14,6 +16,11 @@ public abstract class ParentNode extends Node {
 
     public ParentNode() {
         super();
+        this.children = setChildren();
+    }
+
+    public ParentNode(ACamera aCamera) {
+        super(aCamera);
         this.children = setChildren();
     }
 

@@ -29,24 +29,21 @@ public class Bridge extends Puzzle {
     }
 
     public boolean validate() {
-        return (Objects.find(20, Constants.BRIDGEINSTANCES).length > 0 || NPCs.find(5647).length > 0) && Utils.isInTrekkPuzzle();
+        return Entities.find(ObjectEntity::new)
+                .nameContains("bridge").getFirstResult() != null && Utils.isInTrekkPuzzle();
     }
 
     public void execute() {
-        RSObject continueTrek = Entities.find(ObjectEntity::new)
-                .setDistance(13)
-                .idEquals(Constants.CONTINUE_TREK)
-                .getFirstResult();
-        if (continueTrek != null && Vars.get().walked) {
+        if (this.primaryActionCompleted) {
             continueTrek();
         } else {
             RSObject bridge = Entities.find(ObjectEntity::new)
-                    .idEquals(Constants.BRIDGEINSTANCES)
+                    .nameContains("bridge")
                     .getFirstResult();
             if (bridge != null) {
                 if (isBridgeFixed(bridge)) {
                     walkAcrossBridge(bridge);
-                } else if (bridge.getID() > 13834 || this.doWeHaveMaterials()) {
+                } else if (isBridgeFixable(bridge) || this.doWeHaveMaterials()) {
                         if (bridge.isOnScreen() && bridge.isClickable()) {
                             if (Game.getItemSelectionState() == 1) {
                                 Vars.get().subStatus = "Fixing Bridge";
@@ -76,9 +73,9 @@ public class Bridge extends Puzzle {
                             this.aCamera.turnToTile(bridge.getPosition());
                         }
                 } else {
-                    final RSObject tree = Antiban.get().selectNextTarget(
-                            Entities.find(ObjectEntity::new).idEquals(Constants.DEADTREE).getResults()
-                    );
+                    RSObject tree = Antiban.get().selectNextTarget(Entities.find(ObjectEntity::new)
+                            .nameEquals("Dead tree")
+                            .getResults());
                     if (tree != null) {
                         if (Utils.hasAxe()) {
                             chopTree(tree);
@@ -120,24 +117,29 @@ public class Bridge extends Puzzle {
         }
     }
 
-    public boolean isBridgeFixed(final RSObject bridge) {
-        return bridge != null && Arrays.stream(Constants.FIXED_BRIDGES).anyMatch(id -> id == bridge.getID());
+    public boolean isBridgeFixed(RSObject bridge) {
+        return Arrays.asList(bridge.getDefinition().getActions()).contains("Cross");
+    }
+
+    public boolean isBridgeFixable(RSObject bridge) {
+        return Arrays.asList(bridge.getDefinition().getActions()).contains("Inspect");
     }
 
     public boolean doWeHaveMaterials() {
         return Inventory.getCount(Constants.LOGS) >= 3 || Inventory.getCount(Constants.PLANK) >= 3;
     }
 
+
     private void walkAcrossBridge(final RSObject bridge) {
         Vars.get().subStatus = "Walking across fixed bridge";
-        if (bridge.isOnScreen() || !bridge.isClickable()) {
+        if (!bridge.isOnScreen() || !bridge.isClickable()) {
             this.aCamera.turnToTile(bridge.getPosition());
         }
         if (Game.getItemSelectionState() != 1) {
             if (AccurateMouse.click(bridge, "Cross")) {
-                Timing.waitCondition(() -> {
+                this.primaryActionCompleted = Timing.waitCondition(() -> {
                     General.sleep(General.randomSD(100, 300, 2));
-                    return Vars.get().walked && Player.getPosition().getX() > bridge.getPosition().getX();
+                    return Player.getPosition().getX() > bridge.getPosition().getX();
                 }, General.random(5005 + Vars.get().sleepOffset, 7005 + Vars.get().sleepOffset));
             }
         } else if (AccurateMouse.click(Player.getPosition())) {
@@ -169,7 +171,7 @@ public class Bridge extends Puzzle {
             }
             if (AccurateMouse.click(tree, "Chop down")) {
                 while (Player.isMoving() && tree.getModel() != null) {
-                    General.sleep(50L);
+                    General.sleep(50);
                 }
                 Timing.waitCondition(() -> Player.getAnimation() != -1, General.random(1750, 2750));
                 while (Player.getAnimation() != -1) {

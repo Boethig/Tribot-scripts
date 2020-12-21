@@ -21,8 +21,7 @@ import java.util.ArrayList;
 public class Trekk extends ParentNode {
 
     public Trekk(ACamera aCamera) {
-        super();
-        this.aCamera = aCamera;
+        super(aCamera);
     }
 
     public boolean validate() {

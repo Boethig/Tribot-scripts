@@ -53,7 +53,6 @@ public class Main extends BoeScript implements Painting, VarBitListener, Breakin
 
     @Override
     public void onStart() {
-        this.aCamera = new ACamera();
         super.onStart();
         Vars.get().runTime = System.currentTimeMillis();
         Vars.get().status = "Initializing Script.....";
@@ -92,12 +91,6 @@ public class Main extends BoeScript implements Painting, VarBitListener, Breakin
         g.drawRect(x - 3, y - 12, 325, 17);
         g.setColor(Color.WHITE);
         g.drawString(s, x, y);
-    }
-
-    public void serverMessageReceived(final String arg0) {
-        if (arg0.equals("You walk across the fixed bridge.")) {
-            Vars.get().walked = true;
-        }
     }
 
     public void varBitChanged(final int varBit, final int newValue) {
