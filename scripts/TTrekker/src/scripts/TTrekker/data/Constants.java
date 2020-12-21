@@ -67,9 +67,6 @@ public class Constants {
     public static final int MAP = 329;
     public static final int R1 = 21;
     public static final int REWARDS = 274;
-    public static final int REWARDSCHILD = 6;
-    public static final int REWARDSPE = 0;
-    public static final int REWARDSBS = 1;
     public static final int CLAIMCHILD = 12;
     public static final int IN_AID_OF_MYQYREQUE_VARBIT = 1990;
     public static final int IN_AID_OF_MYQYREQUE_COMPLETE = 430;

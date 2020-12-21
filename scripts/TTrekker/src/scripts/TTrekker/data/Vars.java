@@ -1,5 +1,7 @@
 package scripts.TTrekker.data;
 
+import scripts.TTrekker.nodes.Trekk;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class Vars {
     public boolean inTrekk;
     public boolean hasSelectedRoute;
     public int claimCount;
+    public boolean shouldEvadeEasyCombat;
     public boolean shouldRun;
     public boolean shouldPray;
     public int sleepOffset;
@@ -29,6 +32,7 @@ public class Vars {
     // GUI Variables
     public Escorts escorts;
     public Routes route;
+    public TrekkReward reward;
     public boolean useStaminas;
     public boolean lootNails;
 
@@ -40,9 +44,11 @@ public class Vars {
         this.inTrekk = false;
         this.claimCount = 1;
         this.shouldRun = true;
+        this.shouldEvadeEasyCombat = true;
         this.shouldPray = false;
         this.useStaminas = false;
         this.escorts = Escorts.EASY;
+        this.reward = TrekkReward.BOWSTRINGS;
         this.abc2WaitTimes = new ArrayList<>();
         this.lootNails = false;
         this.route = Routes.EASY;

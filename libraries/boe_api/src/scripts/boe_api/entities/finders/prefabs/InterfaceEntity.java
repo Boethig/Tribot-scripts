@@ -571,7 +571,7 @@ public class InterfaceEntity extends FinderResult<RSInterface> {
 
     public InterfaceEntity isSubstantiated() {
 
-        filters.add(rsInterface -> Interfaces.isInterfaceSubstantiated(rsInterface.getIndex()));
+        filters.add(Interfaces::isInterfaceSubstantiated);
 
         return this;
     }

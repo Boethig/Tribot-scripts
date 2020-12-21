@@ -23,12 +23,12 @@ public class Bog extends Puzzle {
     public void execute() {
         if (primaryActionCompleted) {
             Vars.get().subStatus = "Continuing Trek";
-            primaryActionCompleted = !continueTrek();
             path.clear();
+            primaryActionCompleted = !continueTrek();
         } else {
             if (path == null || path.isEmpty()) {
                 Vars.get().subStatus = "Searching for Path";
-                path = foundPath();
+                path = findPath();
             } else {
                 Vars.get().subStatus = "Walking Path";
                 primaryActionCompleted = BogHelper.traverse(path);
@@ -36,7 +36,7 @@ public class Bog extends Puzzle {
         }
     }
 
-    public ArrayList<BogNode> foundPath() {
+    public ArrayList<BogNode> findPath() {
         ArrayList<BogNode> path = new ArrayList();
         RSObject[] bog = Objects.find(10, Constants.BOG);
         if (bog.length > 0) {
