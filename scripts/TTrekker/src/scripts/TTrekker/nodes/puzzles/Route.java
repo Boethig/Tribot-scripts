@@ -6,10 +6,11 @@ import scripts.TTrekker.utils.Utils;
 import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.InterfaceEntity;
+import scripts.boe_api.framework.Node;
 import scripts.boe_api.utilities.Antiban;
 import scripts.dax_api.walker.utils.AccurateMouse;
 
-public class Route extends Puzzle {
+public class Route extends Node {
 
     public Route(ACamera aCamera) {
         super(aCamera);

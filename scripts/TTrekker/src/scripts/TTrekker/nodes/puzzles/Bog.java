@@ -25,26 +25,25 @@ public class Bog extends Puzzle {
         return Objects.find(10, Constants.BOG).length > 0 && Utils.isInTrekkPuzzle();
     }
 
-    public void execute() {
-        if (primaryActionCompleted) {
-            Vars.get().subStatus = "Continuing Trek";
-            if (continueTrek()) {
-                path.clear();
-                primaryActionCompleted = false;
-            }
+    public void solvePuzzle() {
+        if (path == null || path.isEmpty()) {
+            Vars.get().subStatus = "Searching for Path";
+            path = findPath();
         } else {
-            if (path == null || path.isEmpty()) {
-                Vars.get().subStatus = "Searching for Path";
-                path = findPath();
-            } else {
-                Vars.get().subStatus = "Walking Path";
-                primaryActionCompleted = BogHelper.traverse(path);
-            }
+            Vars.get().subStatus = "Walking Path";
+            isPuzzleComplete = BogHelper.traverse(path);
+        }
+    }
+
+    @Override
+    void resetPuzzle() {
+        if (this.path != null) {
+            this.path.clear();
         }
     }
 
     public ArrayList<BogNode> findPath() {
-        ArrayList<BogNode> path = new ArrayList();
+        ArrayList<BogNode> path = null;
         RSObject[] bog = Objects.find(10, Constants.BOG);
         if (bog.length > 0) {
             Point start = new Point(BogHelper.getMinX(bog), BogHelper.getMinY(bog));

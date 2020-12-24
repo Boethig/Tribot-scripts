@@ -27,51 +27,42 @@ public class River extends Puzzle {
         return Objects.find(20, "Swamp tree").length > 0 && Utils.isInTrekkPuzzle();
     }
 
-    public void execute() {
-        final RSObject swampTreeBranch = Entities.find(ObjectEntity::new)
+    public void solvePuzzle() {
+        RSObject swampTreeBranch = Entities.find(ObjectEntity::new)
                 .actionsContains("Swing-from")
                 .getFirstResult();
-        if (Objects.findNearest(10, 13832).length > 0) {
-            continueTrek();
-        } else if (swampTreeBranch != null) {
+        if (swampTreeBranch != null) {
             swingOnVine(swampTreeBranch);
         } else if (Inventory.getCount(Constants.ROPE) > 0) {
             attachRope();
+        } else if (Inventory.getCount(Constants.VINE) >= 3) {
+            createRope();
         } else {
-            if (Inventory.getCount(Constants.KNIFE) > 0) {
-                if (Inventory.getCount(Constants.VINE) >= 3) {
-                    createRope();
-                } else {
-                    RSObject swampTree = Entities.find(ObjectEntity::new)
-                            .actionsContains("Cut-vine")
-                            .getFirstResult();
-                    if (swampTree != null) {
-                        collectVine(swampTree);
-                    }
-                }
-            } else {
-                searchBackpack();
+            RSObject swampTree = Entities.find(ObjectEntity::new)
+                    .actionsContains("Cut-vine")
+                    .getFirstResult();
+            if (swampTree != null) {
+                collectVines(swampTree);
             }
         }
     }
 
-    public void collectVine(RSObject tree) {
+    @Override
+    void resetPuzzle() {
+    }
+
+    public void collectVines(RSObject tree) {
         Vars.get().subStatus = "Collecting vines";
-        RSItem knife = OSInventory.findFirstNearestToMouse(Constants.KNIFE);
-        if (knife != null && !Inventory.isFull()) {
-            if (Game.getItemSelectionState() == 1) {
-                int count = Inventory.getCount(Constants.VINE);
-                if (!tree.isClickable() || !tree.isOnScreen()) {
-                    aCamera.turnToTile(tree);
-                }
-                if (AccurateMouse.click(tree, "Use Knife")) {
-                    Timing.waitCondition(() -> {
-                        General.sleep(General.randomSD(100, 300, 2));
-                        return Inventory.getCount(7778) > count && Game.getItemSelectionState() != 1;
-                    }, General.random(2000 + Vars.get().sleepOffset, 3000 + Vars.get().sleepOffset));
-                }
-            } else if (Utils.selectItem(knife)) {
-                Antiban.get().waitItemInteractionDelay();
+        if (!Inventory.isFull()) {
+            int count = Inventory.getCount(Constants.VINE);
+            if (!tree.isClickable() || !tree.isOnScreen()) {
+                aCamera.turnToTile(tree);
+            }
+            if (AccurateMouse.click(tree, "Cut-vine")) {
+                Timing.waitCondition(() -> {
+                    General.sleep(General.randomSD(100, 300, 2));
+                    return Inventory.getCount(7778) > count && Game.getItemSelectionState() != 1;
+                }, General.random(2000 + Vars.get().sleepOffset, 3000 + Vars.get().sleepOffset));
             }
         }
     }
@@ -79,7 +70,7 @@ public class River extends Puzzle {
     public void createRope() {
         Vars.get().subStatus = "Creating Rope";
         RSItem[] vines = OSInventory.findNearestToMouse(Constants.VINE);
-        if (vines.length > 0) {
+        if (vines.length > 1) {
             if (Game.getItemSelectionState() == 1 && Game.getSelectedItemName().equals("Short vine")) {
                 if (AccurateMouse.click(vines[1], "Use")) {
                     Timing.waitCondition(() -> {
@@ -125,42 +116,20 @@ public class River extends Puzzle {
         }
     }
 
-    public void searchBackpack() {
-        final RSObject backpack = Entities.find(ObjectEntity::new)
-                .idEquals(Constants.BACKPACK)
-                .getFirstResult();
-        if (backpack != null) {
-            Vars.get().subStatus = "Searching Backpack";
-            Vars.get().abc2WaitTimes.add(Antiban.get().getReactionTime());
-            Antiban.get().sleepReactionTime();
-            if (backpack.isOnScreen() && backpack.click("Search")) {
-                Antiban.get().generateTrackers(Math.calculateAverage(Vars.get().abc2WaitTimes));
-                Timing.waitCondition(() -> {
-                    General.sleep(General.randomSD(100, 300, 2));
-                    return Inventory.getCount(946) > 0;
-                }, General.random(3005 + Vars.get().sleepOffset, 5005 + Vars.get().sleepOffset));
-            } else {
-                aCamera.turnToTile(backpack.getPosition());
-            }
-        }
-    }
-
     public void swingOnVine(final RSObject vine) {
         Vars.get().subStatus = "Swinging Vine";
 //        Vars.get().abc2WaitTimes.add(Antiban.get().getReactionTime());
 //        Antiban.get().sleepReactionTime();
         if (!vine.isOnScreen() || !vine.isClickable()) {
-            Camera.turnToTile(vine);
+            aCamera.turnToTile(vine);
         }
         if (Game.getItemSelectionState() != 1) {
             if (AccurateMouse.click(vine,"Swing-from")) {
 //                Antiban.get().generateTrackers(Math.calculateAverage(Vars.get().abc2WaitTimes));
-                Timing.waitCondition(() -> {
+                isPuzzleComplete = Timing.waitCondition(() -> {
                     General.sleep(General.randomSD(100, 300, 2));
                     return Interfaces.isInterfaceSubstantiated(NPCChat.getClickContinueInterface());
                 }, General.random(4005 + Vars.get().sleepOffset, 8005 + Vars.get().sleepOffset));
-            } else {
-                aCamera.turnToTile(vine.getPosition());
             }
         } else if (AccurateMouse.click(vine, "Use")) {
             Timing.waitCondition(() -> Game.getItemSelectionState() != 1, General.random(1500, 2500));

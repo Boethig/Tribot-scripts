@@ -2,6 +2,7 @@ package scripts.TTrekker;
 
 import org.tribot.api.General;
 import org.tribot.api.input.Mouse;
+import org.tribot.api2007.Camera;
 import org.tribot.api2007.Login;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.*;
@@ -61,10 +62,8 @@ public class Main extends BoeScript implements Starting, Painting, VarBitListene
         varBitObserver.start();
     }
 
-    public void onEnd() { }
-
     public void setAntiban() {
-        Mouse.setSpeed(General.random(100, 110));
+        Camera.setRotationMethod(Camera.ROTATION_METHOD.ONLY_KEYS);
         Vars.get().abc2WaitTimes.add(General.random(105, 350));
     }
 

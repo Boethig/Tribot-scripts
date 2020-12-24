@@ -2,7 +2,6 @@ package scripts.TTrekker.nodes;
 
 import org.tribot.api.General;
 import org.tribot.api.Timing;
-import org.tribot.api2007.GameTab;
 import org.tribot.api2007.Interfaces;
 import org.tribot.api2007.Inventory;
 import org.tribot.api2007.types.RSInterface;
@@ -59,7 +58,7 @@ public class Claim extends Node {
                 }
             } else {
                 Vars.get().subStatus = "Opening up Interface";
-                GameTab.open(GameTab.TABS.INVENTORY);
+                Inventory.open();
                 if (AccurateMouse.click(token, "Look-at")) {
                     Timing.waitCondition(() -> {
                         Antiban.get().waitItemInteractionDelay();

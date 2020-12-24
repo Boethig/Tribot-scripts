@@ -66,6 +66,8 @@ public class Constants {
     public static final int IN_AID_OF_MYQYREQUE_COMPLETE = 430;
     public static final int DARKNESS_OF_HALLOWVALE_VARBIT = 2573;
     public static final int DARKNESS_OF_HALLOWVALE_COMPLETE = 0;
+    public static final int MORT_MYRE_FUNGI = 2970;
+    public static final int BLESSED_SILVER_SICKLE = 2963;
 
 
     static {

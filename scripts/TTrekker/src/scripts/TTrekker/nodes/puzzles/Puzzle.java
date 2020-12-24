@@ -2,12 +2,8 @@ package scripts.TTrekker.nodes.puzzles;
 
 import org.tribot.api.General;
 import org.tribot.api.Timing;
-import org.tribot.api2007.Camera;
-import org.tribot.api2007.Player;
 import org.tribot.api2007.WebWalking;
 import org.tribot.api2007.types.RSObject;
-import org.tribot.api2007.types.RSTile;
-import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.utils.Utils;
 import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.framework.Node;
@@ -19,7 +15,22 @@ import scripts.dax_api.walker_engine.interaction_handling.NPCInteraction;
 
 public abstract class Puzzle extends Node {
 
-    protected boolean primaryActionCompleted;
+    protected boolean isPuzzleComplete;
+
+    abstract void solvePuzzle();
+
+    // Resets any variables local to this puzzle
+    abstract void resetPuzzle();
+
+    @Override
+    public void execute() {
+        if (isPuzzleComplete && continueTrek()) {
+            resetPuzzle();
+            this.isPuzzleComplete = false;
+        } else {
+            solvePuzzle();
+        }
+    }
 
     public Puzzle(final ACamera aCamera) { super(aCamera); }
 
@@ -38,9 +49,7 @@ public abstract class Puzzle extends Node {
                 .getResults());
         if (path == null) { return false; }
         if (!path.isOnScreen() && !path.isClickable()) {
-            if (aCamera != null) {
-                aCamera.turnToTile(path);
-            }
+            aCamera.turnToTile(path);
         }
         if (AccurateMouse.click(path, action)) {
             return Timing.waitCondition(() -> {
@@ -50,7 +59,7 @@ public abstract class Puzzle extends Node {
         } else if (AccurateMouse.clickMinimap(path)) {
             Timing.waitCondition(() -> {
                 General.sleep(General.randomSD(100, 300, 2));
-                return Player.getPosition().distanceTo(path.getPosition()) < General.randomSD(5, 3) || path.isOnScreen();
+                return path.isClickable() || path.isOnScreen();
             }, General.random(4000, 6000));
         } else {
             WebWalking.walkTo(path.getPosition(), () -> path.isClickable() && path.isOnScreen(), General.random(300, 500));

@@ -23,11 +23,12 @@ public class Combat extends Puzzle {
         return Utils.isInTrekkCombatPuzzle();
     }
 
-    public void execute() {
-        Vars.get().subStatus = "Evading";
+    public void solvePuzzle() {
         if (Vars.get().escorts.equals(Escorts.EASY) && Vars.get().shouldEvadeCombat) {
+            Vars.get().subStatus = "Evading";
             evadePath();
         } else {
+            Vars.get().subStatus = "Fighting";
             //TODO: medium/hard escorts
             RSNPC rsnpc = Entities.find(NpcEntity::new)
                     .idEquals(Constants.NPCS).getFirstResult();
@@ -36,5 +37,9 @@ public class Combat extends Puzzle {
                 context.handleStrategy(rsnpc);
             }
         }
+    }
+
+    @Override
+    void resetPuzzle() {
     }
 }

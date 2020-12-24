@@ -49,14 +49,13 @@ public class BogHelper {
             General.println("Path Reversed");
             Collections.reverse(path);
         }
-        final RSTile destination = path.get(path.size() - 1).getPosition();
-        final int playerIndex = getPlayerIndex(path);
-        final int start = (playerIndex == -1) ? 0 : (playerIndex + 1);
-        for (int i = start; i < path.size(); ++i) {
-            final RSObject bog = path.get(i).getBog();
+        RSTile destination = path.get(path.size() - 1).getPosition();
+        int playerIndex = getPlayerIndex(path);
+        for (int i = playerIndex; i < path.size(); ++i) {
+            RSObject bog = path.get(i).getBog();
             if (bog != null) {
 //                Antiban.getReactionTime();
-                if (!walkBogTile(bog)) {
+                if (!walkTo(bog)) {
                     General.println("Error clicking on tile @ " + bog.getPosition().toString());
                     break;
                 }
@@ -71,18 +70,15 @@ public class BogHelper {
     }
 
     private static int getPlayerIndex(final ArrayList<BogNode> list) {
-//        BogNode node = list.stream().filter((bogNode -> bogNode.getPosition().equals(Player.getPosition()))).findFirst().get();
-//        return list.indexOf(node);
-        int index = -1;
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getPosition().equals(Player.getPosition())) {
-                return i;
+                return i + 1;
             }
         }
-        return index;
+        return 0;
     }
 
-    public static boolean walkBogTile(final RSObject bog) {
+    public static boolean walkTo(RSObject bog) {
         if (!bog.isOnScreen() || !bog.isClickable()) {
             Camera.turnToTile(bog.getPosition());
         }

@@ -33,88 +33,85 @@ public class Bridge extends Puzzle {
                 .nameContains("bridge").getFirstResult() != null && Utils.isInTrekkPuzzle();
     }
 
-    public void execute() {
-        if (this.primaryActionCompleted) {
-            this.primaryActionCompleted = !continueTrek();
-        } else {
-            RSObject bridge = Entities.find(ObjectEntity::new)
-                    .nameContains("bridge")
-                    .getFirstResult();
-            if (bridge != null) {
-                if (isBridgeFixed(bridge)) {
-                    walkAcrossBridge(bridge);
-                } else if (isBridgeFixable(bridge) || doWeHaveMaterials()) {
-                        if (bridge.isOnScreen() && bridge.isClickable()) {
-                            if (Game.getItemSelectionState() == 1) {
-                                Vars.get().subStatus = "Fixing Bridge";
-                                if (AccurateMouse.click(bridge, "Use Plank", "Use Logs")) {
-                                    Timing.waitCondition(() -> {
-                                        General.sleep(General.randomSD(100, 300, 2));
-                                        return Objects.find(10, bridge.getID() + 1).length > 0 && Game.getItemSelectionState() != 1;
-                                    }, General.random(5000, 6000));
-                                } else {
-                                    Vars.get().subStatus = "Rotating camera";
-                                    Camera.turnToTile(bridge);
-                                }
+    public void solvePuzzle() {
+        RSObject bridge = Entities.find(ObjectEntity::new)
+                .nameContains("bridge")
+                .getFirstResult();
+        if (bridge != null) {
+            if (isBridgeFixed(bridge)) {
+                walkAcrossBridge(bridge);
+            } else if (isBridgeFixable(bridge) || doWeHaveMaterials()) {
+                    if (bridge.isOnScreen() && bridge.isClickable()) {
+                        if (Game.getItemSelectionState() == 1) {
+                            Vars.get().subStatus = "Fixing Bridge";
+                            if (AccurateMouse.click(bridge, "Use Plank", "Use Logs")) {
+                                Timing.waitCondition(() -> {
+                                    General.sleep(General.randomSD(100, 300, 2));
+                                    return Objects.find(10, bridge.getID() + 1).length > 0 && Game.getItemSelectionState() != 1;
+                                }, General.random(5000, 6000));
                             } else {
-                                Vars.get().subStatus = "Selecting Materials";
-                                final RSItem material = OSInventory.findFirstNearestToMouse(Constants.LOGS, Constants.PLANK);
-                                if (material != null) {
-                                    Utils.selectItem(material);
-                                }
+                                Vars.get().subStatus = "Rotating camera";
+                                Camera.turnToTile(bridge);
                             }
-                        } else if (AccurateMouse.clickMinimap(bridge.getPosition())) {
-                            Timing.waitCondition(() -> {
-                                General.sleep(General.randomSD(100, 300, 2));
-                                return bridge.isOnScreen() && bridge.isClickable();
-                            }, General.random(750 + Vars.get().sleepOffset, 1500 + Vars.get().sleepOffset));
                         } else {
-                            Vars.get().subStatus = "Rotating camera";
-                            this.aCamera.turnToTile(bridge.getPosition());
+                            Vars.get().subStatus = "Selecting Materials";
+                            Inventory.open();
+                            final RSItem material = OSInventory.findFirstNearestToMouse(Constants.LOGS, Constants.PLANK);
+                            if (material != null) {
+                                Utils.selectItem(material);
+                            }
                         }
-                } else {
-                    RSObject tree = Antiban.get().selectNextTarget(Entities.find(ObjectEntity::new)
-                            .nameEquals("Dead tree")
-                            .getResults());
-                    if (tree != null) {
-                        if (Utils.hasAxe()) {
-                            chopTree(tree);
-                        } else {
-                            collectAxe();
+                    } else if (AccurateMouse.clickMinimap(bridge.getPosition())) {
+                        Timing.waitCondition(() -> {
+                            General.sleep(General.randomSD(100, 300, 2));
+                            return bridge.isOnScreen() && bridge.isClickable();
+                        }, General.random(750 + Vars.get().sleepOffset, 1500 + Vars.get().sleepOffset));
+                    } else {
+                        Vars.get().subStatus = "Rotating camera";
+                        this.aCamera.turnToTile(bridge.getPosition());
+                    }
+            } else {
+                RSObject tree = Antiban.get().selectNextTarget(Entities.find(ObjectEntity::new)
+                        .nameEquals("Dead tree")
+                        .getResults());
+                if (tree != null) {
+                    chopTree(tree);
+                } else if (Inventory.getCount(Constants.PLANK) < 3) {
+                    RSNPC zombie = Antiban.get().selectNextTarget(NPCs.find(Constants.LUMBERJACK));
+                    if (zombie != null) {
+                        Vars.get().abc2WaitTimes.add(Antiban.get().getReactionTime());
+                        final long startTime = System.currentTimeMillis();
+                        if (Combat.getTargetEntity() == null || Combat.getAttackingEntities().length < 1) {
+                            if (!zombie.isOnScreen() || !zombie.isClickable()) {
+                                this.aCamera.turnToTile(zombie);
+                            }
+                            if (AccurateMouse.click(zombie, "Attack")) {
+                                Vars.get().subStatus = "Attacking Lumberjacks";
+                                Timing.waitCondition(() -> Combat.getTargetEntity() != null || Combat.getAttackingEntities().length > 0, General.random(2005 + Vars.get().sleepOffset, 3005 + Vars.get().sleepOffset));
+                                Antiban.get().sleepReactionTime();
+                            }
                         }
-                    } else if (Inventory.getCount(Constants.PLANK) < 3) {
-                        RSNPC zombie = Antiban.get().selectNextTarget(NPCs.find(Constants.LUMBERJACK));
-                        if (zombie != null) {
-                            Vars.get().abc2WaitTimes.add(Antiban.get().getReactionTime());
-                            final long startTime = System.currentTimeMillis();
-                            if (Combat.getTargetEntity() == null || Combat.getAttackingEntities().length < 1) {
-                                if (!zombie.isOnScreen() || !zombie.isClickable()) {
-                                    this.aCamera.turnToTile(zombie);
-                                }
-                                if (AccurateMouse.click(zombie, "Attack")) {
-                                    Vars.get().subStatus = "Attacking Lumberjacks";
-                                    Timing.waitCondition(() -> Combat.getTargetEntity() != null || Combat.getAttackingEntities().length > 0, General.random(2005 + Vars.get().sleepOffset, 3005 + Vars.get().sleepOffset));
-                                    Antiban.get().sleepReactionTime();
-                                }
-                            }
-                            while (Player.getRSPlayer().isInCombat() && Inventory.getCount(Constants.PLANK) < 3) {
-                                Antiban.get().timedActions();
-                                lootPlank();
-                                General.sleep(General.randomSD(50, 70, 2));
-                            }
-                            if (!Player.getRSPlayer().isInCombat()) {
-                                Antiban.get().generateTrackers((int) (System.currentTimeMillis() - startTime));
-                                Vars.get().abc2WaitTimes.add(Antiban.get().getReactionTime());
-                            }
-                        } else {
-                            Vars.get().subStatus = "Waiting for Spawn";
-                            lootPlank();
+                        while (Player.getRSPlayer().isInCombat() && Inventory.getCount(Constants.PLANK) < 3) {
                             Antiban.get().timedActions();
+                            lootPlank();
+                            General.sleep(General.randomSD(50, 70, 2));
                         }
+                        if (!Player.getRSPlayer().isInCombat()) {
+                            Antiban.get().generateTrackers((int) (System.currentTimeMillis() - startTime));
+                            Vars.get().abc2WaitTimes.add(Antiban.get().getReactionTime());
+                        }
+                    } else {
+                        Vars.get().subStatus = "Waiting for Spawn";
+                        lootPlank();
+                        Antiban.get().timedActions();
                     }
                 }
             }
         }
+    }
+
+    @Override
+    void resetPuzzle() {
     }
 
     public boolean isBridgeFixed(RSObject bridge) {
@@ -137,29 +134,13 @@ public class Bridge extends Puzzle {
         }
         if (Game.getItemSelectionState() != 1) {
             if (AccurateMouse.click(bridge, "Cross")) {
-                this.primaryActionCompleted = Timing.waitCondition(() -> {
+                this.isPuzzleComplete = Timing.waitCondition(() -> {
                     General.sleep(General.randomSD(100, 300, 2));
                     return Player.getPosition().getX() > bridge.getPosition().getX();
                 }, General.random(5005 + Vars.get().sleepOffset, 7005 + Vars.get().sleepOffset));
             }
         } else if (AccurateMouse.click(Player.getPosition())) {
             Timing.waitCondition(() -> Game.getItemSelectionState() != 1, General.random(1500, 2500));
-        }
-    }
-
-    private void collectAxe() {
-        Vars.get().subStatus = "Collecting Axe";
-        RSNPC zombie = Entities.find(NpcEntity::new).idEquals(Constants.ZOMBIE).getFirstResult();
-        if (zombie != null) {
-            if (!zombie.isOnScreen() || !zombie.isClickable()) {
-                aCamera.turnToTile(zombie);
-            }
-            if (AccurateMouse.click(zombie, "Attack")) {
-                Timing.waitCondition(() -> {
-                    General.sleep(General.randomSD(100, 300, 2));
-                    return Combat.getTargetEntity() != null || Combat.getAttackingEntities().length > 0;
-                }, General.random(3005 + Vars.get().sleepOffset, 4005 + Vars.get().sleepOffset));
-            }
         }
     }
 

@@ -22,35 +22,35 @@ public class Abidor extends Puzzle {
     }
 
     public boolean validate() {
-        return (primaryActionCompleted || NPCs.find(Constants.ABIDOR).length > 0) && Utils.isInTrekkPuzzle();
+        return (isPuzzleComplete || NPCs.find(Constants.ABIDOR).length > 0) && Utils.isInTrekkPuzzle();
     }
 
-    public void execute() {
-        if (primaryActionCompleted) {
-            primaryActionCompleted = !continueTrek();
-        } else {
-            RSNPC abidor = Entities.find(NpcEntity::new)
-                    .idEquals(Constants.ABIDOR)
-                    .getFirstResult();
-            if (abidor != null) {
-                if ((abidor.isInteractingWithMe() && !NPCInteraction.isConversationWindowUp()) || hasBeenHealed()) {
-                    primaryActionCompleted = true;
-                } else {
-                    if (!abidor.isOnScreen() || !abidor.isClickable()) {
-                        this.aCamera.turnToTile(abidor.getPosition());
+    public void solvePuzzle() {
+        RSNPC abidor = Entities.find(NpcEntity::new)
+                .idEquals(Constants.ABIDOR)
+                .getFirstResult();
+        if (abidor != null) {
+            if ((abidor.isInteractingWithMe() && !NPCInteraction.isConversationWindowUp()) || hasBeenHealed()) {
+                isPuzzleComplete = true;
+            } else {
+                if (!abidor.isOnScreen() || !abidor.isClickable()) {
+                    this.aCamera.turnToTile(abidor.getPosition());
+                }
+                if (abidor.isOnScreen()) {
+                    Vars.get().subStatus = "Talking to Abidor";
+                    if (InteractionHelper.click(abidor, "Talk-to")) {
+                        NPCInteraction.waitForConversationWindow();
                     }
-                    if (abidor.isOnScreen()) {
-                        Vars.get().subStatus = "Talking to Abidor";
-                        if (InteractionHelper.click(abidor, "Talk-to")) {
-                            NPCInteraction.waitForConversationWindow();
-                        }
-                    } else if (AccurateMouse.clickMinimap(abidor.getPosition())) {
-                        Vars.get().subStatus = "Clicking on Minimap";
-                        Timing.waitCondition(abidor::isOnScreen, General.random(2000, 5000));
-                    }
+                } else if (AccurateMouse.clickMinimap(abidor.getPosition())) {
+                    Vars.get().subStatus = "Clicking on Minimap";
+                    Timing.waitCondition(abidor::isOnScreen, General.random(2000, 5000));
                 }
             }
         }
+    }
+
+    @Override
+    void resetPuzzle() {
     }
 
     public boolean hasBeenHealed() { return Combat.getHP() > Combat.getMaxHP(); }

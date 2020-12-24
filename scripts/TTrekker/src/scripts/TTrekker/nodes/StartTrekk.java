@@ -38,7 +38,7 @@ public class StartTrekk extends Node {
             if (escort != null) {
                 Vars.get().subStatus = "Clicking on Escort";
                 if (!escort.isOnScreen() || !escort.isClickable()) {
-                    aCamera.turnToTile(escort.getPosition());
+                    aCamera.turnToTile(escort);
                 }
                 if (InteractionHelper.click(escort, "Escort")) {
                     NPCInteraction.waitForConversationWindow();

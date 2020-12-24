@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-public abstract class BoeScript extends Script implements Paintable, Painting, Starting, Ending {
+public abstract class BoeScript extends Script implements Paintable, Painting, Starting {
 
     public ArrayList<Node> nodes;
     public final ScriptManifest MANIFEST = this.getClass().getAnnotation(ScriptManifest.class);
