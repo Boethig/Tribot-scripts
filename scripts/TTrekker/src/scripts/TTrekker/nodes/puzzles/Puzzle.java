@@ -21,8 +21,6 @@ public abstract class Puzzle extends Node {
 
     protected boolean primaryActionCompleted;
 
-    public Puzzle() {}
-
     public Puzzle(final ACamera aCamera) { super(aCamera); }
 
     public boolean continueTrek() {
@@ -39,11 +37,9 @@ public abstract class Puzzle extends Node {
                 .actionsContains(action)
                 .getResults());
         if (path == null) { return false; }
-        if (!path.isOnScreen() || !path.isClickable()) {
+        if (!path.isOnScreen() && !path.isClickable()) {
             if (aCamera != null) {
                 aCamera.turnToTile(path);
-            } else {
-                Camera.turnToTile(path);
             }
         }
         if (AccurateMouse.click(path, action)) {

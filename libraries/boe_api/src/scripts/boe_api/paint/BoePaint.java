@@ -54,9 +54,11 @@ public class BoePaint {
     } //END getTimeRan()
 
     public long getPerHour(int amount) {
-        if (amount == 0)
-            return 0;
         //return the projected amount per hour
-        return Math.round( (double)(amount) / (getTimeRanMs() / ONE_HOUR_MS));
+        return amount > 0 ? Math.round( (double)(amount) / (getTimeRanMs() / ONE_HOUR_MS)) : 0;
+    }
+
+    public int getEstimatedPerHour(int amount) {
+        return (int)(amount * getTimeRanMs() / ONE_HOUR_MS);
     }
 }

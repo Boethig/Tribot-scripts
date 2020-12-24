@@ -26,11 +26,11 @@ public class Main extends BoeScript implements Starting, Painting, VarBitListene
 
     @Override
     public void run() {
-        Collections.addAll(this.nodes, new Trekk(this.aCamera), new StartTrekk(this.aCamera), new Claim(), new Walking(), new Bank());
+        Collections.addAll(nodes, new Trekk(aCamera), new StartTrekk(aCamera), new Claim(), new Walking(), new Bank());
         this.setAntiban();
         while (Vars.get().shouldRun) {
             if (Login.getLoginState() != Login.STATE.LOGINSCREEN) {
-                for (final Node node : this.nodes) {
+                for (final Node node : nodes) {
                     if (node.validate()) {
                         Vars.get().status = node.status();
                         node.execute();
@@ -43,9 +43,12 @@ public class Main extends BoeScript implements Starting, Painting, VarBitListene
 
     @Override
     protected String[] scriptSpecificPaint() {
-        return new String[]{
+        return new String[] {
                 "Status: " + Vars.get().status + " " + Vars.get().subStatus,
-                "Trekks Completed: " + Vars.get().completed + " (" + (int) this.getPaint().getPerHour(Vars.get().completed) + ")"
+                "Trekks Completed: " + Vars.get().completed + " (" + getPaint().getEstimatedPerHour(Vars.get().completed) + ")",
+                "Escort Difficulty: " + Vars.get().escorts.toString(),
+                "Route: " + Vars.get().route.getName(),
+                "Reward: " + Vars.get().reward.getName()
         };
     }
 

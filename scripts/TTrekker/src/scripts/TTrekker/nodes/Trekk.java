@@ -31,11 +31,11 @@ public class Trekk extends ParentNode {
     @Override
     protected ArrayList<Node> setChildren() {
         return new ArrayList<>() {{
-            add(new Route());
+            add(new Route(aCamera));
             add(new Combat(aCamera));
             add(new Bridge(aCamera));
             add(new River(aCamera));
-            add(new Bog());
+            add(new Bog(aCamera));
             add(new Abidor(aCamera));
         }};
     }

@@ -13,10 +13,6 @@ public class Constants {
     public static final RSArea SALVE;
     public static final RSArea BURG_BANK;
     public static RSTile[] BURG_TO_BANK;
-    public static final int[] EASY_ESCORTS;
-    public static final int[] EASY_INSTANCE_ESCORTS;
-    public static final int[] MEDIUM_ESCORTS;
-    public static final int[] MEDIUM_INSTANCE_ESCORTS;
     public static final int ABIDOR = 1568;
     public static final int SNAIL = 5628;
     public static final int[] NPCS;
@@ -64,8 +60,6 @@ public class Constants {
     public static final String SUCK = "Your stick gets sucked into the bog...";
     public static final String END = "You reach your destination.";
     public static final String TALKED = "There you go... Right, I must be off now. Good luck with your travels.";
-    public static final int MAP = 329;
-    public static final int R1 = 21;
     public static final int REWARDS = 274;
     public static final int CLAIMCHILD = 12;
     public static final int IN_AID_OF_MYQYREQUE_VARBIT = 1990;
@@ -80,10 +74,6 @@ public class Constants {
         SALVE = new RSArea(new RSTile(3431, 3482, 0), new RSTile(3438, 3492, 0));
         BURG_BANK = new RSArea(new RSTile(3498, 3213, 0), new RSTile(3495, 3211, 0));
         BURG_TO_BANK = new RSTile[]{new RSTile(3497, 3211, 0), new RSTile(3497, 3211, 0), new RSTile(3497, 3218, 0), new RSTile(3491, 3225, 0), new RSTile(3484, 3229, 0), new RSTile(3480, 3236, 0), new RSTile(3479, 3237, 0)};
-        EASY_ESCORTS = new int[]{2938, 2939, 2944, 2945};
-        EASY_INSTANCE_ESCORTS = new int[]{1566, 1567, 1577, 1578};
-        MEDIUM_ESCORTS = new int[]{2936, 2937, 2942, 2943};
-        MEDIUM_INSTANCE_ESCORTS = new int[]{1564, 1565, 1575, 1576};
         NPCS = new int[]{5615, 2946, 5622, 5631, 5634, 5628};
         LUMBERJACK = new int[]{5655, 5652, 5654, 5651, 5650};
         PARTIAL_BRIDGE = new int[]{22533, 13835};

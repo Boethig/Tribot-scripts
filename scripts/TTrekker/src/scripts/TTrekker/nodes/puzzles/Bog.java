@@ -8,6 +8,7 @@ import scripts.TTrekker.bog.BogNode;
 import scripts.TTrekker.data.Constants;
 import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.utils.Utils;
+import scripts.boe_api.camera.ACamera;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -16,15 +17,21 @@ public class Bog extends Puzzle {
 
     private ArrayList<BogNode> path;
 
+    public Bog(ACamera aCamera) {
+        super(aCamera);
+    }
+
     public boolean validate() {
         return Objects.find(10, Constants.BOG).length > 0 && Utils.isInTrekkPuzzle();
     }
 
     public void execute() {
-        if (primaryActionCompleted && continueTrek()) {
+        if (primaryActionCompleted) {
             Vars.get().subStatus = "Continuing Trek";
-            path.clear();
-            primaryActionCompleted = false;
+            if (continueTrek()) {
+                path.clear();
+                primaryActionCompleted = false;
+            }
         } else {
             if (path == null || path.isEmpty()) {
                 Vars.get().subStatus = "Searching for Path";

@@ -3,12 +3,17 @@ package scripts.TTrekker.nodes.puzzles;
 import org.tribot.api2007.types.RSInterface;
 import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.utils.Utils;
+import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.InterfaceEntity;
 import scripts.boe_api.utilities.Antiban;
 import scripts.dax_api.walker.utils.AccurateMouse;
 
 public class Route extends Puzzle {
+
+    public Route(ACamera aCamera) {
+        super(aCamera);
+    }
 
     public boolean validate() {
         return Utils.isInTrekkRoute();
