@@ -4,6 +4,7 @@ import org.tribot.api.General;
 import org.tribot.api.Timing;
 import org.tribot.api2007.WebWalking;
 import org.tribot.api2007.types.RSObject;
+import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.utils.Utils;
 import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.framework.Node;
@@ -35,10 +36,12 @@ public abstract class Puzzle extends Node {
     public Puzzle(final ACamera aCamera) { super(aCamera); }
 
     public boolean continueTrek() {
+        Vars.get().subStatus = "Continuing Trekk";
         return takePathAction("Continue-trek");
     }
 
     public boolean evadePath() {
+        Vars.get().subStatus = "Evading Event";
         return takePathAction("Evade-event");
     }
 

@@ -12,9 +12,7 @@ import scripts.dax_api.walker.utils.AccurateMouse;
 
 public class Route extends Node {
 
-    public Route(ACamera aCamera) {
-        super(aCamera);
-    }
+    public Route() { }
 
     public boolean validate() {
         return Utils.isInTrekkRoute();

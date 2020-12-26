@@ -48,7 +48,7 @@ public class Bridge extends Puzzle {
                                 Timing.waitCondition(() -> {
                                     General.sleep(General.randomSD(100, 300, 2));
                                     return Objects.find(10, bridge.getID() + 1).length > 0 && Game.getItemSelectionState() != 1;
-                                }, General.random(5000, 6000));
+                                }, General.random(5500, 6500));
                             } else {
                                 Vars.get().subStatus = "Rotating camera";
                                 Camera.turnToTile(bridge);

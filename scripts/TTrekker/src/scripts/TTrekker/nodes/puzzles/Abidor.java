@@ -34,7 +34,7 @@ public class Abidor extends Puzzle {
                 isPuzzleComplete = true;
             } else {
                 if (!abidor.isOnScreen() || !abidor.isClickable()) {
-                    this.aCamera.turnToTile(abidor.getPosition());
+                    aCamera.turnToTile(abidor);
                 }
                 if (abidor.isOnScreen()) {
                     Vars.get().subStatus = "Talking to Abidor";

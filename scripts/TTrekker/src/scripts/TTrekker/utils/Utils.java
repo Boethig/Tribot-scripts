@@ -4,9 +4,12 @@ import org.tribot.api.General;
 import org.tribot.api.Timing;
 import org.tribot.api2007.*;
 import org.tribot.api2007.types.RSItem;
+import org.tribot.api2007.types.RSObject;
 import org.tribot.api2007.types.RSVarBit;
 import scripts.TTrekker.data.Constants;
 import scripts.TTrekker.data.Vars;
+import scripts.boe_api.entities.Entities;
+import scripts.boe_api.entities.finders.prefabs.ObjectEntity;
 import scripts.boe_api.utilities.Antiban;
 import scripts.dax_api.walker.utils.AccurateMouse;
 
@@ -39,7 +42,11 @@ public class Utils {
     }
 
     public static boolean isInTrekkCombatPuzzle() {
-        return NPCs.find(Constants.NPCS).length > 0 && isInTrekkPuzzle();
+        RSObject evadeEvent = Entities.find(ObjectEntity::new)
+                .nameEquals("Path")
+                .actionsContains("Evade-event")
+                .getFirstResult();
+        return (evadeEvent != null || NPCs.find(Constants.NPCS).length > 0) && isInTrekkPuzzle();
     }
 
     public static boolean hasTools() {

@@ -6,7 +6,7 @@ public enum Routes {
 
     EASY("Route One"),
     MEDIUM("Route Two"),
-    HARD("Route 3");
+    HARD("Route Three");
 
     @Getter
     private String name;
