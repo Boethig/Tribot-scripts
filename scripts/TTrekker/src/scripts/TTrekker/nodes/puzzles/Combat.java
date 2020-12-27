@@ -1,8 +1,9 @@
 package scripts.TTrekker.nodes.puzzles;
 
-import org.tribot.api.General;
+import org.tribot.api2007.Prayer;
 import org.tribot.api2007.types.RSNPC;
 import scripts.TTrekker.combat.CombatProvider;
+import scripts.TTrekker.combat.CombatStrategy;
 import scripts.TTrekker.data.Constants;
 import scripts.TTrekker.data.Routes;
 import scripts.TTrekker.data.Vars;
@@ -20,14 +21,23 @@ public class Combat extends Puzzle {
     }
 
     public boolean validate() {
-        return Utils.isInTrekkCombatPuzzle();
+        return (context != null && context.getStrategy() != null) || Utils.isInTrekkCombatPuzzle();
     }
 
     public void solvePuzzle() {
         if (canEvadeEvent() && evadePath()) {
             resetPuzzle();
         } else {
-            if (context == null) {
+            if (context != null) {
+                CombatStrategy strategy = context.getStrategy();
+                if (strategy != null) {
+                    Vars.get().subStatus = strategy.getClass().getSimpleName();
+                    if (strategy.handle()) {
+                        this.isPuzzleComplete = true;
+                        Prayer.disable(Prayer.getCurrentPrayers());
+                    }
+                }
+            } else {
                 RSNPC rsnpc = Entities.find(NpcEntity::new)
                         .idEquals(Constants.NPCS)
                         .getFirstResult();
@@ -35,8 +45,6 @@ public class Combat extends Puzzle {
                     context = new CombatProvider(rsnpc.getName().toLowerCase());
                 }
             }
-            Vars.get().subStatus = context.getStrategy().getClass().getSimpleName();
-            context.handleStrategy(null);
         }
     }
 

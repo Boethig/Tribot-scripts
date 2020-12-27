@@ -1,10 +1,16 @@
 package scripts.TTrekker.combat;
 
-import org.tribot.api2007.types.RSNPC;
+import org.tribot.api2007.Prayer;
 
-public class Snake implements CombatStrategy {
+public class Snake extends CombatStrategy {
+
     @Override
-    public boolean handle(RSNPC rsnpc) {
-        return false;
+    public String[] npcNames() {
+        return new String[] {"snake"};
+    }
+
+    @Override
+    public Prayer.PRAYERS useProtectionPrayer() {
+        return Prayer.PRAYERS.PROTECT_FROM_MELEE;
     }
 }

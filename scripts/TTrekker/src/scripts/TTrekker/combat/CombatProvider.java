@@ -1,7 +1,6 @@
 package scripts.TTrekker.combat;
 
 import lombok.Getter;
-import org.tribot.api2007.types.RSNPC;
 
 public class CombatProvider {
 
@@ -21,11 +20,9 @@ public class CombatProvider {
             this.strategy = new Snail();
         } else if (npcName.contains("tentacle")) {
             this.strategy = new Tentacles();
+        } else if (npcName.contains("nail beast")) {
+            this.strategy = new NailBeast();
         }
-    }
-
-    public boolean handleStrategy(RSNPC rsnpc) {
-        return strategy.handle(rsnpc);
     }
 
 }

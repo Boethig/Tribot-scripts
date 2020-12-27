@@ -48,7 +48,7 @@ public class River extends Puzzle {
     }
 
     @Override
-    void resetPuzzle() {
+    public void resetPuzzle() {
     }
 
     public void collectVines(RSObject tree) {
@@ -60,9 +60,9 @@ public class River extends Puzzle {
             }
             if (AccurateMouse.click(tree, "Cut-vine")) {
                 Timing.waitCondition(() -> {
-                    General.sleep(General.randomSD(100, 300, 2));
+                    General.sleep(100, 300);
                     return Inventory.getCount(7778) > count && Game.getItemSelectionState() != 1;
-                }, General.random(2000 + Vars.get().sleepOffset, 3000 + Vars.get().sleepOffset));
+                }, General.random(2500,3000));
             }
         }
     }
@@ -116,7 +116,7 @@ public class River extends Puzzle {
         }
     }
 
-    public void swingOnVine(final RSObject vine) {
+    public void swingOnVine(RSObject vine) {
         Vars.get().subStatus = "Swinging Vine";
 //        Vars.get().abc2WaitTimes.add(Antiban.get().getReactionTime());
 //        Antiban.get().sleepReactionTime();
@@ -127,12 +127,16 @@ public class River extends Puzzle {
             if (AccurateMouse.click(vine,"Swing-from")) {
 //                Antiban.get().generateTrackers(Math.calculateAverage(Vars.get().abc2WaitTimes));
                 isPuzzleComplete = Timing.waitCondition(() -> {
-                    General.sleep(General.randomSD(100, 300, 2));
-                    return Interfaces.isInterfaceSubstantiated(NPCChat.getClickContinueInterface());
-                }, General.random(4005 + Vars.get().sleepOffset, 8005 + Vars.get().sleepOffset));
+                    General.sleep(100, 300);
+                    return Interfaces.isInterfaceSubstantiated(NPCChat.getClickContinueInterface())
+                            || Player.getPosition().getY() > vine.getPosition().getY();
+                }, General.random(4000,8000));
             }
         } else if (AccurateMouse.click(vine, "Use")) {
-            Timing.waitCondition(() -> Game.getItemSelectionState() != 1, General.random(1500, 2500));
+            Timing.waitCondition(() -> {
+                General.sleep(100,300);
+                return Game.getItemSelectionState() != 1;
+            }, General.random(1500,2500));
         }
     }
 }

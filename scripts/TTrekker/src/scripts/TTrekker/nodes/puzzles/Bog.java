@@ -36,7 +36,7 @@ public class Bog extends Puzzle {
     }
 
     @Override
-    void resetPuzzle() {
+    public void resetPuzzle() {
         if (this.path != null) {
             this.path.clear();
         }

@@ -1,10 +1,40 @@
 package scripts.TTrekker.combat;
 
-import org.tribot.api2007.types.RSNPC;
+import org.tribot.api.General;
+import org.tribot.api.Timing;
+import org.tribot.api2007.Inventory;
+import org.tribot.api2007.Prayer;
+import org.tribot.api2007.types.RSGroundItem;
+import scripts.TTrekker.data.Constants;
+import scripts.TTrekker.data.Vars;
+import scripts.boe_api.entities.Entities;
+import scripts.boe_api.entities.finders.prefabs.GroundItemEntity;
+import scripts.dax_api.walker.utils.AccurateMouse;
 
-public class NailBeast implements CombatStrategy {
+public class NailBeast extends CombatStrategy {
+
     @Override
-    public boolean handle(RSNPC rsnpc) {
-        return false;
+    public String[] npcNames() {
+        return new String[] {"nail beast"};
+    }
+
+    @Override
+    public Prayer.PRAYERS useProtectionPrayer() {
+        return Prayer.PRAYERS.PROTECT_FROM_MELEE;
+    }
+
+    public void lootNails() {
+        if (!Vars.get().lootNails) {
+            return;
+        }
+        if (!Inventory.isFull() && Inventory.getCount(Constants.PLANK) < 3) {
+            RSGroundItem plank = Entities.find(GroundItemEntity::new)
+                    .idEquals(Constants.PLANK)
+                    .getFirstResult();
+            int count = Inventory.getAll().length;
+            if (AccurateMouse.click(plank, "Take")) {
+                Timing.waitCondition(() -> Inventory.getAll().length > count, General.random(1750, 2500));
+            }
+        }
     }
 }

@@ -1,7 +1,6 @@
 package scripts.TTrekker;
 
 import org.tribot.api.General;
-import org.tribot.api.input.Mouse;
 import org.tribot.api2007.Camera;
 import org.tribot.api2007.Login;
 import org.tribot.script.ScriptManifest;
@@ -29,7 +28,7 @@ public class Main extends BoeScript implements Starting, Painting, VarBitListene
     public void run() {
         Collections.addAll(nodes, new Trekk(aCamera), new StartTrekk(aCamera), new Claim(), new Walking(), new Bank());
         this.setAntiban();
-        while (Vars.get().shouldRun) {
+        while (isRunning) {
             if (Login.getLoginState() != Login.STATE.LOGINSCREEN) {
                 for (final Node node : nodes) {
                     if (node.validate()) {
@@ -38,7 +37,7 @@ public class Main extends BoeScript implements Starting, Painting, VarBitListene
                     }
                 }
             }
-            General.sleep(General.randomSD(50, 70, 5));
+            General.sleep(General.randomSD(50, 70, 30));
         }
     }
 

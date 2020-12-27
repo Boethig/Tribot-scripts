@@ -18,10 +18,10 @@ public abstract class Puzzle extends Node {
 
     protected boolean isPuzzleComplete;
 
-    abstract void solvePuzzle();
+    abstract public void solvePuzzle();
 
     // Resets any variables local to this puzzle
-    abstract void resetPuzzle();
+    abstract public void resetPuzzle();
 
     @Override
     public void execute() {
@@ -51,21 +51,21 @@ public abstract class Puzzle extends Node {
                 .actionsContains(action)
                 .getResults());
         if (path == null) { return false; }
-        if (!path.isOnScreen() && !path.isClickable()) {
+        if (!path.isOnScreen() || !path.isClickable()) {
             aCamera.turnToTile(path);
         }
         if (AccurateMouse.click(path, action)) {
             return Timing.waitCondition(() -> {
-                General.sleep(General.randomSD(100, 300, 2));
+                General.sleep(100,300);
                 return Utils.isInTrekkRoute() || NPCInteraction.isConversationWindowUp();
             }, General.random(12000, 14500));
         } else if (AccurateMouse.clickMinimap(path)) {
             Timing.waitCondition(() -> {
-                General.sleep(General.randomSD(100, 300, 2));
+                General.sleep(100, 300);
                 return path.isClickable() || path.isOnScreen();
             }, General.random(4000, 6000));
         } else {
-            WebWalking.walkTo(path.getPosition(), () -> path.isClickable() && path.isOnScreen(), General.random(300, 500));
+            WebWalking.walkTo(path.getPosition(), () -> path.isClickable() || path.isOnScreen(), General.random(300, 500));
         }
         return false;
     }

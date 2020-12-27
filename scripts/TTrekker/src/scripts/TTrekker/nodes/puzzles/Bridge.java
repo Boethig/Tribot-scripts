@@ -14,7 +14,6 @@ import scripts.TTrekker.utils.Utils;
 import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.GroundItemEntity;
-import scripts.boe_api.entities.finders.prefabs.NpcEntity;
 import scripts.boe_api.entities.finders.prefabs.ObjectEntity;
 import scripts.boe_api.inventory.OSInventory;
 import scripts.boe_api.utilities.Antiban;
@@ -46,7 +45,7 @@ public class Bridge extends Puzzle {
                             Vars.get().subStatus = "Fixing Bridge";
                             if (AccurateMouse.click(bridge, "Use Plank", "Use Logs")) {
                                 Timing.waitCondition(() -> {
-                                    General.sleep(General.randomSD(100, 300, 2));
+                                    General.sleep(100, 300);
                                     return Objects.find(10, bridge.getID() + 1).length > 0 && Game.getItemSelectionState() != 1;
                                 }, General.random(5500, 6500));
                             } else {
@@ -111,7 +110,7 @@ public class Bridge extends Puzzle {
     }
 
     @Override
-    void resetPuzzle() {
+    public void resetPuzzle() {
     }
 
     public boolean isBridgeFixed(RSObject bridge) {

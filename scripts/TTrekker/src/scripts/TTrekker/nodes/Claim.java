@@ -38,7 +38,7 @@ public class Claim extends Node {
                     //TODO: add antiban reaction times
                     if (AccurateMouse.click(claimReward, "Claim")) {
                         Timing.waitCondition(() -> {
-                            Antiban.get().waitItemInteractionDelay();
+                            General.sleep(100,300);
                             return NPCInteraction.isConversationWindowUp();
                         }, General.random(3000 + Vars.get().sleepOffset, 5000 + Vars.get().sleepOffset));
                     }
@@ -52,7 +52,10 @@ public class Claim extends Node {
                     if (rewardSelect != null) {
                         //TODO: add antiban reaction times
                         if (AccurateMouse.click(rewardSelect, "Details")) {
-                            Timing.waitCondition(() -> Interfaces.isInterfaceSubstantiated(Constants.REWARDS, Constants.CLAIMCHILD), General.random(2000 + Vars.get().sleepOffset, 4000 + Vars.get().sleepOffset));
+                            Timing.waitCondition(() -> {
+                                General.sleep(100,300);
+                                return Interfaces.isInterfaceSubstantiated(Constants.REWARDS, Constants.CLAIMCHILD);
+                            }, General.random(2000,4000));
                         }
                     }
                 }
@@ -63,7 +66,7 @@ public class Claim extends Node {
                     Timing.waitCondition(() -> {
                         Antiban.get().waitItemInteractionDelay();
                         return Interfaces.isInterfaceSubstantiated(Constants.REWARDS);
-                    }, General.random(3000 + Vars.get().sleepOffset, 5000 + Vars.get().sleepOffset));
+                    }, General.random(3000,5000));
                 }
             }
         }

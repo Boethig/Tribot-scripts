@@ -46,7 +46,7 @@ public class Utils {
                 .nameEquals("Path")
                 .actionsContains("Evade-event")
                 .getFirstResult();
-        return (evadeEvent != null || NPCs.find(Constants.NPCS).length > 0) && isInTrekkPuzzle();
+        return (evadeEvent != null && NPCs.find(Constants.NPCS).length > 0) && isInTrekkPuzzle();
     }
 
     public static boolean hasTools() {

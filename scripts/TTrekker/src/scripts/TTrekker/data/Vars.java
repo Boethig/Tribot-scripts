@@ -43,7 +43,7 @@ public class Vars {
         this.inTrekk = false;
         this.claimCount = 1;
         this.shouldRun = true;
-        this.shouldEvadeCombat = true;
+        this.shouldEvadeCombat = false;
         this.shouldPray = false;
         this.useStaminas = false;
         this.escorts = Escorts.EASY;
