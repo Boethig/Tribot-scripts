@@ -23,7 +23,7 @@ public class StartTrekk extends Node {
         return Utils.isInStartingArea()
                 && !Inventory.isFull()
                 && !Utils.isInTrekk()
-                && Inventory.getCount(Constants.REWARDS_TOKEN) == 0
+                && !Utils.hasRewardsToken()
                 && Utils.hasTools();
     }
 

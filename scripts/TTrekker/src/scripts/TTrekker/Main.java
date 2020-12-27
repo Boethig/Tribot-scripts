@@ -8,7 +8,6 @@ import org.tribot.script.interfaces.*;
 import scripts.TTrekker.data.Constants;
 import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.nodes.*;
-import scripts.TTrekker.nodes.puzzles.Combat;
 import scripts.boe_api.framework.Node;
 import scripts.boe_api.listeners.varbit.VarBitListener;
 import scripts.boe_api.listeners.varbit.VarBitObserver;
@@ -20,8 +19,9 @@ import java.util.Collections;
 import java.util.HashMap;
 
 @ScriptManifest(authors = {"Boe123"}, category = "TTrekker", name = "TTrekker")
-public class Main extends BoeScript implements Starting, Painting, VarBitListener, Breaking, PreBreaking, Arguments {
+public class Main extends BoeScript implements Ending, Starting, Painting, VarBitListener, Breaking, PreBreaking, Arguments {
 
+    private VarBitObserver varBitObserver;
 //    private final int bowStringPrice = GrandExchange.getPrice(Constants.BOWSTRING);
 
     @Override
@@ -56,10 +56,11 @@ public class Main extends BoeScript implements Starting, Painting, VarBitListene
     public void onStart() {
         super.onStart();
         Vars.get().status = "Initializing Script.....";
-        VarBitObserver varBitObserver = new VarBitObserver(Constants.IN_TREKK);
-        varBitObserver.addListener(this);
-        varBitObserver.start();
+        this.varBitObserver = new VarBitObserver(Constants.IN_TREKK);
+        this.varBitObserver.addListener(this);
+        this.varBitObserver.start();
     }
+
 
     public void setAntiban() {
         Camera.setRotationMethod(Camera.ROTATION_METHOD.ONLY_KEYS);
@@ -117,10 +118,10 @@ public class Main extends BoeScript implements Starting, Painting, VarBitListene
     }
 
     public void onPreBreakStart(final long l) {
-        final Node combat = new Combat(this.aCamera);
-        while (combat.validate()) {
-            combat.execute();
-            General.sleep(100L);
-        }
+    }
+
+    @Override
+    public void onEnd() {
+        this.varBitObserver.setRunning(false);
     }
 }

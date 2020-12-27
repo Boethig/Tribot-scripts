@@ -1,5 +1,7 @@
 package scripts.boe_api.listeners.varbit;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.tribot.api.General;
 import org.tribot.api2007.Login;
 import org.tribot.api2007.types.RSVarBit;
@@ -11,11 +13,13 @@ public class VarBitObserver extends Thread {
 
     private int id;
 
-    private boolean running = true;
+    @Getter @Setter
+    private boolean running;
 
     public VarBitObserver(int id) {
         this.listeners = new ConcurrentLinkedDeque<>();
         this.id = id;
+        this.running = true;
     }
 
     @Override

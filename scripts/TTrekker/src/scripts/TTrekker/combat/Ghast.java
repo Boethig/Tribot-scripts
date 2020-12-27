@@ -50,10 +50,10 @@ public class Ghast extends CombatStrategy {
                     int charges = druidPouch.getStack();
                     if (AccurateMouse.click(ghast, "Use")) {
                         Timing.waitCondition(() -> {
-                            General.sleep(100, 300);
+                            General.sleep(100,300);
                             RSItem updatedPouch = OSInventory.findFirstNearestToMouse(Constants.FILLED_DRUID_POUCH);
                             return charges > updatedPouch.getStack();
-                        }, General.random(3000, 5000));
+                        }, General.random(3000,5000));
                     }
                 }
             } else {
@@ -61,7 +61,7 @@ public class Ghast extends CombatStrategy {
                     Timing.waitCondition(() -> {
                         Antiban.get().waitItemInteractionDelay();
                         return Game.getItemSelectionState() == 1;
-                    }, General.random(3000, 5000));
+                    }, General.random(3000,5000));
                 }
             }
         }
@@ -97,7 +97,7 @@ public class Ghast extends CombatStrategy {
                                 .nameEquals("Fungi on log")
                                 .actionsContains("Pick")
                                 .getFirstResult() != null;
-                        },General.random(3000, 5000));
+                        },General.random(3000,5000));
         }
         return false;
     }
@@ -117,7 +117,7 @@ public class Ghast extends CombatStrategy {
                         General.sleep(100,300);
                         return Inventory.getCount(Constants.MORT_MYRE_FUNGI) > count;
                     },
-                    General.random(3000, 5000));
+                    General.random(3000,5000));
         }
         return false;
     }

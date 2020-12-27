@@ -7,8 +7,6 @@ import org.tribot.api2007.Combat;
 import org.tribot.api2007.Player;
 import org.tribot.api2007.Prayer;
 import org.tribot.api2007.types.RSNPC;
-import scripts.TTrekker.data.Escort;
-import scripts.TTrekker.data.Escorts;
 import scripts.TTrekker.data.Vars;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.NpcEntity;
@@ -32,7 +30,7 @@ public abstract class CombatStrategy {
             if (Prayer.getPrayerPoints() > 0) {
                 Prayer.enable(useProtectionPrayer());
             }
-            if (Combat.getTargetEntity() != null || Player.getRSPlayer().isInCombat()) {
+            if (Combat.getTargetEntity() != null) {
                 while (Combat.getTargetEntity() != null) {
                     Antiban.get().timedActions();
                     General.sleep(150,250);

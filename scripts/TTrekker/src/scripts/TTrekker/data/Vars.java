@@ -16,7 +16,6 @@ public class Vars {
     public String status;
     public String subStatus;
     public int completed;
-    public double profit;
     public int bogAttempts;
     public long breakTimes;
     public boolean inTrekk;
@@ -24,7 +23,6 @@ public class Vars {
     public int claimCount;
     public boolean shouldEvadeCombat;
     public boolean shouldRun;
-    public boolean shouldPray;
     public int sleepOffset;
     public List<Integer> abc2WaitTimes;
 
@@ -44,13 +42,12 @@ public class Vars {
         this.claimCount = 1;
         this.shouldRun = true;
         this.shouldEvadeCombat = false;
-        this.shouldPray = false;
         this.useStaminas = false;
         this.escorts = Escorts.EASY;
         this.reward = TrekkReward.BOWSTRINGS;
         this.abc2WaitTimes = new ArrayList<>();
-        this.lootNails = false;
-        this.route = Routes.EASY;
+        this.lootNails = true;
+        this.route = Routes.MEDIUM;
     }
 
     public void reset() {

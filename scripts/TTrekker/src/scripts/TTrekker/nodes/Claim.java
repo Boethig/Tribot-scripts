@@ -8,6 +8,7 @@ import org.tribot.api2007.types.RSInterface;
 import org.tribot.api2007.types.RSItem;
 import scripts.TTrekker.data.Constants;
 import scripts.TTrekker.data.Vars;
+import scripts.TTrekker.utils.Utils;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.InterfaceEntity;
 import scripts.boe_api.framework.Node;
@@ -19,7 +20,7 @@ import scripts.dax_api.walker_engine.interaction_handling.NPCInteraction;
 public class Claim extends Node {
 
     public boolean validate() {
-        return Inventory.getCount(Constants.REWARDS_TOKEN) >= Vars.get().claimCount && !Vars.get().inTrekk;
+        return Utils.hasRewardsToken() && !Vars.get().inTrekk;
     }
 
     public void execute() {

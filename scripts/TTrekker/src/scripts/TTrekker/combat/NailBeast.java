@@ -23,17 +23,26 @@ public class NailBeast extends CombatStrategy {
         return Prayer.PRAYERS.PROTECT_FROM_MELEE;
     }
 
+    @Override
+    public boolean handle() {
+        lootNails();
+        return super.handle();
+    }
+
     public void lootNails() {
         if (!Vars.get().lootNails) {
             return;
         }
-        if (!Inventory.isFull() && Inventory.getCount(Constants.PLANK) < 3) {
+        if (!Inventory.isFull()) {
             RSGroundItem plank = Entities.find(GroundItemEntity::new)
-                    .idEquals(Constants.PLANK)
+                    .idEquals(Constants.NAIL_BEAST_NAILS)
                     .getFirstResult();
             int count = Inventory.getAll().length;
             if (AccurateMouse.click(plank, "Take")) {
-                Timing.waitCondition(() -> Inventory.getAll().length > count, General.random(1750, 2500));
+                Timing.waitCondition(() -> {
+                    General.sleep(100,300);
+                    return Inventory.getAll().length > count;
+                }, General.random(1750,2500));
             }
         }
     }

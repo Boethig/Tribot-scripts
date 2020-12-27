@@ -5,6 +5,7 @@ import org.tribot.api2007.types.RSNPC;
 import scripts.TTrekker.combat.CombatProvider;
 import scripts.TTrekker.combat.CombatStrategy;
 import scripts.TTrekker.data.Constants;
+import scripts.TTrekker.data.Escorts;
 import scripts.TTrekker.data.Routes;
 import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.utils.Utils;
@@ -16,12 +17,18 @@ public class Combat extends Puzzle {
 
     private CombatProvider context;
 
+    private RSNPC[] rsnpcs;
+
     public Combat(final ACamera aCamera) {
         super(aCamera);
     }
 
     public boolean validate() {
-        return (context != null && context.getStrategy() != null) || Utils.isInTrekkCombatPuzzle();
+        this.rsnpcs = Entities.find(NpcEntity::new)
+                .nameContains(Constants.NPC_NAMES)
+                .getResults();
+        return (context != null && context.getStrategy() != null)
+                || (this.rsnpcs.length > 0 && Utils.isInTrekkCombatPuzzle());
     }
 
     public void solvePuzzle() {
@@ -39,7 +46,7 @@ public class Combat extends Puzzle {
                 }
             } else {
                 RSNPC rsnpc = Entities.find(NpcEntity::new)
-                        .idEquals(Constants.NPCS)
+                        .nameContains(Constants.NPC_NAMES)
                         .getFirstResult();
                 if (rsnpc != null) {
                     context = new CombatProvider(rsnpc.getName().toLowerCase());
@@ -49,8 +56,19 @@ public class Combat extends Puzzle {
     }
 
     public boolean canEvadeEvent() {
+        if (!Vars.get().shouldEvadeCombat) {
+            return false;
+        }
         if (Vars.get().route.equals(Routes.EASY)) {
-            return Vars.get().shouldEvadeCombat;
+            return true;
+        } else if (Vars.get().route.equals(Routes.MEDIUM)) {
+            if (Vars.get().escorts.equals(Escorts.EASY)) {
+                return this.rsnpcs.length <= 1;
+            } else if (Vars.get().escorts.equals(Escorts.MEDIUM)) {
+                return this.rsnpcs.length <= 2;
+            } else {
+                return this.rsnpcs.length <= 3;
+            }
         }
         return false;
     }
