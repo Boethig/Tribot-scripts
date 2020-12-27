@@ -62,13 +62,7 @@ public class Combat extends Puzzle {
         if (Vars.get().route.equals(Routes.EASY)) {
             return true;
         } else if (Vars.get().route.equals(Routes.MEDIUM)) {
-            if (Vars.get().escorts.equals(Escorts.EASY)) {
-                return this.rsnpcs.length <= 1;
-            } else if (Vars.get().escorts.equals(Escorts.MEDIUM)) {
-                return this.rsnpcs.length <= 2;
-            } else {
-                return this.rsnpcs.length <= 3;
-            }
+            return this.rsnpcs.length <= Vars.get().escorts.ordinal() + 1;
         }
         return false;
     }

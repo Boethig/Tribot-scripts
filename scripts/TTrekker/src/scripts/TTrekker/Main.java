@@ -55,7 +55,6 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
     @Override
     public void onStart() {
         super.onStart();
-        Vars.get().status = "Initializing Script.....";
         this.varBitObserver = new VarBitObserver(Constants.IN_TREKK);
         this.varBitObserver.addListener(this);
         this.varBitObserver.start();
