@@ -47,7 +47,7 @@ public class Vars {
         this.reward = TrekkReward.BOWSTRINGS;
         this.abc2WaitTimes = new ArrayList<>();
         this.lootNails = true;
-        this.route = Routes.MEDIUM;
+        this.route = Routes.EASY;
     }
 
     public void reset() {

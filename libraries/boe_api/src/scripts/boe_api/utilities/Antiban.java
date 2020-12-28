@@ -30,7 +30,7 @@ public class Antiban {
     @Getter
     private final ABCUtil abc = new ABCUtil();
 
-    private boolean print_debug = false;
+    private boolean print_debug = true;
 
     private boolean enableReactionSleep = true;
 
@@ -273,34 +273,6 @@ public class Antiban {
                 debug("Tab checked");
             }
             abc.checkTabs();
-        }
-    }
-
-    public void mouseWheelScroll() {
-        if (Options.isMouseScrollZoomEnabled()) {
-            if (!Interfaces.isInterfaceSubstantiated(329)) {
-                if (abc.shouldPickupMouse() || abc.shouldRotateCamera()) {
-                        RSInterface zoom = Interfaces.get(261,15);
-                        if (zoom != null) {
-                            int random = General.random(0,4);
-                            if (General.randomBoolean()) {
-                                debug("Scrolling camera Out");
-                                if (zoom.getX() - (random * 3) >= 23) {
-                                    Mouse.scroll(false, random);
-                                }
-                            }
-                            else {
-                                debug("Scrolling camera In");
-                                if (zoom.getX() + (random * 3) <= 45) {
-                                    Mouse.scroll(true, random);
-                                }
-                            }
-                        }
-                }
-            }
-        }
-        else {
-            Options.setMouseScrollZoomEnabled(true);
         }
     }
 

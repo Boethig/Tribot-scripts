@@ -26,8 +26,8 @@ public class Route extends Node {
                     .getFirstResult();
             if (routeSelect != null) {
                 Vars.get().subStatus = "Selecting " + Vars.get().route.getName();
-                Antiban.get().getReactionTime();
                 if (AccurateMouse.click(routeSelect)) {
+                    Antiban.get().generateTrackers(4000);
                     Vars.get().hasSelectedRoute = true;
                     Antiban.get().sleepReactionTime();
                 }

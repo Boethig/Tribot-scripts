@@ -67,7 +67,7 @@ public class Bridge extends Puzzle {
                         }, General.random(750 + Vars.get().sleepOffset, 1500 + Vars.get().sleepOffset));
                     } else {
                         Vars.get().subStatus = "Rotating camera";
-                        this.aCamera.turnToTile(bridge.getPosition());
+                        aCamera.turnToTile(bridge);
                     }
             } else {
                 RSObject tree = Antiban.get().selectNextTarget(Entities.find(ObjectEntity::new)
@@ -78,26 +78,22 @@ public class Bridge extends Puzzle {
                 } else if (Inventory.getCount(Constants.PLANK) < 3) {
                     RSNPC zombie = Antiban.get().selectNextTarget(NPCs.find(Constants.LUMBERJACK));
                     if (zombie != null) {
-                        Vars.get().abc2WaitTimes.add(Antiban.get().getReactionTime());
-                        final long startTime = System.currentTimeMillis();
                         if (Combat.getTargetEntity() == null || Combat.getAttackingEntities().length < 1) {
                             if (!zombie.isOnScreen() || !zombie.isClickable()) {
                                 this.aCamera.turnToTile(zombie);
                             }
-                            if (AccurateMouse.click(zombie, "Attack")) {
+                            if (AccurateMouse.click(zombie, "Attack") &&
+                                    Timing.waitCondition(() -> Combat.getTargetEntity() != null, General.random(2000, 3000))) {
+                                long startTime = System.currentTimeMillis();
                                 Vars.get().subStatus = "Attacking Lumberjacks";
-                                Timing.waitCondition(() -> Combat.getTargetEntity() != null || Combat.getAttackingEntities().length > 0, General.random(2005 + Vars.get().sleepOffset, 3005 + Vars.get().sleepOffset));
+                                while (Player.getRSPlayer().isInCombat() && Inventory.getCount(Constants.PLANK) < 3) {
+                                    Antiban.get().timedActions();
+                                    lootPlank();
+                                    General.sleep(50, 70);
+                                }
+                                Antiban.get().generateTrackers((int) (System.currentTimeMillis() - startTime));
                                 Antiban.get().sleepReactionTime();
                             }
-                        }
-                        while (Player.getRSPlayer().isInCombat() && Inventory.getCount(Constants.PLANK) < 3) {
-                            Antiban.get().timedActions();
-                            lootPlank();
-                            General.sleep(General.randomSD(50, 70, 2));
-                        }
-                        if (!Player.getRSPlayer().isInCombat()) {
-                            Antiban.get().generateTrackers((int) (System.currentTimeMillis() - startTime));
-                            Vars.get().abc2WaitTimes.add(Antiban.get().getReactionTime());
                         }
                     } else {
                         Vars.get().subStatus = "Waiting for Spawn";
@@ -151,11 +147,19 @@ public class Bridge extends Puzzle {
             }
             if (AccurateMouse.click(tree, "Chop down")) {
                 while (Player.isMoving() && tree.getModel() != null) {
-                    General.sleep(70);
+                    General.sleep(100);
                 }
-                Timing.waitCondition(() -> Player.getAnimation() != -1, General.random(1750, 2750));
-                while (Player.getAnimation() != -1) {
-                    General.sleep(General.randomSD(100, 300, 2));
+                if (Timing.waitCondition(() -> {
+                    General.sleep(100,300);
+                    return Player.getAnimation() == 879;
+                }, General.random(2000,3000))) {
+                    long startTime = System.currentTimeMillis();
+                    while (Player.getAnimation() != -1) {
+                        Antiban.get().timedActions();
+                        General.sleep(100, 300);
+                    }
+                    Antiban.get().generateTrackers((int) (System.currentTimeMillis() - startTime));
+                    Antiban.get().sleepReactionTime();
                 }
             }
         }
