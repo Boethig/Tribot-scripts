@@ -55,13 +55,14 @@ public class Constants {
     public static final int IN_AID_OF_MYQYREQUE_VARBIT = 1990;
     public static final int IN_AID_OF_MYQYREQUE_COMPLETE = 430;
     public static final int DARKNESS_OF_HALLOWVALE_VARBIT = 2573;
-    public static final int DARKNESS_OF_HALLOWVALE_COMPLETE = 0;
+    public static final int DARKNESS_OF_HALLOWVALE_COMPLETE = 320;
     public static final int MORT_MYRE_FUNGI = 2970;
     public static final int BLESSED_SILVER_SICKLE = 2963;
     public static final int FILLED_DRUID_POUCH = 2958;
     public static final int EMPTY_DRUID_POUCH = 2957;
     public static final int NAIL_BEAST_NAILS = 10937;
-
+    public static final int ESCORT_FOOD_LEFT = 3433;
+    public static final int SUPPLY_MASTER = 518;
 
     static {
         BURG = new RSArea(new RSTile(3486, 3243, 0), new RSTile(3479, 3237, 0));

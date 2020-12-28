@@ -150,4 +150,12 @@ public class Utils {
             return Game.getItemSelectionState() == 1;
         }, General.random(2500 + Vars.get().sleepOffset, 4000 + Vars.get().sleepOffset));
     }
+
+    public static boolean canAttackVampyres() {
+        return Equipment.isEquipped("Efaritay's aid");
+    }
+
+    public static int escortFoodSupplyLeft() {
+        return RSVarBit.get(Constants.ESCORT_FOOD_LEFT).getValue();
+    }
 }

@@ -2,6 +2,7 @@ package scripts.TTrekker.nodes;
 
 import org.tribot.api.General;
 import org.tribot.api.Timing;
+import org.tribot.api2007.Interfaces;
 import org.tribot.api2007.Inventory;
 import org.tribot.api2007.types.RSNPC;
 import scripts.TTrekker.data.Constants;
@@ -24,6 +25,7 @@ public class StartTrekk extends Node {
                 && !Inventory.isFull()
                 && !Utils.isInTrekk()
                 && !Utils.hasRewardsToken()
+                && !Interfaces.isInterfaceSubstantiated(Constants.SUPPLY_MASTER)
                 && Utils.hasTools();
     }
 

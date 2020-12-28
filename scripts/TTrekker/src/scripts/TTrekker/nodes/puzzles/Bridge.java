@@ -125,14 +125,15 @@ public class Bridge extends Puzzle {
     private void walkAcrossBridge(final RSObject bridge) {
         Vars.get().subStatus = "Walking across fixed bridge";
         if (!bridge.isOnScreen() || !bridge.isClickable()) {
-            this.aCamera.turnToTile(bridge.getPosition());
+            aCamera.turnToTile(bridge);
         }
         if (Game.getItemSelectionState() != 1) {
-            if (AccurateMouse.click(bridge, "Cross")) {
-                this.isPuzzleComplete = Timing.waitCondition(() -> {
-                    General.sleep(General.randomSD(100, 300, 2));
-                    return Player.getPosition().getX() > bridge.getPosition().getX();
-                }, General.random(5005 + Vars.get().sleepOffset, 7005 + Vars.get().sleepOffset));
+            if (AccurateMouse.click(bridge, "Cross") &&
+                    Timing.waitCondition(() -> {
+                        General.sleep(100,300);
+                        return Player.getPosition().getX() > bridge.getPosition().getX();
+                    }, General.random(5000,7000))) {
+                isPuzzleComplete = true;
             }
         } else if (AccurateMouse.click(Player.getPosition())) {
             Timing.waitCondition(() -> Game.getItemSelectionState() != 1, General.random(1500, 2500));

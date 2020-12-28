@@ -31,14 +31,11 @@ public abstract class CombatStrategy {
                 Prayer.enable(useProtectionPrayer());
             }
             if (Combat.getTargetEntity() != null) {
-                long startTime = System.currentTimeMillis();
                 while (Combat.getTargetEntity() != null) {
                     Antiban.get().timedActions();
                     General.sleep(150,250);
                     Vars.get().subStatus = "AFKing";
                 }
-                Antiban.get().generateTrackers((int)(System.currentTimeMillis() - startTime));
-                Antiban.get().sleepReactionTime();
                 //TODO: handle food and potions for escort, user
             } else {
                 RSNPC npc = getNPC(npcs);
@@ -46,11 +43,14 @@ public abstract class CombatStrategy {
                     if (!npc.isClickable() || !npc.isOnScreen()) {
                         Camera.turnToTile(npc);
                     }
-                    if (AccurateMouse.click(npc, "Attack")) {
-                        Timing.waitCondition(() ->  {
-                            General.sleep(100, 300);
+                    long startTime = System.currentTimeMillis();
+                    if (AccurateMouse.click(npc, "Attack") &&
+                        Timing.waitCondition(() -> {
+                            General.sleep(100,300);
                             return Combat.getTargetEntity() != null;
-                        }, General.random(2500, 3500));
+                        },General.random(2500,3500))) {
+                        Antiban.get().generateTrackers((int)(System.currentTimeMillis() - startTime));
+                        Antiban.get().sleepReactionTime();
                     }
                 }
             }

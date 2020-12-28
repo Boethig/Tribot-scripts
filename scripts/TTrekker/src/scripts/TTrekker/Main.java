@@ -8,6 +8,7 @@ import org.tribot.script.interfaces.*;
 import scripts.TTrekker.data.Constants;
 import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.nodes.*;
+import scripts.TTrekker.utils.Utils;
 import scripts.boe_api.framework.Node;
 import scripts.boe_api.listeners.varbit.VarBitListener;
 import scripts.boe_api.listeners.varbit.VarBitObserver;
@@ -26,19 +27,31 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
 
     @Override
     public void run() {
-        Collections.addAll(nodes, new Trekk(aCamera), new StartTrekk(aCamera), new Claim(), new Walking(), new Bank());
-        this.setAntiban();
-        while (isRunning) {
-            if (Login.getLoginState() != Login.STATE.LOGINSCREEN) {
-                for (final Node node : nodes) {
-                    if (node.validate()) {
-                        Vars.get().status = node.status();
-                        node.execute();
+        if (canRunScript()) {
+            Collections.addAll(nodes, new Trekk(aCamera), new StartTrekk(aCamera), new SupplyEscort(aCamera), new Claim(), new Walking(), new Bank());
+            setAntiban();
+            while (isRunning) {
+                if (Login.getLoginState() != Login.STATE.LOGINSCREEN) {
+                    for (final Node node : nodes) {
+                        if (node.validate()) {
+                            Vars.get().status = node.status();
+                            node.execute();
+                        }
                     }
                 }
+                General.sleep(General.randomSD(50, 70, 30));
             }
-            General.sleep(General.randomSD(50, 70, 30));
         }
+    }
+
+    public boolean canRunScript() {
+        if (!Utils.canTempleTrekk()) {
+            return false;
+        }
+        if (Vars.get().burgDeRottRamble) {
+            return Utils.canBurgDeRottRamble();
+        }
+        return true;
     }
 
     @Override
@@ -103,8 +116,6 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
     public void onBreakEnd() { }
 
     public void onBreakStart(final long l) {
-        final Vars value = Vars.get();
-        value.breakTimes += l;
         Vars.get().status = "On break";
         Vars.get().subStatus = "";
     }
