@@ -86,10 +86,10 @@ public class Bridge extends Puzzle {
                                     Timing.waitCondition(() -> Combat.getTargetEntity() != null, General.random(2000, 3000))) {
                                 long startTime = System.currentTimeMillis();
                                 Vars.get().subStatus = "Attacking Lumberjacks";
-                                while (Player.getRSPlayer().isInCombat() && Inventory.getCount(Constants.PLANK) < 3) {
+                                while (Combat.getTargetEntity() != null) {
                                     Antiban.get().timedActions();
                                     lootPlank();
-                                    General.sleep(50, 70);
+                                    General.sleep(50,150);
                                 }
                                 Antiban.get().generateTrackers((int) (System.currentTimeMillis() - startTime));
                                 Antiban.get().sleepReactionTime();
@@ -147,21 +147,16 @@ public class Bridge extends Puzzle {
                 aCamera.turnToTile(tree);
             }
             if (AccurateMouse.click(tree, "Chop down")) {
-                while (Player.isMoving() && tree.getModel() != null) {
-                    General.sleep(100);
+                while (Player.isMoving() && Player.getAnimation() != 879) {
+                    General.sleep(70);
                 }
-                if (Timing.waitCondition(() -> {
-                    General.sleep(100,300);
-                    return Player.getAnimation() == 879;
-                }, General.random(2000,3000))) {
-                    long startTime = System.currentTimeMillis();
-                    while (Player.getAnimation() != -1) {
-                        Antiban.get().timedActions();
-                        General.sleep(100, 300);
-                    }
-                    Antiban.get().generateTrackers((int) (System.currentTimeMillis() - startTime));
-                    Antiban.get().sleepReactionTime();
+                long startTime = System.currentTimeMillis();
+                while (Player.getAnimation() != -1) {
+                    Antiban.get().timedActions();
+                    General.sleep(50,70);
                 }
+                Antiban.get().generateTrackers((int) (System.currentTimeMillis() - startTime));
+                Antiban.get().sleepReactionTime();
             }
         }
     }

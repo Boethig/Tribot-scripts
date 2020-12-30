@@ -49,7 +49,7 @@ public class Combat extends Puzzle {
                         .nameContains(Constants.NPC_NAMES)
                         .getFirstResult();
                 if (rsnpc != null) {
-                    context = new CombatProvider(rsnpc.getName().toLowerCase());
+                    context = new CombatProvider(aCamera, rsnpc.getName().toLowerCase());
                 }
             }
         }

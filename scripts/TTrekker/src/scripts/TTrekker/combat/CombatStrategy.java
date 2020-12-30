@@ -8,12 +8,19 @@ import org.tribot.api2007.Player;
 import org.tribot.api2007.Prayer;
 import org.tribot.api2007.types.RSNPC;
 import scripts.TTrekker.data.Vars;
+import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.NpcEntity;
 import scripts.boe_api.utilities.Antiban;
 import scripts.dax_api.walker.utils.AccurateMouse;
 
 public abstract class CombatStrategy {
+
+    protected ACamera aCamera;
+
+    public CombatStrategy(ACamera aCamera) {
+        this.aCamera = aCamera;
+    }
 
     abstract public String[] npcNames();
 
@@ -23,6 +30,7 @@ public abstract class CombatStrategy {
         RSNPC[] npcs = Entities.find(NpcEntity::new)
                 .nameContains(npcNames())
                 .actionsContains("Attack")
+                .sortByDistance()
                 .getResults();
         if (npcs.length == 0) {
             return true;
@@ -30,32 +38,57 @@ public abstract class CombatStrategy {
             if (Prayer.getPrayerPoints() > 0) {
                 Prayer.enable(useProtectionPrayer());
             }
-            if (Combat.getTargetEntity() != null) {
-                while (Combat.getTargetEntity() != null) {
-                    Antiban.get().timedActions();
-                    General.sleep(150,250);
-                    Vars.get().subStatus = "AFKing";
-                }
-                //TODO: handle food and potions for escort, user
-            } else {
+            if (Combat.getTargetEntity() == null) {
                 RSNPC npc = getNPC(npcs);
                 if (npc != null) {
                     if (!npc.isClickable() || !npc.isOnScreen()) {
-                        Camera.turnToTile(npc);
+                        aCamera.turnToTile(npc);
                     }
-                    long startTime = System.currentTimeMillis();
                     if (AccurateMouse.click(npc, "Attack") &&
-                        Timing.waitCondition(() -> {
-                            General.sleep(100,300);
-                            return Combat.getTargetEntity() != null;
-                        },General.random(2500,3500))) {
-                        Antiban.get().generateTrackers((int)(System.currentTimeMillis() - startTime));
-                        Antiban.get().sleepReactionTime();
+                            Timing.waitCondition(() -> {
+                                General.sleep(100,300);
+                                return Combat.getTargetEntity() != null;
+                            },General.random(2500,3500))) {
+                        waitForKill();
                     }
                 }
+            } else {
+                waitForKill();
             }
+//            if (Combat.getTargetEntity() != null || Player.getRSPlayer().isInCombat()) {
+//                while (Combat.getTargetEntity() != null) {
+//                    Antiban.get().timedActions();
+//                    General.sleep(150,250);
+//                    Vars.get().subStatus = "AFKing";
+//                }
+//                //TODO: handle food and potions for escort, user
+//            } else {
+//                RSNPC npc = getNPC(npcs);
+//                if (npc != null) {
+//                    if (!npc.isClickable() || !npc.isOnScreen()) {
+//                        Camera.turnToTile(npc);
+//                    }
+//                    long startTime = System.currentTimeMillis();
+//                    if (AccurateMouse.click(npc, "Attack") &&
+//                        Timing.waitCondition(() -> {
+//                            General.sleep(100,300);
+//                            return Combat.getTargetEntity() != null;
+//                        },General.random(2500,3500))) {
+//                        Antiban.get().generateTrackers((int)(System.currentTimeMillis() - startTime));
+//                        Antiban.get().sleepReactionTime();
+//                    }
+//                }
+//            }
         }
         return false;
+    }
+
+    public void waitForKill() {
+        while (Combat.getTargetEntity() != null) {
+            Antiban.get().timedActions();
+            General.sleep(150,250);
+            Vars.get().subStatus = "AFKing";
+        }
     }
 
     public RSNPC getNPC(RSNPC[] npcs) {

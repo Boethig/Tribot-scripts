@@ -7,11 +7,16 @@ import org.tribot.api2007.Prayer;
 import org.tribot.api2007.types.RSGroundItem;
 import scripts.TTrekker.data.Constants;
 import scripts.TTrekker.data.Vars;
+import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.GroundItemEntity;
 import scripts.dax_api.walker.utils.AccurateMouse;
 
 public class NailBeast extends CombatStrategy {
+
+    public NailBeast(ACamera aCamera) {
+        super(aCamera);
+    }
 
     @Override
     public String[] npcNames() {

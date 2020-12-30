@@ -25,9 +25,11 @@ public abstract class Puzzle extends Node {
 
     @Override
     public void execute() {
-        if (isPuzzleComplete && continueTrek()) {
-            resetPuzzle();
-            this.isPuzzleComplete = false;
+        if (isPuzzleComplete) {
+            if (continueTrek()) {
+                resetPuzzle();
+                this.isPuzzleComplete = false;
+            }
         } else {
             solvePuzzle();
         }
@@ -57,7 +59,7 @@ public abstract class Puzzle extends Node {
         if (AccurateMouse.click(path, action)) {
             return Timing.waitCondition(() -> {
                 General.sleep(100,300);
-                return Utils.isInTrekkRoute() || NPCInteraction.isConversationWindowUp();
+                return Utils.isInTrekkRoute();
             }, General.random(12000, 14500));
         } else if (AccurateMouse.clickMinimap(path)) {
             Timing.waitCondition(() -> {

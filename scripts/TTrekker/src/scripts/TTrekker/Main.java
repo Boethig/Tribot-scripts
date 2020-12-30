@@ -10,6 +10,7 @@ import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.nodes.*;
 import scripts.TTrekker.utils.Utils;
 import scripts.boe_api.framework.Node;
+import scripts.boe_api.framework.common_nodes.NPCChat;
 import scripts.boe_api.listeners.varbit.VarBitListener;
 import scripts.boe_api.listeners.varbit.VarBitObserver;
 import scripts.boe_api.scripting.BoeScript;

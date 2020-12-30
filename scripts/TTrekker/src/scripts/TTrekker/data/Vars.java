@@ -29,7 +29,7 @@ public class Vars {
     public Routes route;
     public TrekkReward reward;
     public EscortSupply foodSupply;
-    public int foodSupplyAmount = 3;
+    public int foodSupplyAmount;
     public boolean burgDeRottRamble;
     public boolean useStaminas;
     public boolean lootNails;
@@ -51,6 +51,7 @@ public class Vars {
         this.lootNails = true;
         this.route = Routes.EASY;
         this.foodSupply = null;
+        this.foodSupplyAmount = 0;
     }
 
     public void reset() {

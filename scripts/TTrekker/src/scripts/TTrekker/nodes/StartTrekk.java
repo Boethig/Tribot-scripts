@@ -32,9 +32,11 @@ public class StartTrekk extends Node {
     public void execute() {
         if (NPCInteraction.isConversationWindowUp()) {
             Vars.get().subStatus = "Talking to Escort";
-            NPCInteraction.handleConversation(Constants.OPTIONS);
-            Timing.waitCondition(() -> Vars.get().escorts.findInInstance().length > 0 ||
-                    NPCInteraction.isConversationWindowUp(), General.random(1250 + Vars.get().sleepOffset, 1500 + Vars.get().sleepOffset));
+            NPCInteraction.handleConversation();
+            Timing.waitCondition(() -> {
+                General.sleep(100,300);
+                return Utils.isInTrekkRoute();
+            }, General.random(1500,2500));
         } else {
             RSNPC escort = Antiban.get().selectNextTarget(Vars.get().escorts.find());
             if (escort != null) {
