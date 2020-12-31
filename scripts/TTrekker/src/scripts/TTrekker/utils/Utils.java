@@ -23,7 +23,7 @@ public class Utils {
     }
 
     public static boolean isInTrekk() {
-        return RSVarBit.get(Constants.IN_TREKK).getValue() > 0 || Vars.get().escorts.findInInstance().length > 0;
+        return RSVarBit.get(Constants.IN_TREKK).getValue() > 0 || Vars.get().escorts.findInInstance() != null;
     }
 
     public static boolean canTempleTrekk() {

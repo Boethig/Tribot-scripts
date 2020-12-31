@@ -29,12 +29,12 @@ public enum Escorts {
                 .getResults();
     }
 
-    public RSNPC[] findInInstance() {
+    public RSNPC findInInstance() {
         return Entities.find(NpcEntity::new)
                 .or(true)
                 .idEquals(Arrays.stream(escorts).flatMapToInt(escort -> IntStream.of(escort.getInstanceId())).toArray())
                 .nameEquals(Arrays.stream(escorts).map(Escort::getName).toArray(String[]::new))
-                .getResults();
+                .getFirstResult();
     }
 
 }

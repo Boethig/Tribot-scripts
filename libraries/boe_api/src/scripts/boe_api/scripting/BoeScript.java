@@ -2,6 +2,8 @@ package scripts.boe_api.scripting;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.tribot.api.General;
+import org.tribot.api2007.Login;
 import org.tribot.script.Script;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Ending;
@@ -33,18 +35,24 @@ public abstract class BoeScript extends Script implements Paintable, Painting, S
 
     protected abstract String[] scriptSpecificPaint();
 
+    protected abstract boolean isRunnable();
+
+    protected abstract ArrayList<Node> nodeArrayList();
+
     @Getter @Setter
     protected boolean isRunning;
 
     protected BoeScript() {
-        this.nodes = new ArrayList<>();
         this.aCamera = new ACamera(this);
+        this.nodes = nodeArrayList();
         this.isRunning = true;
     }
 
     @Override
     public void onStart() {
-        this.setDaxWalker();
+        if (this.isRunnable()) {
+            this.setDaxWalker();
+        }
     }
 
     private void setDaxWalker() {

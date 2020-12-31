@@ -10,14 +10,13 @@ import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.nodes.*;
 import scripts.TTrekker.utils.Utils;
 import scripts.boe_api.framework.Node;
-import scripts.boe_api.framework.common_nodes.NPCChat;
 import scripts.boe_api.listeners.varbit.VarBitListener;
 import scripts.boe_api.listeners.varbit.VarBitObserver;
 import scripts.boe_api.scripting.BoeScript;
 import scripts.rsitem_services.GrandExchange;
 
 import java.awt.*;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @ScriptManifest(authors = {"Boe123"}, category = "TTrekker", name = "TTrekker")
@@ -28,31 +27,18 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
 
     @Override
     public void run() {
-        if (canRunScript()) {
-            Collections.addAll(nodes, new Trekk(aCamera), new StartTrekk(aCamera), new SupplyEscort(aCamera), new Claim(), new Walking(), new Bank());
-            setAntiban();
-            while (isRunning) {
-                if (Login.getLoginState() != Login.STATE.LOGINSCREEN) {
-                    for (final Node node : nodes) {
-                        if (node.validate()) {
-                            Vars.get().status = node.status();
-                            node.execute();
-                        }
+        setAntiban();
+        while (isRunning) {
+            if (Login.getLoginState() != Login.STATE.LOGINSCREEN) {
+                for (final Node node : nodes) {
+                    if (node.validate()) {
+                        Vars.get().status = node.status();
+                        node.execute();
                     }
                 }
-                General.sleep(General.randomSD(50, 70, 30));
             }
+            General.sleep(General.randomSD(50, 70, 30));
         }
-    }
-
-    public boolean canRunScript() {
-        if (!Utils.canTempleTrekk()) {
-            return false;
-        }
-        if (Vars.get().burgDeRottRamble) {
-            return Utils.canBurgDeRottRamble();
-        }
-        return true;
     }
 
     @Override
@@ -64,6 +50,23 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
                 "Route: " + Vars.get().route.getName(),
                 "Reward: " + Vars.get().reward.getName()
         };
+    }
+
+    @Override
+    protected boolean isRunnable() {
+        return Utils.canTempleTrekk() && (!Vars.get().burgDeRottRamble || Utils.canBurgDeRottRamble());
+    }
+
+    @Override
+    protected ArrayList<Node> nodeArrayList() {
+        return new ArrayList<>() {{
+            add(new Trekk(aCamera));
+            add(new StartTrekk(aCamera));
+            add(new SupplyEscort(aCamera));
+            add(new Claim());
+            add(new Walking());
+            add(new Bank());
+        }};
     }
 
     @Override

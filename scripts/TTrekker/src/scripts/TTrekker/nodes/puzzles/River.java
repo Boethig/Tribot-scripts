@@ -61,8 +61,8 @@ public class River extends Puzzle {
             if (AccurateMouse.click(tree, "Cut-vine")) {
                 Timing.waitCondition(() -> {
                     General.sleep(100, 300);
-                    return Inventory.getCount(7778) > count && Game.getItemSelectionState() != 1;
-                }, General.random(2500,3000));
+                    return Inventory.getCount(Constants.VINE) > count && Game.getItemSelectionState() != 1;
+                }, General.random(3000,4000));
             }
         }
     }
@@ -118,14 +118,11 @@ public class River extends Puzzle {
 
     public void swingOnVine(RSObject vine) {
         Vars.get().subStatus = "Swinging Vine";
-//        Vars.get().abc2WaitTimes.add(Antiban.get().getReactionTime());
-//        Antiban.get().sleepReactionTime();
         if (!vine.isOnScreen() || !vine.isClickable()) {
             aCamera.turnToTile(vine);
         }
         if (Game.getItemSelectionState() != 1) {
             if (AccurateMouse.click(vine,"Swing-from")) {
-//                Antiban.get().generateTrackers(Math.calculateAverage(Vars.get().abc2WaitTimes));
                 isPuzzleComplete = Timing.waitCondition(() -> {
                     General.sleep(100, 300);
                     return Interfaces.isInterfaceSubstantiated(NPCChat.getClickContinueInterface())

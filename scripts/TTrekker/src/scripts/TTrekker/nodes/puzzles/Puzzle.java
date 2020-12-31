@@ -52,7 +52,9 @@ public abstract class Puzzle extends Node {
                 .nameEquals("Path")
                 .actionsContains(action)
                 .getResults());
-        if (path == null) { return false; }
+        if (path == null || NPCInteraction.isConversationWindowUp()) {
+            return false;
+        }
         if (!path.isOnScreen() || !path.isClickable()) {
             aCamera.turnToTile(path);
         }

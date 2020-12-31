@@ -33,6 +33,7 @@ public class Vars {
     public boolean burgDeRottRamble;
     public boolean useStaminas;
     public boolean lootNails;
+    public int restorePrayerAt = 40;
     public boolean shouldEvadeCombat;
 
     private Vars() {
@@ -49,7 +50,7 @@ public class Vars {
         this.reward = TrekkReward.BOWSTRINGS;
         this.abc2WaitTimes = new ArrayList<>();
         this.lootNails = true;
-        this.route = Routes.EASY;
+        this.route = Routes.MEDIUM;
         this.foodSupply = null;
         this.foodSupplyAmount = 0;
     }

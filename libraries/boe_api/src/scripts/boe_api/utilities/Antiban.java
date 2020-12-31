@@ -195,6 +195,10 @@ public class Antiban {
     public void resetShouldHover() {
         this.should_hover = abc.shouldHover();
     }
+
+    public void resetEatAt() {
+        this.eat_at = abc.generateEatAtHP();
+    }
  
     /**
      * Resets the should_open_menu bool to match the ABCUtil value. This method

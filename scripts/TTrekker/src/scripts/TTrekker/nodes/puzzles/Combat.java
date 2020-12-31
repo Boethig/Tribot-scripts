@@ -5,7 +5,6 @@ import org.tribot.api2007.types.RSNPC;
 import scripts.TTrekker.combat.CombatProvider;
 import scripts.TTrekker.combat.CombatStrategy;
 import scripts.TTrekker.data.Constants;
-import scripts.TTrekker.data.Escorts;
 import scripts.TTrekker.data.Routes;
 import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.utils.Utils;
