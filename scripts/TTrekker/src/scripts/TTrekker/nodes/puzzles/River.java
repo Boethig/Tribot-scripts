@@ -69,6 +69,7 @@ public class River extends Puzzle {
 
     public void createRope() {
         Vars.get().subStatus = "Creating Rope";
+        Inventory.open();
         RSItem[] vines = OSInventory.findNearestToMouse(Constants.VINE);
         if (vines.length > 1) {
             if (Game.getItemSelectionState() == 1 && Game.getSelectedItemName().equals("Short vine")) {

@@ -50,7 +50,7 @@ public class Vars {
         this.reward = TrekkReward.BOWSTRINGS;
         this.abc2WaitTimes = new ArrayList<>();
         this.lootNails = true;
-        this.route = Routes.MEDIUM;
+        this.route = Routes.HARD;
         this.foodSupply = null;
         this.foodSupplyAmount = 0;
     }

@@ -46,8 +46,8 @@ public class Utils {
 
     public static boolean isInTrekkCombatPuzzle() {
         RSObject evadeEvent = Entities.find(ObjectEntity::new)
-                .nameEquals("Path")
-                .actionsContains("Evade-event")
+                .nameContains("Path","Boat")
+                .actionsContains("Evade-event","Continue-trek")
                 .getFirstResult();
         return evadeEvent != null && isInTrekkPuzzle();
     }

@@ -11,11 +11,11 @@ public class Tentacles extends CombatStrategy {
 
     @Override
     public String[] npcNames() {
-        return new String[0];
+        return new String[] {"tentacle", "head"};
     }
 
     @Override
     public Prayer.PRAYERS useProtectionPrayer() {
-        return null;
+        return Prayer.PRAYERS.PROTECT_FROM_MELEE;
     }
 }

@@ -1,5 +1,6 @@
 package scripts.TTrekker.nodes.puzzles;
 
+import org.tribot.api.General;
 import org.tribot.api2007.Prayer;
 import org.tribot.api2007.types.RSNPC;
 import scripts.TTrekker.combat.CombatProvider;
@@ -36,6 +37,7 @@ public class Combat extends Puzzle {
         } else {
             if (context != null) {
                 CombatStrategy strategy = context.getStrategy();
+                General.println(strategy.getClass().getSimpleName());
                 if (strategy != null) {
                     Vars.get().subStatus = strategy.getClass().getSimpleName();
                     if (strategy.handle()) {

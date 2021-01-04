@@ -23,6 +23,8 @@ public class CombatProvider {
             this.strategy = new Tentacles(aCamera);
         } else if (npcName.contains("nail beast")) {
             this.strategy = new NailBeast(aCamera);
+        } else if (npcName.contains("tentacle") || npcName.contains("head")) {
+            this.strategy = new Tentacles(aCamera);
         }
     }
 

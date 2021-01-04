@@ -16,7 +16,6 @@ public class Constants {
     public static final int ABIDOR = 1568;
     public static final int[] NPCS;
     public static final String[] NPC_NAMES;
-    public static final int[] LUMBERJACK;
     public static final int ZOMBIE = 5647;
     public static final int BURGGATE = 12817;
     public static final int WELL = 12897;
@@ -71,8 +70,7 @@ public class Constants {
         BURG_BANK = new RSArea(new RSTile(3498, 3213, 0), new RSTile(3495, 3211, 0));
         BURG_TO_BANK = new RSTile[]{new RSTile(3497, 3211, 0), new RSTile(3497, 3211, 0), new RSTile(3497, 3218, 0), new RSTile(3491, 3225, 0), new RSTile(3484, 3229, 0), new RSTile(3480, 3236, 0), new RSTile(3479, 3237, 0)};
         NPCS = new int[]{5615, 2946, 5622, 5631, 5634, 5628};
-        NPC_NAMES = new String[] {"ghast", "vampyre", "shade", "shadow", "snake"," snail", "tentacle", "nail beast"};
-        LUMBERJACK = new int[]{5655, 5652, 5654, 5651, 5650};
+        NPC_NAMES = new String[] {"ghast", "vampyre", "shade", "shadow", "snake"," snail", "tentacle", "nail beast", "tentacle", "head"};
         REWARDS_TOKEN = new int[]{10936, 10944, 10942};
         STAMINA_IDS = new int[]{12625, 12627, 12629, 12631};
         OPTIONS = new String[]{"I can take you to Burgh de Rott.", "I can take you to Paterdomus."};

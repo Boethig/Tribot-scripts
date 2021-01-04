@@ -38,8 +38,9 @@ public abstract class CombatStrategy {
             if (Prayer.getPrayerPoints() > 0) {
                 Prayer.enable(useProtectionPrayer());
             }
-            if (!Combat.isUnderAttack() || Combat.getTargetEntity() == null) {
-                RSNPC npc = getNPC(npcs);
+            RSNPC attackingEscortNPC = getEscortAttacker();
+            if (attackingEscortNPC != null || Combat.getTargetEntity() == null || !Combat.isUnderAttack()) {
+                RSNPC npc = attackingEscortNPC != null && !attackingEscortNPC.isInteractingWithMe() ? attackingEscortNPC : Antiban.get().selectNextTarget(npcs);
                 if (npc != null) {
                     if (!npc.isClickable() || !npc.isOnScreen()) {
                         aCamera.turnToTile(npc);
@@ -49,40 +50,16 @@ public abstract class CombatStrategy {
                                 General.sleep(100,300);
                                 return Combat.getTargetEntity() != null || (npc.isInteractingWithMe() && npc.isInCombat());
                             },General.random(3000,5000))) {
-                        General.println("Attacked NPC");
                         waitForKill();
                         Antiban.get().generateTrackers(100);
                         Antiban.get().sleepReactionTime();
+                    } else {
+                        aCamera.turnToTile(npc);
                     }
                 }
             } else {
-                General.println("Waiting for kill");
                 waitForKill();
             }
-//            if (Combat.getTargetEntity() != null || Player.getRSPlayer().isInCombat()) {
-//                while (Combat.getTargetEntity() != null) {
-//                    Antiban.get().timedActions();
-//                    General.sleep(150,250);
-//                    Vars.get().subStatus = "AFKing";
-//                }
-//                //TODO: handle food and potions for escort, user
-//            } else {
-//                RSNPC npc = getNPC(npcs);
-//                if (npc != null) {
-//                    if (!npc.isClickable() || !npc.isOnScreen()) {
-//                        Camera.turnToTile(npc);
-//                    }
-//                    long startTime = System.currentTimeMillis();
-//                    if (AccurateMouse.click(npc, "Attack") &&
-//                        Timing.waitCondition(() -> {
-//                            General.sleep(100,300);
-//                            return Combat.getTargetEntity() != null;
-//                        },General.random(2500,3500))) {
-//                        Antiban.get().generateTrackers((int)(System.currentTimeMillis() - startTime));
-//                        Antiban.get().sleepReactionTime();
-//                    }
-//                }
-//            }
         }
         return false;
     }
@@ -170,12 +147,8 @@ public abstract class CombatStrategy {
         return false;
     }
 
-    public RSNPC getNPC(RSNPC[] npcs) {
+    public RSNPC getEscortAttacker() {
         RSNPC escort = Vars.get().escorts.findInInstance();
-        return escort != null
-                && escort.isInCombat()
-                && escort.getInteractingCharacter() != null
-                ? (RSNPC) escort.getInteractingCharacter()
-                : Antiban.get().selectNextTarget(npcs);
+        return escort != null && escort.isInCombat() ? (RSNPC) (escort.getInteractingCharacter()) : null;
     }
 }

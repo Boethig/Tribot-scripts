@@ -62,8 +62,8 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
         return new ArrayList<>() {{
             add(new Trekk(aCamera));
             add(new StartTrekk(aCamera));
-            add(new SupplyEscort(aCamera));
             add(new Claim());
+            add(new SupplyEscort(aCamera));
             add(new Walking());
             add(new Bank());
         }};

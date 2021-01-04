@@ -14,6 +14,7 @@ import scripts.TTrekker.utils.Utils;
 import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.GroundItemEntity;
+import scripts.boe_api.entities.finders.prefabs.NpcEntity;
 import scripts.boe_api.entities.finders.prefabs.ObjectEntity;
 import scripts.boe_api.inventory.OSInventory;
 import scripts.boe_api.utilities.Antiban;
@@ -76,9 +77,14 @@ public class Bridge extends Puzzle {
                 if (tree != null) {
                     chopTree(tree);
                 } else if (Inventory.getCount(Constants.PLANK) < 3) {
-                    RSNPC zombie = Antiban.get().selectNextTarget(NPCs.find(Constants.LUMBERJACK));
+                    RSNPC zombie = Antiban.get().selectNextTarget(
+                            Entities.find(NpcEntity::new)
+                                    .nameEquals("Undead Lumberjack")
+                                    .custom(rsnpc -> rsnpc.isInteractingWithMe())
+                                    .getResults()
+                    );
                     if (zombie != null) {
-                        if (Combat.getTargetEntity() == null || Combat.getAttackingEntities().length == 0) {
+                        if (Combat.getTargetEntity() == null) {
                             if (!zombie.isOnScreen() || !zombie.isClickable()) {
                                 aCamera.turnToTile(zombie);
                             }
@@ -94,6 +100,8 @@ public class Bridge extends Puzzle {
                                 Antiban.get().setLastUnderAttackTime(startTime);
                                 Antiban.get().generateTrackers((int) (System.currentTimeMillis() - startTime));
                                 Antiban.get().sleepReactionTime();
+                            } else {
+                                aCamera.turnToTile(zombie);
                             }
                         }
                     } else {
@@ -164,16 +172,15 @@ public class Bridge extends Puzzle {
         }
     }
 
-    private void lootPlank() {
-        Vars.get().subStatus = "Looting";
+    private boolean lootPlank() {
         if (!Inventory.isFull() && Inventory.getCount(Constants.PLANK) < 3) {
+            Vars.get().subStatus = "Picking up plank";
             RSGroundItem plank = Entities.find(GroundItemEntity::new)
                     .idEquals(Constants.PLANK)
                     .getFirstResult();
             int count = Inventory.getAll().length;
-            if (AccurateMouse.click(plank, "Take")) {
-                Timing.waitCondition(() -> Inventory.getAll().length > count, General.random(1750, 2500));
-            }
+            return AccurateMouse.click(plank, "Take") && Timing.waitCondition(() -> Inventory.getAll().length > count, General.random(1750, 2500));
         }
+        return false;
     }
 }

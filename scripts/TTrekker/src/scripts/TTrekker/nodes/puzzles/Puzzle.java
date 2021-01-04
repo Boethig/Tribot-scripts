@@ -2,6 +2,7 @@ package scripts.TTrekker.nodes.puzzles;
 
 import org.tribot.api.General;
 import org.tribot.api.Timing;
+import org.tribot.api2007.Walking;
 import org.tribot.api2007.WebWalking;
 import org.tribot.api2007.types.RSObject;
 import scripts.TTrekker.data.Vars;
@@ -49,7 +50,7 @@ public abstract class Puzzle extends Node {
 
     private boolean takePathAction(String action) {
         RSObject path = Antiban.get().selectNextTarget(Entities.find(ObjectEntity::new)
-                .nameEquals("Path")
+                .nameEquals("Path", "Boat")
                 .actionsContains(action)
                 .getResults());
         if (path == null || NPCInteraction.isConversationWindowUp()) {
@@ -59,15 +60,19 @@ public abstract class Puzzle extends Node {
             aCamera.turnToTile(path);
         }
         if (AccurateMouse.click(path, action)) {
+            General.sleep(General.randomSD(600, 320));
+            if (NPCInteraction.isConversationWindowUp()) {
+                return false;
+            }
             return Timing.waitCondition(() -> {
                 General.sleep(100,300);
                 return Utils.isInTrekkRoute();
-            }, General.random(12000, 14500));
+            }, General.random(12000,14500));
         } else if (AccurateMouse.clickMinimap(path)) {
             Timing.waitCondition(() -> {
-                General.sleep(100, 300);
+                General.sleep(100,300);
                 return path.isClickable() || path.isOnScreen();
-            }, General.random(4000, 6000));
+            }, General.random(4000,6000));
         } else {
             WebWalking.walkTo(path.getPosition(), () -> path.isClickable() || path.isOnScreen(), General.random(300, 500));
         }

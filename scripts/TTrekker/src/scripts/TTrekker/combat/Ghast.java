@@ -1,5 +1,6 @@
 package scripts.TTrekker.combat;
 
+import org.tribot.api.Clicking;
 import org.tribot.api.General;
 import org.tribot.api.Timing;
 import org.tribot.api2007.*;
@@ -58,17 +59,17 @@ public class Ghast extends CombatStrategy {
         if (druidPouch != null) {
             if (Game.getItemSelectionState() == 1) {
                 RSNPC ghast = Antiban.get().selectNextTarget(hiddenGhasts);
-                if (ghast != null && !ghast.isInteractingWithMe()) {
-                    int charges = druidPouch.getStack();
+                if (ghast != null && ghast.isValid()) {
+                    int previousCharges = druidPouch.getStack();
                     if (!ghast.isOnScreen() || !ghast.isClickable()) {
                         aCamera.turnToTile(ghast);
                     }
-                    if (AccurateMouse.click(ghast, "Use")) {
+                    if (Clicking.click("Use", ghast)) {
                         Timing.waitCondition(() -> {
                             General.sleep(100,300);
                             RSItem updatedPouch = OSInventory.findFirstNearestToMouse(Constants.FILLED_DRUID_POUCH);
-                            return updatedPouch != null && charges > updatedPouch.getStack();
-                        }, General.random(5000,7000));
+                            return updatedPouch != null && previousCharges > updatedPouch.getStack();
+                        }, General.random(8000,10000));
                     }
                 }
             } else {
@@ -106,7 +107,7 @@ public class Ghast extends CombatStrategy {
                     .findFirst()
                     .orElse(null);
             if (bloomPos != null) {
-                WebWalking.walkTo(bloomPos);
+                return WebWalking.walkTo(bloomPos, () -> bloomPos.isTileLoaded() && bloomPos.isClickable(), General.random(100,300));
             }
         }
         return false;

@@ -40,8 +40,8 @@ public class Claim extends Node {
                     if (AccurateMouse.click(claimReward, "Claim")) {
                         Timing.waitCondition(() -> {
                             General.sleep(100,300);
-                            return NPCInteraction.isConversationWindowUp();
-                        }, General.random(3000 + Vars.get().sleepOffset, 5000 + Vars.get().sleepOffset));
+                            return !Interfaces.isInterfaceSubstantiated(Constants.REWARDS);
+                        }, General.random(3000,5000));
                     }
                 } else {
                     Vars.get().subStatus = "Selecting Reward";
