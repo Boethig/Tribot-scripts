@@ -2,16 +2,14 @@ package scripts.boe_api.scripting;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.tribot.api.General;
-import org.tribot.api2007.Login;
 import org.tribot.script.Script;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Ending;
 import org.tribot.script.interfaces.Painting;
 import org.tribot.script.interfaces.Starting;
 import scripts.boe_api.camera.ACamera;
-import scripts.boe_api.events.EventDispatcher;
-import scripts.boe_api.events.ScriptEndedEvent;
+import scripts.boe_api.event_dispatcher.EventDispatcher;
+import scripts.boe_api.event_dispatcher.events.ScriptEndedEvent;
 import scripts.boe_api.framework.Node;
 import scripts.boe_api.paint.BoePaint;
 import scripts.boe_api.paint.Paintable;

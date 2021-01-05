@@ -11,10 +11,10 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import lombok.Setter;
 import netscape.javascript.JSObject;
-import scripts.boe_api.events.ConfigureScriptCompletedEvent;
-import scripts.boe_api.events.EventDispatcher;
-import scripts.boe_api.events.EventListener;
-import scripts.boe_api.events.ScriptEndedEvent;
+import scripts.boe_api.event_dispatcher.events.ConfigureScriptCompletedEvent;
+import scripts.boe_api.event_dispatcher.EventDispatcher;
+import scripts.boe_api.event_dispatcher.EventListener;
+import scripts.boe_api.event_dispatcher.events.ScriptEndedEvent;
 
 import javax.swing.*;
 

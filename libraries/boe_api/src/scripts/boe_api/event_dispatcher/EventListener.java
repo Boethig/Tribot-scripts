@@ -1,4 +1,4 @@
-package scripts.boe_api.events;
+package scripts.boe_api.event_dispatcher;
 
 import java.util.function.Consumer;
 
