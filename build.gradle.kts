@@ -61,7 +61,7 @@ allprojects {
     }
 
     javafx {
-        modules("javafx.controls", "javafx.fxml", "javafx.swing")
+        modules("javafx.controls", "javafx.fxml", "javafx.swing", "javafx.web")
     }
 }
 

@@ -21,7 +21,7 @@ import java.nio.charset.Charset;
 /**
  *
  */
-public class GuiLoader
+public class GuiLoader implements Gui
 {
     private String fxmlString,
             frameTitle = "";
@@ -33,7 +33,8 @@ public class GuiLoader
 
     private boolean isDecorated = false, isModal = false;
 
-    public boolean loadGui()
+    @Override
+    public boolean show()
     {
         SwingUtilities.invokeLater(() ->
         {
@@ -83,7 +84,7 @@ public class GuiLoader
                 General.sleep(500, 1000);
         }
 
-        return !controller.wasCancelled();
+        return !controller.isCancelled();
     }
 
     //region Getters and Setters
@@ -156,6 +157,11 @@ public class GuiLoader
     public void setModal(boolean modal)
     {
         isModal = modal;
+    }
+
+    @Override
+    public boolean close() {
+        return false;
     }
 
     //endregion

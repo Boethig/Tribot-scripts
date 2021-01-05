@@ -2,7 +2,7 @@ package scripts.boe_api.utilities;
 
 import java.util.HashMap;
 
-public class Arguments {
+public class ScriptArguments {
     /**
      * Converts the raw hashmap received in #passArguments to a hashmap with useful key/values
      * Arguments are parsed in the following format: "setting1: value1; setting2: value2;"

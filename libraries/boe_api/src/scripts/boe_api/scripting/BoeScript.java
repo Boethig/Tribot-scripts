@@ -10,6 +10,8 @@ import org.tribot.script.interfaces.Ending;
 import org.tribot.script.interfaces.Painting;
 import org.tribot.script.interfaces.Starting;
 import scripts.boe_api.camera.ACamera;
+import scripts.boe_api.events.EventDispatcher;
+import scripts.boe_api.events.ScriptEndedEvent;
 import scripts.boe_api.framework.Node;
 import scripts.boe_api.paint.BoePaint;
 import scripts.boe_api.paint.Paintable;
@@ -24,10 +26,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-public abstract class BoeScript extends Script implements Paintable, Painting, Starting {
+public abstract class BoeScript extends Script implements Paintable, Painting, Starting, Ending {
 
     public ArrayList<Node> nodes;
     public final ScriptManifest MANIFEST = this.getClass().getAnnotation(ScriptManifest.class);
+
     protected ACamera aCamera;
 
     @Getter
@@ -42,10 +45,14 @@ public abstract class BoeScript extends Script implements Paintable, Painting, S
     @Getter @Setter
     protected boolean isRunning;
 
+    @Getter @Setter
+    private boolean isGuiLoaded;
+
     protected BoeScript() {
         this.aCamera = new ACamera(this);
         this.nodes = nodeArrayList();
         this.isRunning = true;
+        this.isGuiLoaded = false;
     }
 
     @Override
@@ -53,6 +60,12 @@ public abstract class BoeScript extends Script implements Paintable, Painting, S
         if (this.isRunnable()) {
             this.setDaxWalker();
         }
+    }
+
+    @Override
+    public void onEnd() {
+        EventDispatcher.get().dispatch(new ScriptEndedEvent());
+        EventDispatcher.get().destroy();
     }
 
     private void setDaxWalker() {
