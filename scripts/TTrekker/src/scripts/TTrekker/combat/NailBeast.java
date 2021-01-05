@@ -30,25 +30,29 @@ public class NailBeast extends CombatStrategy {
 
     @Override
     public boolean handle() {
-        lootNails();
-        return super.handle();
+        return lootNails() && super.handle();
     }
 
-    public void lootNails() {
+    public boolean lootNails() {
         if (!Vars.get().lootNails) {
-            return;
+            return true;
         }
-        if (!Inventory.isFull()) {
-            RSGroundItem plank = Entities.find(GroundItemEntity::new)
-                    .idEquals(Constants.NAIL_BEAST_NAILS)
-                    .getFirstResult();
-            int count = Inventory.getAll().length;
-            if (AccurateMouse.click(plank, "Take")) {
-                Timing.waitCondition(() -> {
-                    General.sleep(100,300);
-                    return Inventory.getAll().length > count;
-                }, General.random(1750,2500));
-            }
+        if (Inventory.isFull()) {
+            return false;
         }
+        RSGroundItem nailBeastNails = Entities.find(GroundItemEntity::new)
+                .idEquals(Constants.NAIL_BEAST_NAILS)
+                .getFirstResult();
+        if (nailBeastNails == null) {
+            return true;
+        }
+        int count = Inventory.getAll().length;
+        if (AccurateMouse.click(nailBeastNails, "Take")) {
+            Timing.waitCondition(() -> {
+                General.sleep(100,300);
+                return Inventory.getAll().length > count;
+            }, General.random(1750,2500));
+        }
+        return false;
     }
 }

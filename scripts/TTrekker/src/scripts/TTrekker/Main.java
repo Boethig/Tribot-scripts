@@ -9,25 +9,53 @@ import scripts.TTrekker.data.Constants;
 import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.nodes.*;
 import scripts.TTrekker.utils.Utils;
+import scripts.boe_api.events.ConfigureScriptCompletedEvent;
+import scripts.boe_api.events.EventDispatcher;
+import scripts.boe_api.events.EventListener;
+import scripts.boe_api.events.ScriptEndedEvent;
 import scripts.boe_api.framework.Node;
+import scripts.boe_api.gui.Controller;
+import scripts.boe_api.gui.WebGuiLoader;
 import scripts.boe_api.listeners.varbit.VarBitListener;
 import scripts.boe_api.listeners.varbit.VarBitObserver;
 import scripts.boe_api.scripting.BoeScript;
+import scripts.boe_api.utilities.ScriptArguments;
 import scripts.rsitem_services.GrandExchange;
 
 import java.awt.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.ResourceBundle;
 
 @ScriptManifest(authors = {"Boe123"}, category = "TTrekker", name = "TTrekker")
 public class Main extends BoeScript implements Ending, Starting, Painting, VarBitListener, Breaking, PreBreaking, Arguments {
 
     private VarBitObserver varBitObserver;
+
+    private WebGuiLoader webGui = new WebGuiLoader.WebGuiBuilder()
+            .setController(new Controller() {
+                @Override
+                public void initialize(URL location, ResourceBundle resources) {
+                }
+            })
+            .setURL("http://google.com")
+            .build();
 //    private final int bowStringPrice = GrandExchange.getPrice(Constants.BOWSTRING);
 
     @Override
     public void run() {
         setAntiban();
+        EventDispatcher.get().addListener(ConfigureScriptCompletedEvent.class, new EventListener<ConfigureScriptCompletedEvent>((event) -> {
+            setGuiLoaded(true);
+        }));
+
+        webGui.show();
+
+        while (!isGuiLoaded()) {
+            General.sleep(500, 1000);
+        }
+
         while (isRunning) {
             if (Login.getLoginState() != Login.STATE.LOGINSCREEN) {
                 for (final Node node : nodes) {
@@ -125,7 +153,7 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
     }
 
     public void passArguments(final HashMap<String, String> arguments) {
-        final HashMap<String, String> commands = scripts.boe_api.utilities.Arguments.get((HashMap) arguments);
+        final HashMap<String, String> commands = ScriptArguments.get((HashMap) arguments);
         if (commands.containsKey("stamina") && commands.get("stamina").contains("true")) {
             Vars.get().useStaminas = true;
         }
@@ -136,6 +164,7 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
 
     @Override
     public void onEnd() {
+        super.onEnd();
         this.varBitObserver.setRunning(false);
     }
 }

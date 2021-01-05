@@ -1,7 +1,5 @@
 package scripts.TTrekker.data;
 
-import scripts.TTrekker.nodes.Trekk;
-
 import java.util.ArrayList;
 import java.util.List;
 

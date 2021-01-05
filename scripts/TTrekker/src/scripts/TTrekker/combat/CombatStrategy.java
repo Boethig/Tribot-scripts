@@ -14,6 +14,8 @@ import scripts.boe_api.entities.finders.prefabs.NpcEntity;
 import scripts.boe_api.utilities.Antiban;
 import scripts.dax_api.walker.utils.AccurateMouse;
 
+import java.util.Arrays;
+
 public abstract class CombatStrategy {
 
     protected ACamera aCamera;
@@ -40,7 +42,7 @@ public abstract class CombatStrategy {
             }
             RSNPC attackingEscortNPC = getEscortAttacker();
             if (attackingEscortNPC != null || Combat.getTargetEntity() == null || !Combat.isUnderAttack()) {
-                RSNPC npc = attackingEscortNPC != null && !attackingEscortNPC.isInteractingWithMe() ? attackingEscortNPC : Antiban.get().selectNextTarget(npcs);
+                RSNPC npc = attackingEscortNPC != null && !attackingEscortNPC.isInteractingWithMe() ? attackingEscortNPC : getNextNPC(npcs);
                 if (npc != null) {
                     if (!npc.isClickable() || !npc.isOnScreen()) {
                         aCamera.turnToTile(npc);
@@ -51,7 +53,7 @@ public abstract class CombatStrategy {
                                 return Combat.getTargetEntity() != null || (npc.isInteractingWithMe() && npc.isInCombat());
                             },General.random(3000,5000))) {
                         waitForKill();
-                        Antiban.get().generateTrackers(100);
+                        Antiban.get().generateTrackers(10);
                         Antiban.get().sleepReactionTime();
                     } else {
                         aCamera.turnToTile(npc);
@@ -68,7 +70,7 @@ public abstract class CombatStrategy {
         Vars.get().subStatus = "AFKing";
         while (Combat.getTargetEntity() != null) {
             checkPrayer();
-            checkAndEat("Lobster");
+            checkAndEat();
             Antiban.get().timedActions();
             General.sleep(50,150);
         }
@@ -98,12 +100,8 @@ public abstract class CombatStrategy {
         return false;
     }
 
-    public boolean checkAndEat(final String foodName) {
-        if (foodName == null) {
-            return false;
-        }
+    public boolean checkAndEat() {
         RSItem food = Entities.find(ItemEntity::new)
-                .nameContains(foodName)
                 .actionsContains("Eat", "Drink")
                 .custom((rsItem -> {
                     RSItemDefinition itemDefinition = rsItem.getDefinition();
@@ -111,12 +109,12 @@ public abstract class CombatStrategy {
                 })).getFirstResult();
 
         if (food != null) {
-            if (Combat.getHP() < Antiban.get().getEatAt()) {
+            int currentHp = Combat.getHP();
+            if (currentHp < Antiban.get().getEatAt()) {
                 Inventory.open();
-                int preEatAmount = Inventory.getCount(foodName);
                 if (AccurateMouse.click(food) && Timing.waitCondition(() -> {
                     General.sleep(50,150);
-                    return Inventory.getCount(foodName) > preEatAmount;
+                    return Combat.getHP() > currentHp;
                 }, General.random(700,1200))) {
                     Antiban.get().resetEatAt();
                     return true;
@@ -145,6 +143,12 @@ public abstract class CombatStrategy {
             }
         }
         return false;
+    }
+
+    public RSNPC getNextNPC(RSNPC[] npcs) {
+        return Arrays.stream(npcs).filter(rsnpc -> rsnpc.isInteractingWithMe() && rsnpc.isInCombat())
+                .findFirst()
+                .orElse(Antiban.get().selectNextTarget(npcs));
     }
 
     public RSNPC getEscortAttacker() {
