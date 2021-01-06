@@ -2,6 +2,7 @@ package scripts.boe_api.scripting;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.tribot.api.General;
 import org.tribot.script.Script;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Ending;

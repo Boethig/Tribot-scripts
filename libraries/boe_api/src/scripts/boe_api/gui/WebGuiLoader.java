@@ -15,20 +15,20 @@ import scripts.boe_api.event_dispatcher.events.ConfigureScriptCompletedEvent;
 import scripts.boe_api.event_dispatcher.EventDispatcher;
 import scripts.boe_api.event_dispatcher.EventListener;
 import scripts.boe_api.event_dispatcher.events.ScriptEndedEvent;
+import scripts.boe_api.profile_manager.BasicScriptSettings;
+import scripts.boe_api.profile_manager.ProfileManager;
+import scripts.boe_api.utilities.Logger;
 
 import javax.swing.*;
 
 public class WebGuiLoader extends Application implements Gui {
 
+    private final String USER_AGENT = "\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36\"";
     private Stage stage;
     private WebEngine webEngine;
     private WebView webView;
-
     @Setter
     private String webUrl;
-
-    @Setter
-    private Controller controller;
 
     @Override
     public void start(Stage stage) {
@@ -36,7 +36,7 @@ public class WebGuiLoader extends Application implements Gui {
         stage.setResizable(false);
         initWebView();
         VBox vBox = new VBox(webView);
-        Scene scene = new Scene(vBox, 750, 500);
+        Scene scene = new Scene(vBox, 700, 500);
         stage.setScene(scene);
         stage.showAndWait();
     }
@@ -45,7 +45,7 @@ public class WebGuiLoader extends Application implements Gui {
     public boolean show() {
 
         EventDispatcher.get().addListener(ScriptEndedEvent.class, new EventListener<ScriptEndedEvent>((event) -> {
-            close();
+            close(null);
         }));
 
         Platform.setImplicitExit(false);
@@ -55,10 +55,10 @@ public class WebGuiLoader extends Application implements Gui {
             Platform.runLater(() -> {
                 try {
                     stage = new Stage();
-                    controller.setHostStage(stage);
                     start(stage);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Logger.log("[WebGuiLoader]: %s", e.getMessage());
                 }
             });
         });
@@ -67,7 +67,7 @@ public class WebGuiLoader extends Application implements Gui {
     }
 
     @Override
-    public boolean close() {
+    public boolean close(String settings) {
         if (stage == null) {
             return true;
         }
@@ -85,7 +85,11 @@ public class WebGuiLoader extends Application implements Gui {
             }
         });
 
-        EventDispatcher.get().dispatch(new ConfigureScriptCompletedEvent());
+        if (settings != null) {
+            //TODO: insert script settings here
+//            BasicScriptSettings scriptSettings = ProfileManager.get().getSettingsFromJSON();
+            EventDispatcher.get().dispatch(new ConfigureScriptCompletedEvent());
+        }
 
         return true;
     }
@@ -94,11 +98,12 @@ public class WebGuiLoader extends Application implements Gui {
         webView = new WebView();
         webEngine = webView.getEngine();
         webEngine.setJavaScriptEnabled(true);
-        webEngine.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36");
+        webEngine.setUserAgent(USER_AGENT);
 
         webEngine.getLoadWorker().exceptionProperty().addListener((obs, oldExc, newExc) -> {
             if (newExc != null) {
                 newExc.printStackTrace();
+                Logger.log("[WebGuiLoader]: %s", newExc.getMessage());
             }
         });
 
@@ -107,7 +112,8 @@ public class WebGuiLoader extends Application implements Gui {
                 JSObject window = (JSObject) webEngine.executeScript("window");
 
                 // Expose the following classes into javascript.
-                window.setMember("gui", this);
+                window.setMember("Gui", this);
+                window.setMember("ProfileManager", ProfileManager.get());
             }
         });
 
@@ -117,11 +123,6 @@ public class WebGuiLoader extends Application implements Gui {
     public static class WebGuiBuilder {
 
         private WebGuiLoader gui = new WebGuiLoader();
-
-        public WebGuiBuilder setController(Controller controller) {
-            this.gui.setController(controller);
-            return this;
-        }
 
         public WebGuiBuilder setURL(String url) {
             this.gui.setWebUrl(url);

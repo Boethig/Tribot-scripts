@@ -160,7 +160,7 @@ public class GuiLoader implements Gui
     }
 
     @Override
-    public boolean close() {
+    public boolean close(String settings) {
         return false;
     }
 
