@@ -12,6 +12,7 @@ import scripts.boe_api.framework.Node;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.ObjectEntity;
 import scripts.boe_api.utilities.Antiban;
+import scripts.dax_api.api_lib.DaxWalker;
 import scripts.dax_api.walker.utils.AccurateMouse;
 import scripts.dax_api.walker_engine.interaction_handling.NPCInteraction;
 
@@ -74,6 +75,7 @@ public abstract class Puzzle extends Node {
                 return path.isClickable() || path.isOnScreen();
             }, General.random(4000,6000));
         } else {
+            DaxWalker.walkTo(path.getAnimablePosition().toLocalTile());
             WebWalking.walkTo(path.getPosition(), () -> path.isClickable() || path.isOnScreen(), General.random(300, 500));
         }
         return false;

@@ -13,7 +13,6 @@ import scripts.boe_api.event_dispatcher.events.ConfigureScriptCompletedEvent;
 import scripts.boe_api.event_dispatcher.EventDispatcher;
 import scripts.boe_api.event_dispatcher.EventListener;
 import scripts.boe_api.framework.Node;
-import scripts.boe_api.gui.Controller;
 import scripts.boe_api.gui.WebGuiLoader;
 import scripts.boe_api.listeners.varbit.VarBitListener;
 import scripts.boe_api.listeners.varbit.VarBitObserver;
@@ -21,10 +20,8 @@ import scripts.boe_api.scripting.BoeScript;
 import scripts.boe_api.utilities.ScriptArguments;
 
 import java.awt.*;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.ResourceBundle;
 
 @ScriptManifest(authors = {"Boe123"}, category = "TTrekker", name = "TTrekker")
 public class Main extends BoeScript implements Ending, Starting, Painting, VarBitListener, Breaking, PreBreaking, Arguments {
@@ -32,12 +29,7 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
     private VarBitObserver varBitObserver;
 
     private WebGuiLoader webGui = new WebGuiLoader.WebGuiBuilder()
-            .setController(new Controller() {
-                @Override
-                public void initialize(URL location, ResourceBundle resources) {
-                }
-            })
-            .setURL("http://google.com")
+            .setURL("http://localhost:8080/")
             .build();
 //    private final int bowStringPrice = GrandExchange.getPrice(Constants.BOWSTRING);
 
@@ -51,7 +43,7 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
         webGui.show();
 
         while (!isGuiLoaded()) {
-            General.sleep(500, 1000);
+            General.sleep(500,1000);
         }
 
         while (isRunning) {
@@ -112,27 +104,6 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
     public void onPaint(Graphics g) {
         super.onPaint(g);
     }
-
-//    public void onPaint(final Graphics gg) {
-//        final Graphics2D g = (Graphics2D) gg;
-//        final long timeRan = System.currentTimeMillis() - Vars.get().runTime - Vars.get().breakTimes;
-//        Vars.get().profit = Vars.get().completed * 101 * this.bowStringPrice;
-//        final int hourlyProfit = (int) (Vars.get().profit / 1000.0 * 3600000.0 / timeRan);
-//        final int hourlyTrekks = (int) (Vars.get().completed * 3600000.0 / timeRan);
-//        this.drawString("Runtime: " + Timing.msToString(timeRan), 195, 275, g);
-//        this.drawString("Trekks Completed : " + Vars.get().completed + " (" + hourlyTrekks + ")", 195, 292, g);
-//        this.drawString("Profit: " + hourlyProfit + "k / h", 195, 309, g);
-//        this.drawString("Status: " + Vars.get().status + " " + Vars.get().subStatus, 195, 326, g);
-//    }
-
-//    public void drawString(final String s, final int x, final int y, final Graphics g) {
-//        g.setColor(new Color(0, 0, 0, 155));
-//        g.fillRect(x - 3, y - 12, 325, 17);
-//        g.setColor(new Color(Math.abs((Mouse.getPos().x - 100) / 3), Math.abs((Mouse.getPos().y - 100) / 3), (int) (Camera.getCameraRotation() * 0.7), 122));
-//        g.drawRect(x - 3, y - 12, 325, 17);
-//        g.setColor(Color.WHITE);
-//        g.drawString(s, x, y);
-//    }
 
     public void varBitChanged(final int varBit, final int newValue) {
         if (newValue == 2) {
