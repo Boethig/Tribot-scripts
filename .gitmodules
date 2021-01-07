@@ -1,0 +1,3 @@
+[submodule "libraries/DaxTracker"]
+	path = libraries/DaxTracker
+	url = https://github.com/itsdax/DaxTracker.git

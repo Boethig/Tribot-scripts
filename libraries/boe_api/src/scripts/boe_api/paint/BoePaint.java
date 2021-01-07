@@ -48,6 +48,8 @@ public class BoePaint {
         return System.currentTimeMillis() - startTime;
     }
 
+    public long getTimeRanS() { return getTimeRanMs() / 1000; }
+
     public String getTimeRan() {
         //return the properly formatted string
         return Timing.msToString(getTimeRanMs());

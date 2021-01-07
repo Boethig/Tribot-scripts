@@ -1,10 +1,10 @@
 package scripts.TTrekker;
 
 import org.tribot.api.General;
-import org.tribot.api2007.Camera;
 import org.tribot.api2007.Login;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.*;
+import org.tribot.util.Util;
 import scripts.TTrekker.data.Constants;
 import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.nodes.*;
@@ -16,6 +16,7 @@ import scripts.boe_api.framework.Node;
 import scripts.boe_api.gui.WebGuiLoader;
 import scripts.boe_api.listeners.varbit.VarBitListener;
 import scripts.boe_api.listeners.varbit.VarBitObserver;
+import scripts.boe_api.profile_manager.BasicScriptSettings;
 import scripts.boe_api.scripting.BoeScript;
 import scripts.boe_api.utilities.ScriptArguments;
 
@@ -23,8 +24,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-@ScriptManifest(authors = {"Boe123"}, category = "TTrekker", name = "TTrekker")
-public class Main extends BoeScript implements Ending, Starting, Painting, VarBitListener, Breaking, PreBreaking, Arguments {
+@ScriptManifest(authors = {"Boe123"}, category = "Minigames", name = "TTrekker")
+public class Main extends BoeScript implements Ending, Starting, Painting, VarBitListener, Arguments {
 
     private VarBitObserver varBitObserver;
 
@@ -35,8 +36,12 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
 
     @Override
     public void run() {
-        setAntiban();
+
         EventDispatcher.get().addListener(ConfigureScriptCompletedEvent.class, new EventListener<ConfigureScriptCompletedEvent>((event) -> {
+            BasicScriptSettings settings = event.getSettings();
+            if (settings != null) {
+                Vars.get().setSettings(settings);
+            }
             setGuiLoaded(true);
         }));
 
@@ -55,7 +60,8 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
                     }
                 }
             }
-            General.sleep(General.randomSD(50, 70, 30));
+            sleep(100);
+            daxTracker.trackData("runtime", getPaint().getTimeRanS());
         }
     }
 
@@ -71,7 +77,7 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
     }
 
     @Override
-    protected boolean isRunnable() {
+    public boolean isRunnable() {
         return Utils.canTempleTrekk() && (!Vars.get().burgDeRottRamble || Utils.canBurgDeRottRamble());
     }
 
@@ -95,10 +101,10 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
         this.varBitObserver.start();
     }
 
-
-    public void setAntiban() {
-        Camera.setRotationMethod(Camera.ROTATION_METHOD.ONLY_KEYS);
-        Vars.get().abc2WaitTimes.add(General.random(105, 350));
+    @Override
+    public void onEnd() {
+        super.onEnd();
+        this.varBitObserver.setRunning(false);
     }
 
     public void onPaint(Graphics g) {
@@ -111,15 +117,10 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
         } else if (newValue == 0) {
             Vars.get().reset();
             Vars.get().completed++;
+            daxTracker.trackData("trekks", 1);
         }
     }
 
-    public void onBreakEnd() { }
-
-    public void onBreakStart(final long l) {
-        Vars.get().status = "On break";
-        Vars.get().subStatus = "";
-    }
 
     public void passArguments(final HashMap<String, String> arguments) {
         final HashMap<String, String> commands = ScriptArguments.get((HashMap) arguments);
@@ -128,12 +129,4 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
         }
     }
 
-    public void onPreBreakStart(final long l) {
-    }
-
-    @Override
-    public void onEnd() {
-        super.onEnd();
-        this.varBitObserver.setRunning(false);
-    }
 }

@@ -68,6 +68,9 @@ public class WebGuiLoader extends Application implements Gui {
 
     @Override
     public boolean close(String settings) {
+
+        Logger.log("[WebGuiLoader]: Closing Gui");
+
         if (stage == null) {
             return true;
         }
@@ -87,8 +90,8 @@ public class WebGuiLoader extends Application implements Gui {
 
         if (settings != null) {
             //TODO: insert script settings here
-//            BasicScriptSettings scriptSettings = ProfileManager.get().getSettingsFromJSON();
-            EventDispatcher.get().dispatch(new ConfigureScriptCompletedEvent());
+            BasicScriptSettings s = ProfileManager.get().getSettingsFromJSON(new BasicScriptSettings());
+            EventDispatcher.get().dispatch(new ConfigureScriptCompletedEvent(s));
         }
 
         return true;
@@ -112,8 +115,8 @@ public class WebGuiLoader extends Application implements Gui {
                 JSObject window = (JSObject) webEngine.executeScript("window");
 
                 // Expose the following classes into javascript.
-                window.setMember("Gui", this);
-                window.setMember("ProfileManager", ProfileManager.get());
+                window.setMember("gui", this);
+                window.setMember("profileManager", ProfileManager.get());
             }
         });
 

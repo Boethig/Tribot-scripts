@@ -15,6 +15,7 @@ import scripts.boe_api.framework.Node;
 import scripts.boe_api.paint.BoePaint;
 import scripts.boe_api.paint.Paintable;
 import scripts.boe_api.utilities.Antiban;
+import scripts.dax.tracker.DaxTracker;
 import scripts.dax_api.api_lib.DaxWalker;
 import scripts.dax_api.api_lib.models.DaxCredentials;
 import scripts.dax_api.api_lib.models.DaxCredentialsProvider;
@@ -25,19 +26,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-public abstract class BoeScript extends Script implements Paintable, Painting, Starting, Ending {
+public abstract class BoeScript extends Script implements Paintable, Painting, Starting, Ending, Runnable {
 
     public ArrayList<Node> nodes;
+
     public final ScriptManifest MANIFEST = this.getClass().getAnnotation(ScriptManifest.class);
 
     protected ACamera aCamera;
+
+    protected DaxTracker daxTracker;
 
     @Getter
     public transient BoePaint paint = new BoePaint(this, Color.WHITE);
 
     protected abstract String[] scriptSpecificPaint();
 
-    protected abstract boolean isRunnable();
+    public abstract boolean isRunnable();
 
     protected abstract ArrayList<Node> nodeArrayList();
 
@@ -48,16 +52,17 @@ public abstract class BoeScript extends Script implements Paintable, Painting, S
     private boolean isGuiLoaded;
 
     protected BoeScript() {
-        this.aCamera = new ACamera(this);
-        this.nodes = nodeArrayList();
-        this.isRunning = true;
-        this.isGuiLoaded = false;
+        aCamera = new ACamera(this);
+        nodes = nodeArrayList();
+        isRunning = true;
+        isGuiLoaded = false;
+        daxTracker = new DaxTracker("27da5657-6095-47d4-8b7d-3269af53b8db", "tvHJA1AntQ7y2dAdaz1pkA==");
     }
 
     @Override
     public void onStart() {
-        if (this.isRunnable()) {
-            this.setDaxWalker();
+        if (isRunnable()) {
+            setDaxWalker();
         }
     }
 
@@ -65,6 +70,7 @@ public abstract class BoeScript extends Script implements Paintable, Painting, S
     public void onEnd() {
         EventDispatcher.get().dispatch(new ScriptEndedEvent());
         EventDispatcher.get().destroy();
+        daxTracker.stop();
     }
 
     private void setDaxWalker() {

@@ -16,6 +16,7 @@ subprojects {
     }
     dependencies {
         implementation(project(":libraries:dax_api"))
+        implementation(project(":libraries:DaxTracker"))
         implementation(project(":libraries:boe_api"))
         implementation(project(":libraries:rsitem_services"))
     }
