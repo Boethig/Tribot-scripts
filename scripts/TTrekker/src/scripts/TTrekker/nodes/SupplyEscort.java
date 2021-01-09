@@ -62,7 +62,7 @@ public class SupplyEscort extends Node {
                 }
             }
         } else {
-            RSNPC escort = Antiban.get().selectNextTarget(Vars.get().escorts.find());
+            RSNPC escort = Antiban.get().selectNextTarget(Vars.get().getSettings().escortDifficulty.find());
             if (escort != null) {
                 if (!escort.isOnScreen() || !escort.isClickable()) {
                     aCamera.turnToTile(escort);

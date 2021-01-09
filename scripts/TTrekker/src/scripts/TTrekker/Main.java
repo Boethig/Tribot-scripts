@@ -1,11 +1,13 @@
 package scripts.TTrekker;
 
 import org.tribot.api.General;
+import org.tribot.api2007.Camera;
 import org.tribot.api2007.Login;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.*;
 import org.tribot.util.Util;
 import scripts.TTrekker.data.Constants;
+import scripts.TTrekker.data.TrekkScriptSettings;
 import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.nodes.*;
 import scripts.TTrekker.utils.Utils;
@@ -18,6 +20,8 @@ import scripts.boe_api.listeners.varbit.VarBitListener;
 import scripts.boe_api.listeners.varbit.VarBitObserver;
 import scripts.boe_api.profile_manager.BasicScriptSettings;
 import scripts.boe_api.scripting.BoeScript;
+import scripts.boe_api.scripting.ScriptManager;
+import scripts.boe_api.utilities.Logger;
 import scripts.boe_api.utilities.ScriptArguments;
 
 import java.awt.*;
@@ -36,9 +40,10 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
 
     @Override
     public void run() {
-
+        ScriptManager.create(this);
+        Camera.setRotationMethod(Camera.ROTATION_METHOD.ONLY_KEYS);
         EventDispatcher.get().addListener(ConfigureScriptCompletedEvent.class, new EventListener<ConfigureScriptCompletedEvent>((event) -> {
-            BasicScriptSettings settings = event.getSettings();
+            TrekkScriptSettings settings = (TrekkScriptSettings) event.getSettings();
             if (settings != null) {
                 Vars.get().setSettings(settings);
             }
@@ -70,27 +75,32 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
         return new String[] {
                 "Status: " + Vars.get().status + " " + Vars.get().subStatus,
                 "Trekks Completed: " + Vars.get().completed + " (" + getPaint().getEstimatedPerHour(Vars.get().completed) + ")",
-                "Escort Difficulty: " + Vars.get().escorts.toString(),
-                "Route: " + Vars.get().route.getName(),
+                "Escort Difficulty: " + Vars.get().getSettings().escortDifficulty.toString(),
+                "Route: " + Vars.get().getSettings().route.getName(),
                 "Reward: " + Vars.get().reward.getName()
         };
     }
 
     @Override
     public boolean isRunnable() {
-        return Utils.canTempleTrekk() && (!Vars.get().burgDeRottRamble || Utils.canBurgDeRottRamble());
+        return Utils.canTempleTrekk() && (!Vars.get().getSettings().burgDeRottRamble || Utils.canBurgDeRottRamble());
     }
 
     @Override
     protected ArrayList<Node> nodeArrayList() {
         return new ArrayList<>() {{
             add(new Trekk(aCamera));
-            add(new StartTrekk(aCamera));
             add(new Claim());
+            add(new StartTrekk(aCamera));
             add(new SupplyEscort(aCamera));
             add(new Walking());
             add(new Bank());
         }};
+    }
+
+    @Override
+    public Class<? extends BasicScriptSettings> getScriptSettingsType() {
+        return TrekkScriptSettings.class;
     }
 
     @Override
@@ -125,7 +135,7 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
     public void passArguments(final HashMap<String, String> arguments) {
         final HashMap<String, String> commands = ScriptArguments.get((HashMap) arguments);
         if (commands.containsKey("stamina") && commands.get("stamina").contains("true")) {
-            Vars.get().useStaminas = true;
+            Vars.get().getSettings().shouldUseStaminas = true;
         }
     }
 

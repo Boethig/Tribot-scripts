@@ -34,7 +34,7 @@ public class NailBeast extends CombatStrategy {
     }
 
     public boolean lootNails() {
-        if (!Vars.get().lootNails) {
+        if (!Vars.get().getSettings().shouldLootBeastNails) {
             return true;
         }
         if (Inventory.isFull()) {

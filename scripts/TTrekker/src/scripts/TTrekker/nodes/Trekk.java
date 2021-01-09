@@ -42,7 +42,7 @@ public class Trekk extends ParentNode {
 
     @Override
     protected void sideEffects() {
-        if (Antiban.get().getRunAt() > Game.getRunEnergy() && Vars.get().useStaminas) {
+        if (Antiban.get().getRunAt() > Game.getRunEnergy() && Vars.get().getSettings().shouldUseStaminas) {
             RSItem stamina = OSInventory.findFirstNearestToMouse(Constants.STAMINA_IDS);
             if (AccurateMouse.click(stamina, "Drink")) {
                 Timing.waitCondition(() -> Game.getRunEnergy() > Antiban.get().getRunAt(), General.random(1000, 3000));

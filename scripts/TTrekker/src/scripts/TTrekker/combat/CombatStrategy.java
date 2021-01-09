@@ -135,7 +135,7 @@ public abstract class CombatStrategy {
                             return itemDefinition == null || !itemDefinition.isNoted();
                         })).getFirstResult();
                 if (foodSupply != null) {
-                    RSNPC escort = Vars.get().escorts.findInInstance();
+                    RSNPC escort = Vars.get().getSettings().escortDifficulty.findInInstance();
                     if (escort != null) {
                         return AccurateMouse.click(foodSupply, "Use") && AccurateMouse.click(escort);
                     }
@@ -152,7 +152,7 @@ public abstract class CombatStrategy {
     }
 
     public RSNPC getEscortAttacker() {
-        RSNPC escort = Vars.get().escorts.findInInstance();
+        RSNPC escort = Vars.get().getSettings().escortDifficulty.findInInstance();
         return escort != null && escort.isInCombat() ? (RSNPC) (escort.getInteractingCharacter()) : null;
     }
 }

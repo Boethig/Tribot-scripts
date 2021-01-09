@@ -1,5 +1,7 @@
 package scripts.boe_api.profile_manager;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class BasicScriptSettings {
 
     // General settings
@@ -18,4 +20,9 @@ public class BasicScriptSettings {
     public boolean mouseMovement = true;
     public boolean useReactionTimes = true;
     public double reactionTimeMultiplier = 1.0;
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 }

@@ -1,6 +1,7 @@
 package scripts.TTrekker.nodes.puzzles;
 
 import org.tribot.api.General;
+import org.tribot.api2007.Camera;
 import org.tribot.api2007.Prayer;
 import org.tribot.api2007.types.RSNPC;
 import scripts.TTrekker.combat.CombatProvider;
@@ -32,8 +33,10 @@ public class Combat extends Puzzle {
     }
 
     public void solvePuzzle() {
-        if (canEvadeEvent() && evadePath()) {
-            resetPuzzle();
+        if (canEvadeEvent()) {
+            if (evadePath()) {
+                resetPuzzle();
+            }
         } else {
             if (context != null) {
                 CombatStrategy strategy = context.getStrategy();
@@ -57,13 +60,14 @@ public class Combat extends Puzzle {
     }
 
     public boolean canEvadeEvent() {
-        if (!Vars.get().shouldEvadeCombat) {
+        if (!Vars.get().getSettings().shouldEvadeCombat) {
             return false;
         }
-        if (Vars.get().route.equals(Routes.EASY)) {
+        Routes route = Vars.get().getSettings().route;
+        if (route.equals(Routes.EASY)) {
             return true;
-        } else if (Vars.get().route.equals(Routes.MEDIUM)) {
-            return this.rsnpcs.length <= Vars.get().escorts.ordinal() + 1;
+        } else if (route.equals(Routes.MEDIUM)) {
+            return this.rsnpcs.length <= Vars.get().getSettings().escortDifficulty.ordinal() + 1;
         }
         return false;
     }

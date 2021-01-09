@@ -2,7 +2,6 @@ package scripts.TTrekker.data;
 
 import lombok.Getter;
 import lombok.Setter;
-import scripts.boe_api.profile_manager.BasicScriptSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ public class Vars  {
     }
 
     @Getter @Setter
-    private BasicScriptSettings settings;
+    private TrekkScriptSettings settings = new TrekkScriptSettings();
 
     public String status;
     public String subStatus;
@@ -25,21 +24,14 @@ public class Vars  {
     public boolean inTrekk;
     public boolean hasSelectedRoute;
     public int claimCount;
-    public boolean shouldRun;
     public int sleepOffset;
     public List<Integer> abc2WaitTimes;
 
     // GUI Variables
-    public Escorts escorts;
-    public Routes route;
     public TrekkReward reward;
     public EscortSupply foodSupply;
     public int foodSupplyAmount;
-    public boolean burgDeRottRamble;
-    public boolean useStaminas;
-    public boolean lootNails;
     public int restorePrayerAt = 40;
-    public boolean shouldEvadeCombat;
 
     private Vars() {
         this.status = "";
@@ -48,14 +40,8 @@ public class Vars  {
         this.bogAttempts = 0;
         this.inTrekk = false;
         this.claimCount = 1;
-        this.shouldRun = true;
-        this.shouldEvadeCombat = true;
-        this.useStaminas = false;
-        this.escorts = Escorts.EASY;
         this.reward = TrekkReward.BOWSTRINGS;
         this.abc2WaitTimes = new ArrayList<>();
-        this.lootNails = true;
-        this.route = Routes.EASY;
         this.foodSupply = null;
         this.foodSupplyAmount = 0;
     }

@@ -21,11 +21,11 @@ public class Route extends Node {
     public void execute() {
         if (!Vars.get().hasSelectedRoute) {
             RSInterface routeSelect = Entities.find(InterfaceEntity::new)
-                    .textEquals(Vars.get().route.getName())
+                    .textEquals(Vars.get().getSettings().route.getName())
                     .actionEquals("Select")
                     .getFirstResult();
             if (routeSelect != null) {
-                Vars.get().subStatus = "Selecting " + Vars.get().route.getName();
+                Vars.get().subStatus = "Selecting " + Vars.get().getSettings().route.getName();
                 if (AccurateMouse.click(routeSelect)) {
                     Antiban.get().generateTrackers(4000);
                     Vars.get().hasSelectedRoute = true;

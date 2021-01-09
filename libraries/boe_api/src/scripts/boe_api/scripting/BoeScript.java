@@ -2,7 +2,6 @@ package scripts.boe_api.scripting;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.tribot.api.General;
 import org.tribot.script.Script;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Ending;
@@ -14,6 +13,7 @@ import scripts.boe_api.event_dispatcher.events.ScriptEndedEvent;
 import scripts.boe_api.framework.Node;
 import scripts.boe_api.paint.BoePaint;
 import scripts.boe_api.paint.Paintable;
+import scripts.boe_api.profile_manager.BasicScriptSettings;
 import scripts.boe_api.utilities.Antiban;
 import scripts.dax.tracker.DaxTracker;
 import scripts.dax_api.api_lib.DaxWalker;
@@ -30,7 +30,7 @@ public abstract class BoeScript extends Script implements Paintable, Painting, S
 
     public ArrayList<Node> nodes;
 
-    public final ScriptManifest MANIFEST = this.getClass().getAnnotation(ScriptManifest.class);
+    public final ScriptManifest manifest = this.getClass().getAnnotation(ScriptManifest.class);
 
     protected ACamera aCamera;
 
@@ -44,6 +44,8 @@ public abstract class BoeScript extends Script implements Paintable, Painting, S
     public abstract boolean isRunnable();
 
     protected abstract ArrayList<Node> nodeArrayList();
+
+    public abstract Class<? extends BasicScriptSettings> getScriptSettingsType();
 
     @Getter @Setter
     protected boolean isRunning;
@@ -71,6 +73,7 @@ public abstract class BoeScript extends Script implements Paintable, Painting, S
         EventDispatcher.get().dispatch(new ScriptEndedEvent());
         EventDispatcher.get().destroy();
         daxTracker.stop();
+        Antiban.get().destroy();
     }
 
     private void setDaxWalker() {
@@ -93,7 +96,7 @@ public abstract class BoeScript extends Script implements Paintable, Painting, S
 
     protected String[] basicPaint() {
         return new String[] {
-                MANIFEST.name() + " v" + MANIFEST.version() + " by " + MANIFEST.authors()[0],
+                manifest.name() + " v" + manifest.version() + " by " + manifest.authors()[0],
                 "Time ran: " + paint.getTimeRan()
         };
     }

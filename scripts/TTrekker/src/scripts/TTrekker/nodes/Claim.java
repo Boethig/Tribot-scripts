@@ -20,7 +20,7 @@ import scripts.dax_api.walker_engine.interaction_handling.NPCInteraction;
 public class Claim extends Node {
 
     public boolean validate() {
-        return Utils.hasRewardsToken() && !Vars.get().inTrekk;
+        return !Utils.isInTrekk() && Utils.hasRewardsToken();
     }
 
     public void execute() {

@@ -48,7 +48,7 @@ public class Bank extends Node {
                     this.withdraw(1, Utils.getBankAxeId());
                 }
             }
-            if (Vars.get().useStaminas && !Utils.hasStamina()) {
+            if (Vars.get().getSettings().shouldUseStaminas && !Utils.hasStamina()) {
                 final RSItem[] staminas = Banking.find(Constants.STAMINA_IDS);
                 if (staminas.length > 0) {
                     final int count = staminas[0].getStack();

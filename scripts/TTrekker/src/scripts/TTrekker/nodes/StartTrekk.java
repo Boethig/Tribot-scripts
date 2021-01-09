@@ -22,11 +22,11 @@ public class StartTrekk extends Node {
 
     public boolean validate() {
         return Utils.isInStartingArea()
-                && !Inventory.isFull()
+                && Utils.hasTools()
                 && !Utils.isInTrekk()
+                && !Inventory.isFull()
                 && !Utils.hasRewardsToken()
-                && !Interfaces.isInterfaceSubstantiated(Constants.SUPPLY_MASTER)
-                && Utils.hasTools();
+                && !Interfaces.isInterfaceSubstantiated(Constants.SUPPLY_MASTER);
     }
 
     public void execute() {
@@ -38,7 +38,7 @@ public class StartTrekk extends Node {
                 return Utils.isInTrekkRoute();
             }, General.random(1500,2500));
         } else {
-            RSNPC escort = Antiban.get().selectNextTarget(Vars.get().escorts.find());
+            RSNPC escort = Antiban.get().selectNextTarget(Vars.get().getSettings().escortDifficulty.find());
             if (escort != null) {
                 Vars.get().subStatus = "Clicking on Escort";
                 if (!escort.isOnScreen() || !escort.isClickable()) {
