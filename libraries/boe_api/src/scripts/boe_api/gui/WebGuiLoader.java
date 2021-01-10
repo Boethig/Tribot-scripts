@@ -6,9 +6,11 @@ import javafx.concurrent.Worker;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import lombok.Setter;
 import netscape.javascript.JSException;
 import netscape.javascript.JSObject;
@@ -37,6 +39,7 @@ public class WebGuiLoader extends Application implements Gui {
 
     @Override
     public void start(Stage stage) {
+        stage.initStyle(StageStyle.TRANSPARENT);
         stage.setResizable(false);
         initWebView();
         BorderPane container = new BorderPane();
@@ -46,14 +49,9 @@ public class WebGuiLoader extends Application implements Gui {
 
         container.setCenter(webView);
 
-//        AnchorPane center = new AnchorPane();
-//        container.setCenter(center);
-//
-//        center.getChildren().add(webView);
-        Scene scene = new Scene(container, 1100 + (SHADOW_SIZE), 500 + (SHADOW_SIZE));
-
+        Scene scene = new Scene(container, 1100 + (SHADOW_SIZE), 600 + (SHADOW_SIZE));
+        scene.setFill(Color.TRANSPARENT);
         stage.setScene(scene);
-        stage.showAndWait();
     }
 
     @Override
@@ -71,6 +69,7 @@ public class WebGuiLoader extends Application implements Gui {
                 try {
                     stage = new Stage();
                     start(stage);
+                    stage.showAndWait();
                 } catch (Exception e) {
                     e.printStackTrace();
                     Logger.log("[WebGuiLoader]: %s", e.getMessage());
@@ -118,6 +117,7 @@ public class WebGuiLoader extends Application implements Gui {
         webEngine = webView.getEngine();
         webEngine.setJavaScriptEnabled(true);
         webEngine.setUserAgent(USER_AGENT);
+        webEngine.getLoadWorker().stateProperty().addListener(new HyperLinkedRedirectListener(webEngine));
         webEngine.setUserDataDirectory(ProfileManager.get().getFolderPath().resolve("webview").toFile());
         webEngine.setPromptHandler(param -> {
             Logger.log(param.getMessage());

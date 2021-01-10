@@ -7,10 +7,7 @@ import scripts.boe_api.scripting.ScriptManager;
 import scripts.boe_api.utilities.EnumTypeAdapter;
 import java.io.*;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
@@ -37,8 +34,6 @@ public class ProfileManager {
             properties.clear();
             properties.load(input);
 
-            info("[ProfileManager] Successfully loaded profile.");
-
             return properties.getProperty(PROFILE_KEY);
 
         } catch (IOException io) {
@@ -55,6 +50,7 @@ public class ProfileManager {
             if (filePath != null) {
                 List<Profile> profiles = Arrays.stream(Objects.requireNonNull(filePath.listFiles((file) ->
                         file.isFile())))
+                        .sorted((o1, o2) -> o2.lastModified() - o1.lastModified() > 0 ? 1 : -1)
                         .map((file -> {
                             try {
                                 String profileName = file.getName().replace("_settings.ini", "");
@@ -67,7 +63,7 @@ public class ProfileManager {
                         }))
                         .filter(profile -> profile != null)
                         .collect(Collectors.toList());
-
+                info("[ProfileManager] Successfully loaded profiles.");
                 return profiles.toArray(Profile[]::new);
             }
         } catch (Exception e) {
