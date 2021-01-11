@@ -40,7 +40,7 @@ public class Vars  {
         this.bogAttempts = 0;
         this.inTrekk = false;
         this.claimCount = 1;
-        this.reward = TrekkReward.BOWSTRINGS;
+        this.reward = TrekkReward.XP_TOME;
         this.abc2WaitTimes = new ArrayList<>();
         this.foodSupply = null;
         this.foodSupplyAmount = 0;

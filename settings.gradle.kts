@@ -8,3 +8,4 @@ include("libraries:rsitem_services")
 
 // scripts
 include("scripts:TTrekker")
+include("scripts:Debug")

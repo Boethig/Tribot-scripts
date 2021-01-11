@@ -2,6 +2,7 @@ package scripts.TTrekker.nodes.puzzles;
 
 import org.tribot.api.General;
 import org.tribot.api.Timing;
+import org.tribot.api2007.Player;
 import org.tribot.api2007.Walking;
 import org.tribot.api2007.WebWalking;
 import org.tribot.api2007.types.RSObject;
@@ -54,29 +55,27 @@ public abstract class Puzzle extends Node {
                 .nameEquals("Path", "Boat")
                 .actionsContains(action)
                 .getResults());
-        if (path == null || NPCInteraction.isConversationWindowUp()) {
-            return false;
+        if (path == null) {
+            Utils.walkNorth();
         }
-        if (!path.isOnScreen() || !path.isClickable()) {
-            aCamera.turnToTile(path);
-        }
-        if (AccurateMouse.click(path, action)) {
-            General.sleep(General.randomSD(600, 320));
-            if (NPCInteraction.isConversationWindowUp()) {
-                return false;
+        if (path.isClickable() && path.isOnScreen() && AccurateMouse.click(path, action)) {
+            if (Timing.waitCondition(() -> NPCInteraction.isConversationWindowUp(), 1600)) {
+                NPCInteraction.handleConversation();
             }
             return Timing.waitCondition(() -> {
                 General.sleep(100,300);
                 return Utils.isInTrekkRoute();
-            }, General.random(12000,14500));
+            }, General.random(12000,14000));
         } else if (AccurateMouse.clickMinimap(path)) {
             Timing.waitCondition(() -> {
                 General.sleep(100,300);
                 return path.isClickable() || path.isOnScreen();
             }, General.random(4000,6000));
         } else {
-            DaxWalker.walkTo(path.getAnimablePosition().toLocalTile());
             WebWalking.walkTo(path.getPosition(), () -> path.isClickable() || path.isOnScreen(), General.random(300, 500));
+        }
+        if (!path.isOnScreen() || !path.isClickable()) {
+            aCamera.turnToTile(path);
         }
         return false;
     }

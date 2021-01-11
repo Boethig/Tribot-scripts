@@ -3,9 +3,8 @@ package scripts.TTrekker.utils;
 import org.tribot.api.General;
 import org.tribot.api.Timing;
 import org.tribot.api2007.*;
-import org.tribot.api2007.types.RSItem;
-import org.tribot.api2007.types.RSObject;
-import org.tribot.api2007.types.RSVarBit;
+import org.tribot.api2007.types.*;
+import org.tribot.script.interfaces.MinimapClicking;
 import scripts.TTrekker.data.Constants;
 import scripts.TTrekker.data.Vars;
 import scripts.boe_api.entities.Entities;
@@ -142,11 +141,25 @@ public class Utils {
         return Inventory.isFull() || !hasTools() || (Vars.get().getSettings().shouldUseStaminas && !hasStamina());
     }
 
-    public static boolean selectItem(final RSItem item) {
-        return item != null && AccurateMouse.click(item) && Timing.waitCondition(() -> {
-            Antiban.get().waitItemInteractionDelay();
-            return Game.getItemSelectionState() == 1;
-        }, General.random(2500 + Vars.get().sleepOffset, 4000 + Vars.get().sleepOffset));
+    public static boolean selectItem(RSItem item) {
+        if (Game.getItemSelectionState() == 1)
+            return true;
+        if (item != null) {
+            Antiban.get().hoverEntity(item);
+            return AccurateMouse.click(item) && Timing.waitCondition(() -> {
+                Antiban.get().waitItemInteractionDelay();
+                return Game.getItemSelectionState() == 1 && Game.getSelectedItemName().equals(item.getDefinition().getName());
+            }, General.random(2500,4000));
+        }
+
+        return false;
+    }
+
+    public static boolean walkNorth() {
+        //TODO: run debug script and get randomSD value for northern clicks
+        RSTile northPosition = new RSTile((int) (Player.getPosition().getX() + General.randomSD(-5,6, 3.11)), (int)(Player.getPosition().getY() + General.randomSD(12,18, 1.34)), Player.getPosition().getPlane());
+        RSTile miniMapTile = new RSArea(northPosition, 1).getRandomTile();
+        return AccurateMouse.clickMinimap(miniMapTile);
     }
 
     public static boolean canAttackVampyres() {

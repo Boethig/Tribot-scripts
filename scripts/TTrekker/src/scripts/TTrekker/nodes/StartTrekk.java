@@ -36,7 +36,7 @@ public class StartTrekk extends Node {
             Timing.waitCondition(() -> {
                 General.sleep(100,300);
                 return Utils.isInTrekkRoute();
-            }, General.random(1500,2500));
+            }, General.random(2000,2750));
         } else {
             RSNPC escort = Antiban.get().selectNextTarget(Vars.get().getSettings().escortDifficulty.find());
             if (escort != null) {

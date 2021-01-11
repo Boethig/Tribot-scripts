@@ -52,6 +52,7 @@ public class Abidor extends Puzzle {
 
     @Override
     public void resetPuzzle() {
+        this.isPuzzleComplete = false;
     }
 
     public boolean hasBeenHealed() { return Combat.getHP() > Combat.getMaxHP(); }

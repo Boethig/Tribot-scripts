@@ -1,5 +1,7 @@
 package scripts.TTrekker.nodes.puzzles;
 
+import org.tribot.api.General;
+import org.tribot.api.Timing;
 import org.tribot.api2007.types.RSInterface;
 import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.utils.Utils;
@@ -33,8 +35,12 @@ public class Route extends Node {
                 }
             }
         } else {
-            Vars.get().subStatus = "Antiban";
-            Antiban.get().timedActions();
+            Vars.get().subStatus = "Waiting";
+            Timing.waitCondition(() -> {
+                General.sleep(50,150);
+                Antiban.get().timedActions();
+                return !Utils.isInTrekkRoute() || !Utils.isInTrekk();
+            }, General.random(5000,7000));
         }
     }
 

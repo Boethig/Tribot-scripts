@@ -11,6 +11,7 @@ public class TrekkScriptSettings extends BasicScriptSettings {
     public Routes route = Routes.EASY;
     public Escorts escortDifficulty = Escorts.EASY;
     public EscortSupply escortSupply;
+    public TrekkReward reward = TrekkReward.XP_TOME;
 
     public TrekkScriptSettings() {
         super();

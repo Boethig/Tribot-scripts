@@ -1,5 +1,6 @@
 package scripts.TTrekker.nodes.puzzles;
 
+import org.tribot.api.Clicking;
 import org.tribot.api.General;
 import org.tribot.api.Timing;
 import org.tribot.api2007.Combat;
@@ -42,23 +43,27 @@ public class Bridge extends Puzzle {
                 walkAcrossBridge(bridge);
             } else if (isBridgeFixable(bridge) || doWeHaveMaterials()) {
                     if (bridge.isOnScreen() && bridge.isClickable()) {
+                        RSItem[] materials = Inventory.find(Constants.LOGS, Constants.PLANK);
                         if (Game.getItemSelectionState() == 1) {
                             Vars.get().subStatus = "Fixing Bridge";
-                            if (AccurateMouse.click(bridge, "Use Plank", "Use Logs")) {
+                            if (AccurateMouse.click(bridge, new String[]{"Use Plank", "Use Logs"})) {
+                                Timing.waitCondition(() -> Player.getAnimation() != -1, General.random(7000,9000));
+                                if (materials.length > 1) {
+                                    Antiban.get().hoverEntity(materials[1]);
+                                }
                                 Timing.waitCondition(() -> {
                                     General.sleep(100,300);
-                                    return Objects.find(10, bridge.getID() + 1).length > 0 && Game.getItemSelectionState() != 1;
-                                }, General.random(5500,6500));
+                                    return Objects.find(10, bridge.getID() + 1).length > 0 && materials.length > Inventory.getCount(Constants.LOGS, Constants.PLANK);
+                                },General.random(2500,3500));
                             } else {
                                 Vars.get().subStatus = "Rotating camera";
-                                Camera.turnToTile(bridge);
+                                aCamera.turnToTile(bridge);
                             }
                         } else {
                             Vars.get().subStatus = "Selecting Materials";
                             Inventory.open();
-                            RSItem material = OSInventory.findFirstNearestToMouse(Constants.LOGS, Constants.PLANK);
-                            if (material != null) {
-                                Utils.selectItem(material);
+                            if (materials.length > 0) {
+                                Utils.selectItem(materials[0]);
                             }
                         }
                     } else if (AccurateMouse.clickMinimap(bridge.getPosition())) {
@@ -129,7 +134,6 @@ public class Bridge extends Puzzle {
     public boolean doWeHaveMaterials() {
         return Inventory.getCount(Constants.LOGS) >= 3 || Inventory.getCount(Constants.PLANK) >= 3;
     }
-
 
     private void walkAcrossBridge(final RSObject bridge) {
         Vars.get().subStatus = "Walking across fixed bridge";

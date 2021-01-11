@@ -52,6 +52,7 @@ public class River extends Puzzle {
     }
 
     public void collectVines(RSObject tree) {
+        Inventory.open();
         Vars.get().subStatus = "Collecting vines";
         if (!Inventory.isFull()) {
             int count = Inventory.getCount(Constants.VINE);
@@ -61,7 +62,7 @@ public class River extends Puzzle {
             if (AccurateMouse.click(tree, "Cut-vine")) {
                 Timing.waitCondition(() -> {
                     General.sleep(100, 300);
-                    return Inventory.getCount(Constants.VINE) > count && Game.getItemSelectionState() != 1;
+                    return Inventory.getCount(Constants.VINE) > count;
                 }, General.random(3000,4000));
             }
         }
@@ -69,7 +70,6 @@ public class River extends Puzzle {
 
     public void createRope() {
         Vars.get().subStatus = "Creating Rope";
-        Inventory.open();
         RSItem[] vines = OSInventory.findNearestToMouse(Constants.VINE);
         if (vines.length > 1) {
             if (Game.getItemSelectionState() == 1 && Game.getSelectedItemName().equals("Short vine")) {
@@ -77,7 +77,7 @@ public class River extends Puzzle {
                     Timing.waitCondition(() -> {
                         General.sleep(General.randomSD(100, 300, 2));
                         return NPCInteraction.isConversationWindowUp();
-                    }, General.random(2000 + Vars.get().sleepOffset, 3000 + Vars.get().sleepOffset));
+                    }, General.random(2000,3000));
                 }
             } else if (Utils.selectItem(vines[0])) {
                 Antiban.get().waitItemInteractionDelay();
