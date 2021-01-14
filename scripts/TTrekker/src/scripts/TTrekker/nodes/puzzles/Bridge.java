@@ -85,7 +85,6 @@ public class Bridge extends Puzzle {
                     RSNPC zombie = Antiban.get().selectNextTarget(
                             Entities.find(NpcEntity::new)
                                     .nameEquals("Undead Lumberjack")
-                                    .custom(rsnpc -> rsnpc.isInteractingWithMe())
                                     .getResults()
                     );
                     if (zombie != null) {

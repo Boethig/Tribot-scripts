@@ -68,7 +68,7 @@ public abstract class CombatStrategy {
 
     public void waitForKill() {
         Vars.get().subStatus = "AFKing";
-        while (Combat.getTargetEntity() != null) {
+        while (getEscortAttacker() == null && Combat.getTargetEntity() != null) {
             checkPrayer();
             checkAndEat();
             Antiban.get().timedActions();
@@ -153,6 +153,6 @@ public abstract class CombatStrategy {
 
     public RSNPC getEscortAttacker() {
         RSNPC escort = Vars.get().getSettings().escortDifficulty.findInInstance();
-        return escort != null && escort.isInCombat() ? (RSNPC) (escort.getInteractingCharacter()) : null;
+        return escort != null && escort.isInCombat() && escort.getInteractingCharacter() != Player.getRSPlayer() ? (RSNPC) (escort.getInteractingCharacter()) : null;
     }
 }

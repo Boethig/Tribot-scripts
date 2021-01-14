@@ -12,6 +12,7 @@ import scripts.boe_api.entities.finders.prefabs.ItemEntity;
 import scripts.boe_api.entities.finders.prefabs.ObjectEntity;
 import scripts.boe_api.utilities.Antiban;
 import scripts.dax_api.walker.utils.AccurateMouse;
+import scripts.dax_api.walker_engine.interaction_handling.NPCInteraction;
 
 public class Utils {
 
@@ -38,7 +39,7 @@ public class Utils {
     public static boolean isInTrekkRoute() {
         return Interfaces.isInterfaceSubstantiated(329)
                 || Objects.findNearest(5, "Signpost").length > 0
-                || RSVarBit.get(Constants.IN_TREKK).getValue() == 2;
+                || RSVarBit.get(Constants.IN_TREKK).getValue() == Constants.IN_INSTANCE;
     }
 
     public static boolean isInTrekkCombatPuzzle() {
@@ -54,7 +55,9 @@ public class Utils {
     }
 
     public static boolean hasRewardsToken() {
-        return Inventory.open() && Entities.find(ItemEntity::new)
+        return !NPCInteraction.isConversationWindowUp() &&
+                Inventory.open() &&
+                Entities.find(ItemEntity::new)
                 .nameEquals("Reward token")
                 .actionsContains("Look-at")
                 .getResults().length > 0;
@@ -155,11 +158,27 @@ public class Utils {
         return false;
     }
 
-    public static boolean walkNorth() {
-        //TODO: run debug script and get randomSD value for northern clicks
-        RSTile northPosition = new RSTile((int) (Player.getPosition().getX() + General.randomSD(-5,6, 3.11)), (int)(Player.getPosition().getY() + General.randomSD(12,18, 1.34)), Player.getPosition().getPlane());
-        RSTile miniMapTile = new RSArea(northPosition, 1).getRandomTile();
-        return AccurateMouse.clickMinimap(miniMapTile);
+    public static boolean getNorthTile() {
+        RSTile miniMapTile = new RSTile((int) (Player.getPosition().getX() + General.randomSD(-5,6, 3.11)), (int)(Player.getPosition().getY() + General.randomSD(12,18, 1.34)), Player.getPosition().getPlane());
+        if (miniMapTile != null) {
+            return miniMapTile.isTileLoaded() && AccurateMouse.clickMinimap(miniMapTile);
+        }
+        return false;
+    }
+
+    public static boolean getSouthTile() {
+        RSTile miniMapTile = new RSTile((int) (Player.getPosition().getX() + General.randomSD(-5,6, 3.11)), (int)(Player.getPosition().getY() - General.randomSD(12,18, 1.34)), Player.getPosition().getPlane());
+        if (miniMapTile != null) {
+            return miniMapTile.isTileLoaded() && AccurateMouse.clickMinimap(miniMapTile);
+        }
+        return false;
+    }
+
+    public static boolean findPath() {
+        if (!getNorthTile()) {
+            return getSouthTile();
+        }
+        return true;
     }
 
     public static boolean canAttackVampyres() {

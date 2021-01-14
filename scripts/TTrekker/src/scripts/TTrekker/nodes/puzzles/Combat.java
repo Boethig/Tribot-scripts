@@ -35,12 +35,11 @@ public class Combat extends Puzzle {
     public void solvePuzzle() {
         if (canEvadeEvent()) {
             if (evadePath()) {
-                resetPuzzle();
+                this.isPuzzleComplete = true;
             }
         } else {
             if (context != null) {
                 CombatStrategy strategy = context.getStrategy();
-                General.println(strategy.getClass().getSimpleName());
                 if (strategy != null) {
                     Vars.get().subStatus = strategy.getClass().getSimpleName();
                     if (strategy.handle()) {

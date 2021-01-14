@@ -62,7 +62,7 @@ public class River extends Puzzle {
             if (AccurateMouse.click(tree, "Cut-vine")) {
                 Timing.waitCondition(() -> {
                     General.sleep(100, 300);
-                    return Inventory.getCount(Constants.VINE) > count;
+                    return Inventory.getCount(Constants.VINE) > count && Player.getAnimation() == -1;
                 }, General.random(3000,4000));
             }
         }

@@ -19,7 +19,10 @@ public class Tentacles extends CombatStrategy {
 
     @Override
     public boolean handle() {
-        return super.handle() && killHead();
+        if (super.handle()) {
+            return killHead();
+        }
+        return false;
     }
 
     @Override
@@ -33,7 +36,10 @@ public class Tentacles extends CombatStrategy {
     }
 
     public boolean killHead() {
-        RSNPC head = Entities.find(NpcEntity::new).nameEquals("Head").actionsContains("Attack").getFirstResult();
+        RSNPC head = Entities.find(NpcEntity::new)
+                .nameContains("Head")
+                .actionsContains("Attack")
+                .getFirstResult();
         if (head != null) {
             if (AccurateMouse.click(head, "Attack") &&
                     Timing.waitCondition(() -> {

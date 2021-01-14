@@ -55,27 +55,28 @@ public abstract class Puzzle extends Node {
                 .nameEquals("Path", "Boat")
                 .actionsContains(action)
                 .getResults());
-        if (path == null) {
-            Utils.walkNorth();
-        }
-        if (path.isClickable() && path.isOnScreen() && AccurateMouse.click(path, action)) {
-            if (Timing.waitCondition(() -> NPCInteraction.isConversationWindowUp(), 1600)) {
-                NPCInteraction.handleConversation();
-            }
-            return Timing.waitCondition(() -> {
-                General.sleep(100,300);
+        if (path != null) {
+            if (path.isClickable() && path.isOnScreen() && AccurateMouse.click(path, action)) {
+                Timing.waitCondition(() -> {
+                    General.sleep(100,300);
+                    return Utils.isInTrekkRoute() || NPCInteraction.isConversationWindowUp();
+                }, General.random(10000,12500));
+
                 return Utils.isInTrekkRoute();
-            }, General.random(12000,14000));
-        } else if (AccurateMouse.clickMinimap(path)) {
-            Timing.waitCondition(() -> {
-                General.sleep(100,300);
-                return path.isClickable() || path.isOnScreen();
-            }, General.random(4000,6000));
+
+            } else if (AccurateMouse.clickMinimap(path)) {
+                Timing.waitCondition(() -> {
+                    General.sleep(100,300);
+                    return path.isClickable() || path.isOnScreen();
+                }, General.random(4000,6000));
+            } else {
+                WebWalking.walkTo(path.getPosition(), () -> path.isClickable() || path.isOnScreen(), General.random(300, 500));
+            }
+            if (!path.isOnScreen() || !path.isClickable()) {
+                aCamera.turnToTile(path);
+            }
         } else {
-            WebWalking.walkTo(path.getPosition(), () -> path.isClickable() || path.isOnScreen(), General.random(300, 500));
-        }
-        if (!path.isOnScreen() || !path.isClickable()) {
-            aCamera.turnToTile(path);
+            Timing.waitCondition(() -> Utils.findPath(), General.random(5000,7000));
         }
         return false;
     }
