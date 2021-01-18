@@ -76,7 +76,7 @@ public abstract class Puzzle extends Node {
                 aCamera.turnToTile(path);
             }
         } else {
-            Timing.waitCondition(() -> Utils.findPath(), General.random(5000,7000));
+            Utils.findPath();
         }
         return false;
     }

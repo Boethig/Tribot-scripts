@@ -47,14 +47,14 @@ public class Bridge extends Puzzle {
                         if (Game.getItemSelectionState() == 1) {
                             Vars.get().subStatus = "Fixing Bridge";
                             if (AccurateMouse.click(bridge, new String[]{"Use Plank", "Use Logs"})) {
-                                Timing.waitCondition(() -> Player.getAnimation() != -1, General.random(7000,9000));
+                                Timing.waitCondition(() -> Player.getAnimation() == Constants.FIX_BRIDGE_ANIMATION, General.random(7000,9000));
                                 if (materials.length > 1) {
                                     Antiban.get().hoverEntity(materials[1]);
                                 }
                                 Timing.waitCondition(() -> {
                                     General.sleep(100,300);
                                     return Objects.find(10, bridge.getID() + 1).length > 0 && materials.length > Inventory.getCount(Constants.LOGS, Constants.PLANK);
-                                },General.random(2500,3500));
+                                },General.random(3000,5000));
                             } else {
                                 Vars.get().subStatus = "Rotating camera";
                                 aCamera.turnToTile(bridge);
@@ -89,7 +89,7 @@ public class Bridge extends Puzzle {
                     );
                     if (zombie != null) {
                         if (Combat.getTargetEntity() == null) {
-                            if (!zombie.isOnScreen() || !zombie.isClickable()) {
+                            if (!zombie.isOnScreen()) {
                                 aCamera.turnToTile(zombie);
                             }
                             Vars.get().subStatus = "Attacking Lumberjacks";

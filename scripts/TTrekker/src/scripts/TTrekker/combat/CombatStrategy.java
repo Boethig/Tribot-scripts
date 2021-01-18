@@ -3,15 +3,14 @@ package scripts.TTrekker.combat;
 import org.tribot.api.General;
 import org.tribot.api.Timing;
 import org.tribot.api2007.*;
-import org.tribot.api2007.types.RSItem;
-import org.tribot.api2007.types.RSItemDefinition;
-import org.tribot.api2007.types.RSNPC;
+import org.tribot.api2007.types.*;
 import scripts.TTrekker.data.Vars;
 import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.ItemEntity;
 import scripts.boe_api.entities.finders.prefabs.NpcEntity;
 import scripts.boe_api.utilities.Antiban;
+import scripts.boe_api.utilities.Logger;
 import scripts.dax_api.walker.utils.AccurateMouse;
 
 import java.util.Arrays;
@@ -38,19 +37,18 @@ public abstract class CombatStrategy {
             return true;
         } else {
             if (Prayer.getPrayerPoints() > 0) {
+                Logger.log("[CombatStrategy] Activating %s prayer", useProtectionPrayer().getName());
                 Prayer.enable(useProtectionPrayer());
             }
-            RSNPC attackingEscortNPC = getEscortAttacker();
-            if (attackingEscortNPC != null || Combat.getTargetEntity() == null || !Combat.isUnderAttack()) {
-                RSNPC npc = attackingEscortNPC != null && !attackingEscortNPC.isInteractingWithMe() ? attackingEscortNPC : getNextNPC(npcs);
+            RSNPC attackingNpc = getEscortAttacker();
+            if (attackingNpc != null || Combat.getTargetEntity() == null) {
+                RSNPC npc = attackingNpc != null && !attackingNpc.isInteractingWithMe() ? attackingNpc : getNextNPC(npcs);
                 if (npc != null) {
-                    if (!npc.isClickable() || !npc.isOnScreen()) {
-                        aCamera.turnToTile(npc);
-                    }
+                    Logger.log("[CombatStrategy] Attacking %s", npc.getName());
                     if (AccurateMouse.click(npc, "Attack") &&
                             Timing.waitCondition(() -> {
                                 General.sleep(100,300);
-                                return Combat.getTargetEntity() != null || (npc.isInteractingWithMe() && npc.isInCombat());
+                                return Combat.getTargetEntity() != null || (npc.isInteractingWithMe() && npc.isInCombat() || Combat.isUnderAttack());
                             },General.random(3000,5000))) {
                         waitForKill();
                         Antiban.get().generateTrackers(10);
@@ -68,7 +66,8 @@ public abstract class CombatStrategy {
 
     public void waitForKill() {
         Vars.get().subStatus = "AFKing";
-        while (getEscortAttacker() == null && Combat.getTargetEntity() != null) {
+        Logger.log("[CombatStrategy] Waiting for npc to be killed.");
+        while (Combat.getTargetEntity() != null && getEscortAttacker() == null) {
             checkPrayer();
             checkAndEat();
             Antiban.get().timedActions();
@@ -85,7 +84,8 @@ public abstract class CombatStrategy {
                     return itemDefinition == null || !itemDefinition.isNoted();
                 })).getFirstResult();
         if (potion != null) {
-            if (Prayer.getPrayerPoints() < Antiban.get().getEatAt()) {
+            if (Prayer.getPrayerPoints() <= Vars.get().restorePrayerAt) {
+                Logger.log("[CombatStrategy] Restoring prayer points.");
                 Inventory.open();
                 int prePrayer = Prayer.getPrayerPoints();
                 if (AccurateMouse.click(potion) && Timing.waitCondition(() -> {
@@ -111,6 +111,7 @@ public abstract class CombatStrategy {
         if (food != null) {
             int currentHp = Combat.getHP();
             if (currentHp < Antiban.get().getEatAt()) {
+                Logger.log("[CombatStrategy] Restoring hitpoints.");
                 Inventory.open();
                 if (AccurateMouse.click(food) && Timing.waitCondition(() -> {
                     General.sleep(50,150);
@@ -153,6 +154,13 @@ public abstract class CombatStrategy {
 
     public RSNPC getEscortAttacker() {
         RSNPC escort = Vars.get().getSettings().escortDifficulty.findInInstance();
-        return escort != null && escort.isInCombat() && escort.getInteractingCharacter() != Player.getRSPlayer() ? (RSNPC) (escort.getInteractingCharacter()) : null;
+        if (escort != null && escort.isInCombat()) {
+            RSCharacter character = escort.getInteractingCharacter();
+            if (character != null && character.getClass() == RSNPC.class) {
+                Logger.log("[CombatStrategy] Escort is under attack.");
+                return (RSNPC) character;
+            }
+        }
+        return null;
     }
 }

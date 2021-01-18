@@ -1,8 +1,11 @@
 package scripts.TTrekker.data;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.tribot.api2007.types.RSVarBit;
 
+@Getter
+@AllArgsConstructor
 public enum EscortSupply {
 
     STEW("Stew",2003,3418),
@@ -17,18 +20,9 @@ public enum EscortSupply {
     LOBSTER("Lobster",379,3423),
     CHOCOLATE_CAKE("Chocolate cake",1897,3430);
 
-    @Getter
     private String name;
-    @Getter
     private int id;
-    @Getter
     private int varbitCount;
-
-    EscortSupply(String name, int id, int varbitCount) {
-        this.name = name;
-        this.id = id;
-        this.varbitCount = varbitCount;
-    }
 
     public int getSupplyCount() {
         return RSVarBit.get(varbitCount).getValue();

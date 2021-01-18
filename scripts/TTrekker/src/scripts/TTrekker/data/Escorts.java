@@ -6,6 +6,7 @@ import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.NpcEntity;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 public enum Escorts {
@@ -37,4 +38,15 @@ public enum Escorts {
                 .getFirstResult();
     }
 
+    public boolean isEscortingToBurgDeRott() {
+        RSNPC escort = findInInstance();
+        if (escort != null) {
+            Escort e = Escort.fromInstanceId(escort.getID());
+            if (e != null) {
+                return e.isBurgDeRottRamble();
+            }
+        }
+
+        return false;
+    }
 }

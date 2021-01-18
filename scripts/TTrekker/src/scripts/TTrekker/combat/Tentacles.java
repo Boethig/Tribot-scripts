@@ -44,10 +44,11 @@ public class Tentacles extends CombatStrategy {
             if (AccurateMouse.click(head, "Attack") &&
                     Timing.waitCondition(() -> {
                         General.sleep(100,300);
-                        return Combat.getTargetEntity() != null || (head.isInteractingWithMe() && head.isInCombat());
+                        return Combat.getTargetEntity() != null || (head.isInteractingWithMe() && head.isInCombat() || Combat.isUnderAttack());
                     },General.random(3000,5000))) {
                 waitForKill();
             }
+            return false;
         }
         return true;
     }

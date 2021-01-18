@@ -38,17 +38,7 @@ public class Constants {
     public static final int ROTTEN_FOOD = 2959;
     public static final int RING_OF_LIFE = 2570;
     public static int[] STAMINA_IDS;
-    public static final String CHOOSE = "Ok, which route should we take?";
-    public static final String TRAVERSED = "Whahay! That was great!";
     public static final String[] OPTIONS;
-    public static final String ROPED = "You throw the vine up to the branch; it wraps around the branch.";
-    public static final String SLOW_ROUTE = "You choose the slow route through Mort Myre Swamp.";
-    public static final String SOFT = "Erk, this ground feels quite soft.";
-    public static final String FIRM = "This ground seems quite firm.";
-    public static final String MOVED = "The ground seems firm enough.";
-    public static final String SUCK = "Your stick gets sucked into the bog...";
-    public static final String END = "You reach your destination.";
-    public static final String TALKED = "There you go... Right, I must be off now. Good luck with your travels.";
     public static final int REWARDS = 274;
     public static final int CLAIMCHILD = 12;
     public static final int IN_AID_OF_MYQYREQUE_VARBIT = 1990;
@@ -62,6 +52,7 @@ public class Constants {
     public static final int NAIL_BEAST_NAILS = 10937;
     public static final int ESCORT_FOOD_LEFT = 3433;
     public static final int SUPPLY_MASTER = 518;
+    public static final int FIX_BRIDGE_ANIMATION = 898;
 
     static {
         BURG = new RSArea(new RSTile(3486, 3243, 0), new RSTile(3479, 3237, 0));

@@ -31,10 +31,10 @@ public class VarBitObserver extends Thread {
             while (Login.getLoginState() != Login.STATE.INGAME)
                 General.sleep(500);
 
-            int newVarBit = RSVarBit.get(this.id).getValue();
+            int newVarBit = RSVarBit.get(id).getValue();
 
             if (oldVarBit != newVarBit) {
-                varBitChanged(this.id, newVarBit);
+                varBitChanged(newVarBit);
             }
 
             oldVarBit = newVarBit;
@@ -47,9 +47,9 @@ public class VarBitObserver extends Thread {
         }
     }
 
-    public void varBitChanged(int id, int varBit) {
+    public void varBitChanged(int varBit) {
         for (VarBitListener listener : listeners) {
-            listener.varBitChanged(id, varBit);
+            listener.varBitChanged(varBit);
         }
     }
 

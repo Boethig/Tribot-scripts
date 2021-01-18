@@ -24,6 +24,7 @@ public class Trekk extends ParentNode {
         super(aCamera);
     }
 
+    @Override
     public boolean validate() {
         return Utils.isInTrekk();
     }

@@ -30,28 +30,19 @@ public class StartTrekk extends Node {
     }
 
     public void execute() {
-        if (NPCInteraction.isConversationWindowUp()) {
-            Vars.get().subStatus = "Talking to Escort";
-            NPCInteraction.handleConversation();
-            Timing.waitCondition(() -> {
-                General.sleep(100,300);
-                return Utils.isInTrekkRoute();
-            }, General.random(2000,2750));
-        } else {
-            RSNPC escort = Antiban.get().selectNextTarget(Vars.get().getSettings().escortDifficulty.find());
-            if (escort != null) {
-                Vars.get().subStatus = "Clicking on Escort";
-                if (!escort.isOnScreen() || !escort.isClickable()) {
-                    aCamera.turnToTile(escort.getPosition());
-                }
-                if (InteractionHelper.click(escort, "Escort")) {
-                    NPCInteraction.waitForConversationWindow();
-                }
+        RSNPC escort = Antiban.get().selectNextTarget(Vars.get().getSettings().escortDifficulty.find());
+        if (escort != null) {
+            Vars.get().subStatus = "Clicking on Escort";
+            if (!escort.isOnScreen() || !escort.isClickable()) {
+                aCamera.turnToTile(escort.getPosition());
+            }
+            if (InteractionHelper.click(escort, "Escort")) {
+                NPCInteraction.waitForConversationWindow();
             }
         }
     }
 
     public String status() {
-        return "Starting Trekk:";
+        return "Starting Trekk";
     }
 }

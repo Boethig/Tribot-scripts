@@ -2,6 +2,7 @@ package scripts.TTrekker.data;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.tribot.api.General;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +21,8 @@ public class Vars  {
     public String status;
     public String subStatus;
     public int completed;
-    public int bogAttempts;
-    public boolean inTrekk;
     public boolean hasSelectedRoute;
+    public boolean isEscortDead;
     public int claimCount;
     public int sleepOffset;
     public List<Integer> abc2WaitTimes;
@@ -31,14 +31,12 @@ public class Vars  {
     public TrekkReward reward;
     public EscortSupply foodSupply;
     public int foodSupplyAmount;
-    public int restorePrayerAt = 40;
+    public int restorePrayerAt = General.random(30, 50);
 
     private Vars() {
         this.status = "";
         this.subStatus = "";
         this.completed = 0;
-        this.bogAttempts = 0;
-        this.inTrekk = false;
         this.claimCount = 1;
         this.reward = TrekkReward.XP_TOME;
         this.abc2WaitTimes = new ArrayList<>();
@@ -47,7 +45,7 @@ public class Vars  {
     }
 
     public void reset() {
-        this.inTrekk = false;
+        this.isEscortDead = false;
         this.hasSelectedRoute = false;
     }
 }

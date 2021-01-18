@@ -4,8 +4,8 @@ import org.tribot.api.General;
 import org.tribot.api.Timing;
 import org.tribot.api2007.*;
 import org.tribot.api2007.types.*;
-import org.tribot.script.interfaces.MinimapClicking;
 import scripts.TTrekker.data.Constants;
+import scripts.TTrekker.data.Escorts;
 import scripts.TTrekker.data.Vars;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.ItemEntity;
@@ -55,9 +55,7 @@ public class Utils {
     }
 
     public static boolean hasRewardsToken() {
-        return !NPCInteraction.isConversationWindowUp() &&
-                Inventory.open() &&
-                Entities.find(ItemEntity::new)
+        return Entities.find(ItemEntity::new)
                 .nameEquals("Reward token")
                 .actionsContains("Look-at")
                 .getResults().length > 0;
@@ -158,27 +156,17 @@ public class Utils {
         return false;
     }
 
-    public static boolean getNorthTile() {
-        RSTile miniMapTile = new RSTile((int) (Player.getPosition().getX() + General.randomSD(-5,6, 3.11)), (int)(Player.getPosition().getY() + General.randomSD(12,18, 1.34)), Player.getPosition().getPlane());
+    public static boolean walkDirection(boolean north) {
+        int multiplier = north ? 1 : -1;
+        RSTile miniMapTile = new RSTile(Player.getPosition().getX() + (int)(General.randomSD(-5,6, 3.11)), Player.getPosition().getY() + (int)(General.randomSD(12,18, 1.34) * multiplier), Player.getPosition().getPlane());
         if (miniMapTile != null) {
-            return miniMapTile.isTileLoaded() && AccurateMouse.clickMinimap(miniMapTile);
-        }
-        return false;
-    }
-
-    public static boolean getSouthTile() {
-        RSTile miniMapTile = new RSTile((int) (Player.getPosition().getX() + General.randomSD(-5,6, 3.11)), (int)(Player.getPosition().getY() - General.randomSD(12,18, 1.34)), Player.getPosition().getPlane());
-        if (miniMapTile != null) {
-            return miniMapTile.isTileLoaded() && AccurateMouse.clickMinimap(miniMapTile);
+            return AccurateMouse.clickMinimap(miniMapTile) && Timing.waitCondition(() -> Player.getPosition().distanceTo(miniMapTile) < General.random(3,5), General.random(5000,7000));
         }
         return false;
     }
 
     public static boolean findPath() {
-        if (!getNorthTile()) {
-            return getSouthTile();
-        }
-        return true;
+        return walkDirection(!Vars.get().getSettings().escortDifficulty.isEscortingToBurgDeRott());
     }
 
     public static boolean canAttackVampyres() {

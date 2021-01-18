@@ -39,7 +39,7 @@ public class Route extends Node {
             Timing.waitCondition(() -> {
                 General.sleep(50,150);
                 Antiban.get().timedActions();
-                return !Utils.isInTrekkRoute() || !Utils.isInTrekk();
+                return !Utils.isInTrekkRoute();
             }, General.random(5000,7000));
         }
     }
