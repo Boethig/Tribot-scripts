@@ -7,6 +7,8 @@ import org.tribot.api2007.Objects;
 import org.tribot.api2007.Player;
 import org.tribot.api2007.types.RSObject;
 import org.tribot.api2007.types.RSTile;
+import scripts.TTrekker.data.Vars;
+import scripts.boe_api.utilities.Logger;
 import scripts.dax_api.walker.utils.AccurateMouse;
 
 import java.util.ArrayList;
@@ -44,29 +46,27 @@ public class BogHelper {
     }
 
     public static boolean traverse(final ArrayList<BogNode> path) {
-        boolean hasReachedDestination = false;
-        if (path.get(path.size() - 1).getY() <= Player.getPosition().getY()) {
-            General.println("Path Reversed");
+        if (Vars.get().getSettings().escortDifficulty.isEscortingToBurgDeRott()) {
+            Logger.log("[BogHelper] Traveling south, reversing path.");
             Collections.reverse(path);
         }
         RSTile destination = path.get(path.size() - 1).getPosition();
         int playerIndex = getPlayerIndex(path);
+        Logger.log("[BogHelper] Starting from player index: %s", Integer.toString(playerIndex));
         for (int i = playerIndex; i < path.size(); ++i) {
             RSObject bog = path.get(i).getBog();
             if (bog != null) {
-//                Antiban.getReactionTime();
                 if (!walkTo(bog)) {
-                    General.println("Error clicking on tile @ " + bog.getPosition().toString());
+                    Logger.log("[BogHelper] Error clicking on Bog @ %s",bog.getPosition().toString());
                     break;
                 }
-                General.println("Successfully clicked on tile @ " + bog.getPosition().toString());
-//                Antiban.sleepReactionTime();
+                Logger.log("[BogHelper] Clicked on Bog @ %s",bog.getPosition().toString());
             }
         }
         if (Player.getPosition().equals(destination) && Objects.find(5, 13832).length > 0) {
-            hasReachedDestination = true;
+            return true;
         }
-        return hasReachedDestination;
+        return false;
     }
 
     private static int getPlayerIndex(final ArrayList<BogNode> list) {
@@ -83,8 +83,8 @@ public class BogHelper {
             Camera.turnToTile(bog.getPosition());
         }
         return AccurateMouse.click(bog, "Stand-on") && Timing.waitCondition(() -> {
-            General.random(100, 300);
+            General.random(100,300);
             return Player.getPosition().equals(bog.getPosition()) && !Player.isMoving();
-        }, General.random(3000, 5000));
+        }, General.random(3000,5000));
     }
 }

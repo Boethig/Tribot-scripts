@@ -26,7 +26,7 @@ import java.io.Reader;
 
 
 /**
- * This class serves as the entry point to the minimal-json scripts.boe_api.
+ * This class serves as the entry point to the minimal-json API.
  * <p>
  * To <strong>parse</strong> a given JSON input, use the <code>parse()</code> methods like in this
  * example:

@@ -14,6 +14,7 @@ import scripts.boe_api.entities.finders.prefabs.NpcEntity;
 import scripts.boe_api.entities.finders.prefabs.ObjectEntity;
 import scripts.boe_api.inventory.OSInventory;
 import scripts.boe_api.utilities.Antiban;
+import scripts.boe_api.utilities.Logger;
 import scripts.dax_api.walker.utils.AccurateMouse;
 
 import java.util.Arrays;
@@ -34,7 +35,7 @@ public class Ghast extends CombatStrategy {
 
     @Override
     public boolean handle() {
-        if (Prayer.getPrayerPoints() > 0) {
+        if (Vars.get().getSettings().useProtectionPrayers && Prayer.getPrayerPoints() > 0) {
             Prayer.enable(useProtectionPrayer());
         }
         RSNPC[] hiddenGhasts = Entities.find(NpcEntity::new)
@@ -54,7 +55,6 @@ public class Ghast extends CombatStrategy {
     }
 
     public void makeGhastsVisible(RSNPC[] hiddenGhasts) {
-        Vars.get().subStatus = "Making Ghasts Visible";
         RSItem druidPouch = OSInventory.findFirstNearestToMouse(Constants.FILLED_DRUID_POUCH);
         if (druidPouch != null) {
             if (Game.getItemSelectionState() == 1) {
@@ -65,6 +65,7 @@ public class Ghast extends CombatStrategy {
                         aCamera.turnToTile(ghast);
                     }
                     if (Clicking.click("Use", ghast)) {
+                        Logger.log("[Ghast] Making Ghast visible");
                         Timing.waitCondition(() -> {
                             General.sleep(100,300);
                             RSItem updatedPouch = OSInventory.findFirstNearestToMouse(Constants.FILLED_DRUID_POUCH);
@@ -84,13 +85,18 @@ public class Ghast extends CombatStrategy {
     }
 
     public boolean chargeDruidPouch() {
-        return walkToRottingLog() && canCastBloom() && castBloom() && pickFungi() && fillDruidPouch();
+        if (Inventory.getCount(Constants.MORT_MYRE_FUNGI) >= 3) {
+            fillDruidPouch();
+        } else {
+            return walkToRottingLog() && canCastBloom() && castBloom() && pickFungi();
+        }
+
+        return false;
     }
 
     public boolean walkToRottingLog() {
-        Vars.get().subStatus = "Walking to Rotting Log";
         RSObject rottingLog = Entities.find(ObjectEntity::new)
-                .nameEquals("Rotting log")
+                .nameContains("log")
                 .custom(log -> log.isClickable())
                 .sortByDistance()
                 .getFirstResult();
@@ -106,6 +112,7 @@ public class Ghast extends CombatStrategy {
                     .findFirst()
                     .orElse(null);
             if (bloomPos != null) {
+                Logger.log("[Ghast] Walking to a rotting log");
                 return AccurateMouse.walkScreenTile(bloomPos) && Timing.waitCondition(() -> Player.getPosition().distanceTo(bloomPos) <= 1, 5000);
             }
         }
@@ -113,7 +120,6 @@ public class Ghast extends CombatStrategy {
     }
 
     public boolean castBloom() {
-        Vars.get().subStatus = "Casting bloom";
         if (Entities.find(ObjectEntity::new)
                 .nameEquals("Fungi on log")
                 .actionsContains("Pick")
@@ -123,6 +129,7 @@ public class Ghast extends CombatStrategy {
         Inventory.open();
         RSItem blessedSickle = OSInventory.findFirstNearestToMouse(Constants.BLESSED_SILVER_SICKLE);
         if (blessedSickle != null) {
+            Logger.log("[Ghast] Casting bloom");
             return AccurateMouse.click(blessedSickle, "Cast Bloom")
                     && Timing.waitCondition(() ->  {
                         General.sleep(100,300);
@@ -136,7 +143,6 @@ public class Ghast extends CombatStrategy {
     }
 
     public boolean pickFungi() {
-        Vars.get().subStatus = "Picking fungi";
         if (Inventory.isFull()) {
             return false;
         }
@@ -148,6 +154,7 @@ public class Ghast extends CombatStrategy {
                 .actionsContains("Pick")
                 .getFirstResult();
         if (fungi != null) {
+            Logger.log("[Ghast] Picking Mort Myre Fungi");
             int prevCount = Inventory.getCount(Constants.MORT_MYRE_FUNGI);
             return AccurateMouse.click(fungi, "Pick")
                     && Timing.waitCondition(() ->  {
@@ -178,6 +185,7 @@ public class Ghast extends CombatStrategy {
         }
         RSItem chargedDruidPouch = OSInventory.findFirstNearestToMouse(Constants.EMPTY_DRUID_POUCH, Constants.FILLED_DRUID_POUCH);
         if (chargedDruidPouch != null) {
+            Logger.log("[Ghast] Charging Druid Pouch");
             int charges = chargedDruidPouch.getStack();
             return AccurateMouse.click(chargedDruidPouch, "Fill")
                     && Timing.waitCondition(() -> {

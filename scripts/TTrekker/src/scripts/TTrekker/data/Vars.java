@@ -31,6 +31,7 @@ public class Vars  {
     public TrekkReward reward;
     public EscortSupply foodSupply;
     public int foodSupplyAmount;
+
     public int restorePrayerAt = General.random(30, 50);
 
     private Vars() {

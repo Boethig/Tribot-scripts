@@ -51,7 +51,7 @@ public class Utils {
     }
 
     public static boolean hasTools() {
-        return hasAxe() && hasHammer() && hasKnife() && (!Vars.get().getSettings().shouldUseStaminas || hasStamina());
+        return hasSilverWeapon() && hasAxe() && hasHammer() && hasKnife() && (!Vars.get().getSettings().shouldUseStaminas || hasStamina());
     }
 
     public static boolean hasRewardsToken() {
@@ -167,6 +167,10 @@ public class Utils {
 
     public static boolean findPath() {
         return walkDirection(!Vars.get().getSettings().escortDifficulty.isEscortingToBurgDeRott());
+    }
+
+    public static boolean hasSilverWeapon() {
+        return Equipment.isEquipped(Constants.SILVER_WEAPONS) || Inventory.find(Constants.SILVER_WEAPONS).length > 0;
     }
 
     public static boolean canAttackVampyres() {

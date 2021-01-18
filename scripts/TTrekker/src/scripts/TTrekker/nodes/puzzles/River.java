@@ -94,18 +94,16 @@ public class River extends Puzzle {
         if (swampTreeBranch != null) {
             if (Game.getItemSelectionState() == 1 && Game.getSelectedItemName().equals("Long vine")) {
                 if (!swampTreeBranch.isOnScreen() || !swampTreeBranch.isClickable()) {
-                    aCamera.setCameraAngle(General.random(60, 100));
-                    aCamera.setCameraRotation(General.random(215, 315));
+                    rotateCamera();
                 }
                 if (swampTreeBranch.isOnScreen() && swampTreeBranch.isClickable()) {
                     if (AccurateMouse.click(swampTreeBranch, "Use Long vine")) {
                         Timing.waitCondition(() -> {
                             General.sleep(General.randomSD(100, 300, 2));
                             return Objects.find(10, 13846).length > 0 && Game.getItemSelectionState() != 1;
-                        }, General.random(4500 + Vars.get().sleepOffset, 6502 + Vars.get().sleepOffset));
+                        }, General.random(4500,6500));
                     } else {
-                        aCamera.setCameraAngle(General.random(60, 100));
-                        aCamera.setCameraRotation(General.random(215, 315));
+                        rotateCamera();
                     }
                 }
             } else {
@@ -115,6 +113,11 @@ public class River extends Puzzle {
                 }
             }
         }
+    }
+
+    public void rotateCamera() {
+        aCamera.setCameraAngle(General.randomSD(60, 100, 81));
+        aCamera.setCameraRotation(General.randomSD(215, 315, 303));
     }
 
     public void swingOnVine(RSObject vine) {

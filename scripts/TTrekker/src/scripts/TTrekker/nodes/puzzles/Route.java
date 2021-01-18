@@ -10,6 +10,7 @@ import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.InterfaceEntity;
 import scripts.boe_api.framework.Node;
 import scripts.boe_api.utilities.Antiban;
+import scripts.boe_api.utilities.Logger;
 import scripts.dax_api.walker.utils.AccurateMouse;
 
 public class Route extends Node {
@@ -27,7 +28,7 @@ public class Route extends Node {
                     .actionEquals("Select")
                     .getFirstResult();
             if (routeSelect != null) {
-                Vars.get().subStatus = "Selecting " + Vars.get().getSettings().route.getName();
+                Logger.log("[Route] Selecting %s", Vars.get().getSettings().route.getName());
                 if (AccurateMouse.click(routeSelect)) {
                     Antiban.get().generateTrackers(4000);
                     Vars.get().hasSelectedRoute = true;
@@ -35,16 +36,16 @@ public class Route extends Node {
                 }
             }
         } else {
-            Vars.get().subStatus = "Waiting";
+            Logger.log("[Route] Waiting for Trekk puzzle");
             Timing.waitCondition(() -> {
                 General.sleep(50,150);
                 Antiban.get().timedActions();
                 return !Utils.isInTrekkRoute();
-            }, General.random(5000,7000));
+            }, General.random(5000,10000));
         }
     }
 
     public String status() {
-        return "Navigating:";
+        return "Navigating";
     }
 }

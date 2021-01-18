@@ -10,6 +10,7 @@ import scripts.TTrekker.data.Vars;
 import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.GroundItemEntity;
+import scripts.boe_api.utilities.Logger;
 import scripts.dax_api.walker.utils.AccurateMouse;
 
 public class NailBeast extends CombatStrategy {
@@ -43,15 +44,15 @@ public class NailBeast extends CombatStrategy {
         RSGroundItem nailBeastNails = Entities.find(GroundItemEntity::new)
                 .idEquals(Constants.NAIL_BEAST_NAILS)
                 .getFirstResult();
-        if (nailBeastNails == null) {
-            return true;
-        }
-        int count = Inventory.getAll().length;
-        if (AccurateMouse.click(nailBeastNails, "Take")) {
-            Timing.waitCondition(() -> {
-                General.sleep(100,300);
-                return Inventory.getAll().length > count;
-            }, General.random(1750,2500));
+        if (nailBeastNails != null) {
+            Logger.log("[Looting] Picking up %s", nailBeastNails.getDefinition().getName());
+            int count = Inventory.getAll().length;
+            if (AccurateMouse.click(nailBeastNails, "Take")) {
+                Timing.waitCondition(() -> {
+                    General.sleep(100,300);
+                    return Inventory.getAll().length > count;
+                }, General.random(1750,2500));
+            }
         }
         return false;
     }

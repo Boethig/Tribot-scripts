@@ -36,25 +36,20 @@ public abstract class CombatStrategy {
         if (npcs.length == 0) {
             return true;
         } else {
-            if (Prayer.getPrayerPoints() > 0) {
-                Logger.log("[CombatStrategy] Activating %s prayer", useProtectionPrayer().getName());
+            if (Vars.get().getSettings().useProtectionPrayers && Prayer.getPrayerPoints() > 0 && !Prayer.isPrayerEnabled(useProtectionPrayer())) {
+                Logger.log("[CombatStrategy] Activated %s prayer", useProtectionPrayer().getName());
                 Prayer.enable(useProtectionPrayer());
             }
             RSNPC attackingNpc = getEscortAttacker();
             if (attackingNpc != null || Combat.getTargetEntity() == null) {
-                RSNPC npc = attackingNpc != null && !attackingNpc.isInteractingWithMe() ? attackingNpc : getNextNPC(npcs);
-                if (npc != null) {
-                    Logger.log("[CombatStrategy] Attacking %s", npc.getName());
-                    if (AccurateMouse.click(npc, "Attack") &&
-                            Timing.waitCondition(() -> {
-                                General.sleep(100,300);
-                                return Combat.getTargetEntity() != null || (npc.isInteractingWithMe() && npc.isInCombat() || Combat.isUnderAttack());
-                            },General.random(3000,5000))) {
-                        waitForKill();
-                        Antiban.get().generateTrackers(10);
-                        Antiban.get().sleepReactionTime();
-                    } else {
-                        aCamera.turnToTile(npc);
+                if (attackingNpc != null) {
+                    if (Player.getRSPlayer().getInteractingCharacter() != attackingNpc) {
+                        attackNPC(attackingNpc);
+                    }
+                } else {
+                    RSNPC npc = getNextNPC(npcs);
+                    if (npc != null) {
+                        attackNPC(npc);
                     }
                 }
             } else {
@@ -62,6 +57,21 @@ public abstract class CombatStrategy {
             }
         }
         return false;
+    }
+
+    public void attackNPC(RSNPC npc) {
+        Logger.log("[CombatStrategy] Attacking %s", npc.getName());
+        if (AccurateMouse.click(npc, "Attack") &&
+                Timing.waitCondition(() -> {
+                    General.sleep(100,300);
+                    return Combat.getTargetEntity() != null;
+                },General.random(3000,5000))) {
+            waitForKill();
+            Antiban.get().generateTrackers(10);
+            Antiban.get().sleepReactionTime();
+        } else {
+            aCamera.turnToTile(npc);
+        }
     }
 
     public void waitForKill() {

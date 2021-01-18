@@ -16,9 +16,9 @@ import java.util.HashSet;
 
 public class BankHelper {
 
-    private static final Filter<RSObject> BANK_OBJECT_FILTER = Filters.Objects.nameContains("bank", "Bank.java", "Exchange booth", "Open chest", "bank booth", "Bank.java booth", "Bank.java chest")
+    private static final Filter<RSObject> BANK_OBJECT_FILTER = Filters.Objects.nameContains("bank", "Bank", "Exchange booth", "Open chest")
             .combine(Filters.Objects.actionsContains("Collect"), true)
-            .combine(Filters.Objects.actionsContains("Bank.java"), true);
+            .combine(Filters.Objects.actionsContains("Bank"), true);
 
     public static boolean isInBank(){
         return isInBank(Player.getPosition());
@@ -39,7 +39,7 @@ public class BankHelper {
      * @return whether if the action succeeded
      */
     public static boolean openBank() {
-        return Banking.isBankScreenOpen() || InteractionHelper.click(InteractionHelper.getRSObject(BANK_OBJECT_FILTER), "Bank.java");
+        return Banking.isBankScreenOpen() || InteractionHelper.click(InteractionHelper.getRSObject(BANK_OBJECT_FILTER), "Bank");
     }
 
     /**
@@ -51,7 +51,7 @@ public class BankHelper {
             return true;
         }
         RSObject object = InteractionHelper.getRSObject(BANK_OBJECT_FILTER);
-        return InteractionHelper.click(object, "Bank.java") && waitForBankScreen(object);
+        return InteractionHelper.click(object, "Bank") && waitForBankScreen(object);
     }
 
     public static HashSet<RSTile> getBuilding(Positionable positionable){

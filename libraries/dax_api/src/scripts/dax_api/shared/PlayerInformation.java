@@ -10,7 +10,7 @@ import scripts.dax_api.shared.jsonSimple.JSONValue;
 
 import java.util.HashMap;
 
-
+@Deprecated
 public class PlayerInformation {
 
     private static final int[] SETTINGS = {176, 32, 71, 273, 144, 63, 179, 145, 68, 655, 10, 964, 399, 869, 314, 794,
@@ -26,7 +26,7 @@ public class PlayerInformation {
         try {
             RSPlayer rsPlayer = Player.getRSPlayer();
             return new PlayerInformation(
-                    WorldHopper.isMembers(WorldHopper.getWorld()),
+                    WorldHelper.isMember(WorldHopper.getWorld()),
                     rsPlayer.getCombatLevel(),
                     Skills.SKILLS.values(),
                     grabSettings(),

@@ -3,15 +3,15 @@ package scripts.dax_api.walker_engine;
 import org.tribot.api2007.Camera;
 import org.tribot.api2007.Player;
 import org.tribot.api2007.types.RSTile;
+import scripts.dax_api.shared.NodeInfo;
 import scripts.dax_api.walker_engine.local_pathfinding.PathAnalyzer;
 import scripts.dax_api.walker_engine.real_time_collision.RealTimeCollisionTile;
-import scripts.dax_api.shared.NodeInfo;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -69,7 +69,7 @@ public class WebWalkerPaint {
                 nonDisplayableMapImageGraphics.setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
 
                 int previousLocalX = -1, previousLocalY = -1;
-                ArrayList<RSTile> path = WalkerEngine.getInstance().getCurrentPath();
+                List<RSTile> path = WalkerEngine.getInstance().getCurrentPath();
                 if (path != null) {
                     for (RSTile node : path) {
                         int relativeX = node.getX() - playerX, relativeY = playerY - node.getY();

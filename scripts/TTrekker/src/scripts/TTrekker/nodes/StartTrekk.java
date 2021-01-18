@@ -11,6 +11,7 @@ import scripts.TTrekker.utils.Utils;
 import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.framework.Node;
 import scripts.boe_api.utilities.Antiban;
+import scripts.boe_api.utilities.Logger;
 import scripts.dax_api.walker_engine.interaction_handling.InteractionHelper;
 import scripts.dax_api.walker_engine.interaction_handling.NPCInteraction;
 
@@ -32,7 +33,7 @@ public class StartTrekk extends Node {
     public void execute() {
         RSNPC escort = Antiban.get().selectNextTarget(Vars.get().getSettings().escortDifficulty.find());
         if (escort != null) {
-            Vars.get().subStatus = "Clicking on Escort";
+            Logger.log("[Trekk] Escorting %s",escort.getName());
             if (!escort.isOnScreen() || !escort.isClickable()) {
                 aCamera.turnToTile(escort.getPosition());
             }

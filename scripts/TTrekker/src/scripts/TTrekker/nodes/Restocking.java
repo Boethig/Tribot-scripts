@@ -15,7 +15,7 @@ import scripts.boe_api.inventory.OSInventory;
 import scripts.dax_api.shared.helpers.BankHelper;
 import scripts.dax_api.walker.utils.AccurateMouse;
 
-public class Bank extends Node {
+public class Restocking extends Node {
 
     public boolean validate() {
         return BankHelper.isInBank() || Banking.isInBank();
@@ -52,7 +52,7 @@ public class Bank extends Node {
                 final RSItem[] staminas = Banking.find(Constants.STAMINA_IDS);
                 if (staminas.length > 0) {
                     final int count = staminas[0].getStack();
-                    Banking.withdraw(General.random(1, General.random(2, count)), staminas[0].getID());
+                    org.tribot.api2007.Banking.withdraw(General.random(1, General.random(2, count)), staminas[0].getID());
                 }
             }
             if (Utils.hasTools()) {

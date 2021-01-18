@@ -13,6 +13,7 @@ import scripts.boe_api.framework.Node;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.ObjectEntity;
 import scripts.boe_api.utilities.Antiban;
+import scripts.boe_api.utilities.Logger;
 import scripts.dax_api.api_lib.DaxWalker;
 import scripts.dax_api.walker.utils.AccurateMouse;
 import scripts.dax_api.walker_engine.interaction_handling.NPCInteraction;
@@ -41,12 +42,12 @@ public abstract class Puzzle extends Node {
     public Puzzle(final ACamera aCamera) { super(aCamera); }
 
     public boolean continueTrek() {
-        Vars.get().subStatus = "Continuing Trekk";
+        Logger.log("[Trekk] Continuing the trekk");
         return takePathAction("Continue-trek");
     }
 
     public boolean evadePath() {
-        Vars.get().subStatus = "Evading Event";
+        Logger.log("[Trekk] Evading the trekk puzzle");
         return takePathAction("Evade-event");
     }
 
@@ -56,7 +57,7 @@ public abstract class Puzzle extends Node {
                 .actionsContains(action)
                 .getResults());
         if (path != null) {
-            if (path.isClickable() && path.isOnScreen() && AccurateMouse.click(path, action)) {
+            if (AccurateMouse.click(path, action)) {
                 Timing.waitCondition(() -> {
                     General.sleep(100,300);
                     return Utils.isInTrekkRoute() || NPCInteraction.isConversationWindowUp();
@@ -82,6 +83,6 @@ public abstract class Puzzle extends Node {
     }
 
     public String status() {
-        return this.getClass().getSimpleName() + " Puzzle:";
+        return this.getClass().getSimpleName() + " Puzzle";
     }
 }

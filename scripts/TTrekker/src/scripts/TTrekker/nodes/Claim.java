@@ -14,6 +14,7 @@ import scripts.boe_api.entities.finders.prefabs.InterfaceEntity;
 import scripts.boe_api.framework.Node;
 import scripts.boe_api.inventory.OSInventory;
 import scripts.boe_api.utilities.Antiban;
+import scripts.boe_api.utilities.Logger;
 import scripts.dax_api.walker.utils.AccurateMouse;
 
 public class Claim extends Node {
@@ -32,7 +33,7 @@ public class Claim extends Node {
                         .actionContains("Claim")
                         .getFirstResult();
                 if (claimReward != null) {
-                    Vars.get().subStatus = "Claiming";
+                    Logger.log("[Rewards] Claiming %s", Vars.get().reward.getName());
                     //TODO: add antiban reaction times
                     if (AccurateMouse.click(claimReward, "Claim")) {
                         Timing.waitCondition(() -> {
@@ -41,7 +42,6 @@ public class Claim extends Node {
                         }, General.random(3000,5000));
                     }
                 } else {
-                    Vars.get().subStatus = "Selecting Reward";
                     RSInterface rewardSelect = Entities.find(InterfaceEntity::new)
                             .inMaster(Constants.REWARDS)
                             .isSubstantiated()
@@ -58,7 +58,7 @@ public class Claim extends Node {
                     }
                 }
             } else {
-                Vars.get().subStatus = "Opening up Interface";
+                Logger.log("[Rewards] Looking at Rewards Token");
                 Inventory.open();
                 if (AccurateMouse.click(token, "Look-at")) {
                     Timing.waitCondition(() -> {
@@ -71,6 +71,6 @@ public class Claim extends Node {
     }
 
     public String status() {
-        return "Claiming Rewards: ";
+        return "Claiming Rewards";
     }
 }

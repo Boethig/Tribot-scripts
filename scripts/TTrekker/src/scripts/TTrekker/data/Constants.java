@@ -38,7 +38,6 @@ public class Constants {
     public static final int ROTTEN_FOOD = 2959;
     public static final int RING_OF_LIFE = 2570;
     public static int[] STAMINA_IDS;
-    public static final String[] OPTIONS;
     public static final int REWARDS = 274;
     public static final int CLAIMCHILD = 12;
     public static final int IN_AID_OF_MYQYREQUE_VARBIT = 1990;
@@ -53,6 +52,7 @@ public class Constants {
     public static final int ESCORT_FOOD_LEFT = 3433;
     public static final int SUPPLY_MASTER = 518;
     public static final int FIX_BRIDGE_ANIMATION = 898;
+    public static final String[] SILVER_WEAPONS;
 
     static {
         BURG = new RSArea(new RSTile(3486, 3243, 0), new RSTile(3479, 3237, 0));
@@ -64,6 +64,6 @@ public class Constants {
         NPC_NAMES = new String[] {"ghast", "vampyre", "shade", "shadow", "snake"," snail", "tentacle", "nail beast", "tentacle", "head"};
         REWARDS_TOKEN = new int[]{10936, 10944, 10942};
         STAMINA_IDS = new int[]{12625, 12627, 12629, 12631};
-        OPTIONS = new String[]{"I can take you to Burgh de Rott.", "I can take you to Paterdomus."};
+        SILVER_WEAPONS = new String[]{"sickle (b)","Blessed axe","Rod of ivandis","Ivandis flail", "Blisterwood flail","Wolfbane","Arclight","Efaritay's aid"};
     }
 }

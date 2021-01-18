@@ -3,19 +3,19 @@ package scripts.dax_api.walker_engine.local_pathfinding;
 import org.tribot.api2007.Player;
 import org.tribot.api2007.Projection;
 import org.tribot.api2007.types.RSTile;
+import scripts.dax_api.shared.PathFindingNode;
 import scripts.dax_api.walker_engine.bfs.BFS;
 import scripts.dax_api.walker_engine.real_time_collision.CollisionDataCollector;
 import scripts.dax_api.walker_engine.real_time_collision.RealTimeCollisionTile;
-import scripts.dax_api.shared.PathFindingNode;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
 public class PathAnalyzer {
 
     public static RealTimeCollisionTile closestToPlayer = null, furthestReachable = null;
 
-    public static RealTimeCollisionTile closestTileInPathToPlayer(ArrayList<RSTile> path) {
+    public static RealTimeCollisionTile closestTileInPathToPlayer(List<RSTile> path) {
         CollisionDataCollector.generateRealTimeCollision();
         final RSTile playerPosition = Player.getPosition();
         closestToPlayer = (RealTimeCollisionTile) BFS.bfsClosestToPath(path, RealTimeCollisionTile.get(playerPosition.getX(), playerPosition.getY(), playerPosition.getPlane()));
@@ -23,12 +23,12 @@ public class PathAnalyzer {
     }
 
 
-    public static DestinationDetails furthestReachableTile(ArrayList<RSTile> path){
+    public static DestinationDetails furthestReachableTile(List<RSTile> path){
         return furthestReachableTile(path, closestTileInPathToPlayer(path));
     }
 
 
-    public static DestinationDetails furthestReachableTile(ArrayList<RSTile> path, PathFindingNode currentPosition){
+    public static DestinationDetails furthestReachableTile(List<RSTile> path, PathFindingNode currentPosition){
         if (path == null || currentPosition == null){
             System.out.println("PathAnalyzer attempt to find closest tile in path: " + currentPosition + " " + path);
             return null;
@@ -44,6 +44,9 @@ public class PathAnalyzer {
                 return new DestinationDetails(PathState.END_OF_PATH, current);
             }
             RSTile nextNode = path.get(i + 1);
+            if(!isLoaded(nextNode) && nextNode.isOnScreen()){
+                return new DestinationDetails(PathState.FURTHEST_CLICKABLE_TILE, current);
+            }
             RealTimeCollisionTile next = RealTimeCollisionTile.get(nextNode.getX(), nextNode.getY(), nextNode.getPlane());
             Direction direction = directionTo(current.getRSTile(), nextNode);
             if (direction == Direction.UNKNOWN){
@@ -52,12 +55,12 @@ public class PathAnalyzer {
             }
             if (!direction.confirmTileMovable(RealTimeCollisionTile.get(current.getX(), current.getY(), current.getZ()))){
 
-                for (int j = 2; j < 6 && j + i < path.size(); j++) {
+                for (int j = 1; j < 5 && j + i < path.size(); j++) {
                     RSTile nextInPath = path.get(i + j);
                     RealTimeCollisionTile nextInPathCollision = RealTimeCollisionTile.get(nextInPath.getX(), nextInPath.getY(), nextInPath.getPlane());
                     if (nextInPathCollision != null && nextInPathCollision.isWalkable()){
-                        if (BFS.isReachable(current, nextInPathCollision, 360)) {
-                            i += j-1;
+                        if (BFS.isReachable(current, nextInPathCollision, 200)) {
+                            i += j-2;
                             continue outside;
                         }
                     }
@@ -74,7 +77,8 @@ public class PathAnalyzer {
                 if (next != null) {
                     return new DestinationDetails(PathState.FURTHEST_CLICKABLE_TILE, current, next);
                 }
-                return new DestinationDetails(PathState.FURTHEST_CLICKABLE_TILE, current, nextNode.getX(), nextNode.getY(), nextNode.getPlane());
+                return new DestinationDetails(
+		                PathState.FURTHEST_CLICKABLE_TILE, current, nextNode.getX(), nextNode.getY(), nextNode.getPlane());
             }
         }
         return null;
@@ -211,9 +215,13 @@ public class PathAnalyzer {
             if (realTimeCollisionTile.getNeighbors().contains(destination)){
                 return true;
             }
-            return BFS.isReachable(realTimeCollisionTile, destination, 225);
+            return BFS.isReachable(realTimeCollisionTile, destination, 150);
         }
     }
 
+    private static boolean isLoaded(RSTile tile){
+        final RSTile local = tile.toLocalTile();
+        return local.getX() >= 0 && local.getX() < 104 && local.getY() >= 0 && local.getY() < 104;
+    }
 
 }
