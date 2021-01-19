@@ -57,24 +57,26 @@ public abstract class Puzzle extends Node {
                 .actionsContains(action)
                 .getResults());
         if (path != null) {
-            if (AccurateMouse.click(path, action)) {
+            if (!path.isOnScreen() || !path.isClickable()) {
+                aCamera.turnToTile(path);
+            }
+            if (path.isOnScreen() && AccurateMouse.click(path, action)) {
                 Timing.waitCondition(() -> {
                     General.sleep(100,300);
                     return Utils.isInTrekkRoute() || NPCInteraction.isConversationWindowUp();
                 }, General.random(10000,12500));
-
+                if (NPCInteraction.isConversationWindowUp()) {
+                    NPCInteraction.handleConversation();
+                }
                 return Utils.isInTrekkRoute();
-
-            } else if (AccurateMouse.clickMinimap(path)) {
+            }
+            if (AccurateMouse.clickMinimap(path)) {
                 Timing.waitCondition(() -> {
                     General.sleep(100,300);
-                    return path.isClickable() || path.isOnScreen();
+                    return path.isOnScreen() || !Player.isMoving();
                 }, General.random(4000,6000));
             } else {
-                WebWalking.walkTo(path.getPosition(), () -> path.isClickable() || path.isOnScreen(), General.random(300, 500));
-            }
-            if (!path.isOnScreen() || !path.isClickable()) {
-                aCamera.turnToTile(path);
+                WebWalking.walkTo(path.getPosition(), () -> path.isOnScreen(), General.random(300,500));
             }
         } else {
             Utils.findPath();

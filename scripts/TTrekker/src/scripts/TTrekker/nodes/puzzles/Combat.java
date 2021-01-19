@@ -13,6 +13,7 @@ import scripts.TTrekker.utils.Utils;
 import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.NpcEntity;
+import scripts.boe_api.utilities.Logger;
 
 public class Combat extends Puzzle {
 
@@ -34,6 +35,7 @@ public class Combat extends Puzzle {
 
     public void solvePuzzle() {
         if (canEvadeEvent()) {
+            Logger.log("[Combat] Evading Combat Event");
             if (evadePath()) {
                 this.isPuzzleComplete = true;
             }
@@ -43,6 +45,7 @@ public class Combat extends Puzzle {
                 if (strategy != null) {
                     Vars.get().subStatus = strategy.getClass().getSimpleName();
                     if (strategy.handle()) {
+                        Logger.log("[Combat] All Npcs have been killed");
                         this.isPuzzleComplete = true;
                         Prayer.disable(Prayer.getCurrentPrayers());
                     }
@@ -52,6 +55,7 @@ public class Combat extends Puzzle {
                         .nameContains(Constants.NPC_NAMES)
                         .getFirstResult();
                 if (rsnpc != null) {
+                    Logger.log("[Combat] Setting new Combat Strategy");
                     context = new CombatProvider(aCamera, rsnpc.getName().toLowerCase());
                 }
             }

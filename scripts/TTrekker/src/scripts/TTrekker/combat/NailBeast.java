@@ -30,6 +30,11 @@ public class NailBeast extends CombatStrategy {
     }
 
     @Override
+    public boolean isMultiCombat() {
+        return true;
+    }
+
+    @Override
     public boolean handle() {
         return lootNails() && super.handle();
     }
@@ -54,6 +59,6 @@ public class NailBeast extends CombatStrategy {
                 }, General.random(1750,2500));
             }
         }
-        return false;
+        return true;
     }
 }

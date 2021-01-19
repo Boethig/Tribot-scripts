@@ -47,12 +47,15 @@ public class Restocking extends Node {
                 if (!Utils.hasAxe() && Utils.bankHasAxe()) {
                     this.withdraw(1, Utils.getBankAxeId());
                 }
+                if (!Utils.hasSilverWeapon()) {
+                    Banking.withdraw(1, Constants.SILVER_WEAPONS);
+                }
             }
             if (Vars.get().getSettings().shouldUseStaminas && !Utils.hasStamina()) {
-                final RSItem[] staminas = Banking.find(Constants.STAMINA_IDS);
+                RSItem[] staminas = Banking.find(Constants.STAMINA_IDS);
                 if (staminas.length > 0) {
-                    final int count = staminas[0].getStack();
-                    org.tribot.api2007.Banking.withdraw(General.random(1, General.random(2, count)), staminas[0].getID());
+                    int count = staminas[0].getStack();
+                    Banking.withdraw(General.random(1, General.random(2, count)), staminas[0].getID());
                 }
             }
             if (Utils.hasTools()) {

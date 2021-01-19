@@ -33,18 +33,17 @@ public class Abidor extends Puzzle {
             if ((abidor.isInteractingWithMe() && !NPCInteraction.isConversationWindowUp()) || hasBeenHealed()) {
                 isPuzzleComplete = true;
             } else {
-                if (!abidor.isOnScreen() || !abidor.isClickable()) {
-                    aCamera.turnToTile(abidor);
-                }
                 if (InteractionHelper.click(abidor, "Talk-to")) {
                     Vars.get().subStatus = "Talking to Abidor";
                     NPCInteraction.waitForConversationWindow();
-                } else if (AccurateMouse.clickMinimap(abidor)) {
+                } else if (!abidor.isOnScreen() && AccurateMouse.clickMinimap(abidor)) {
                 Vars.get().subStatus = "Clicking on Minimap";
                 Timing.waitCondition(() -> {
                     General.sleep(100,300);
                     return abidor.isOnScreen();
                     }, General.random(2000,5000));
+                } else {
+                    aCamera.turnToTile(abidor);
                 }
             }
         }

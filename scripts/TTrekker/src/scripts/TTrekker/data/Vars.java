@@ -23,12 +23,12 @@ public class Vars  {
     public int completed;
     public boolean hasSelectedRoute;
     public boolean isEscortDead;
+    public Escort currentEscort;
     public int claimCount;
     public int sleepOffset;
     public List<Integer> abc2WaitTimes;
 
     // GUI Variables
-    public TrekkReward reward;
     public EscortSupply foodSupply;
     public int foodSupplyAmount;
 
@@ -39,13 +39,13 @@ public class Vars  {
         this.subStatus = "";
         this.completed = 0;
         this.claimCount = 1;
-        this.reward = TrekkReward.XP_TOME;
         this.abc2WaitTimes = new ArrayList<>();
         this.foodSupply = null;
         this.foodSupplyAmount = 0;
     }
 
     public void reset() {
+        this.currentEscort = null;
         this.isEscortDead = false;
         this.hasSelectedRoute = false;
     }

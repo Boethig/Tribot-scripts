@@ -55,6 +55,7 @@ public class Bridge extends Puzzle {
                                     General.sleep(100,300);
                                     return Objects.find(10, bridge.getID() + 1).length > 0 && materials.length > Inventory.getCount(Constants.LOGS, Constants.PLANK);
                                 },General.random(3000,5000));
+                                Antiban.get().resetShouldHover();
                             } else {
                                 Vars.get().subStatus = "Rotating camera";
                                 aCamera.turnToTile(bridge);
@@ -85,8 +86,8 @@ public class Bridge extends Puzzle {
                     RSNPC zombie = Antiban.get().selectNextTarget(
                             Entities.find(NpcEntity::new)
                                     .nameEquals("Undead Lumberjack")
-                                    .getResults()
-                    );
+                                    .custom(rsnpc -> rsnpc.isClickable() && rsnpc.isInteractingWithMe())
+                                    .getResults());
                     if (zombie != null) {
                         if (Combat.getTargetEntity() == null) {
                             if (!zombie.isOnScreen()) {
@@ -95,14 +96,14 @@ public class Bridge extends Puzzle {
                             Vars.get().subStatus = "Attacking Lumberjacks";
                             if (AccurateMouse.click(zombie, "Attack") &&
                                     Timing.waitCondition(() -> Combat.getTargetEntity() != null, General.random(2000, 3000))) {
+                                Antiban.get().generateTrackers(2000);
                                 long startTime = System.currentTimeMillis();
                                 while (Combat.getTargetEntity() != null) {
                                     Antiban.get().timedActions();
                                     lootPlank();
                                     General.sleep(50,150);
                                 }
-                                Antiban.get().setLastUnderAttackTime(startTime);
-                                Antiban.get().generateTrackers((int) (System.currentTimeMillis() - startTime));
+                                Antiban.get().setLast_under_attack_time(startTime);
                                 Antiban.get().sleepReactionTime();
                             } else {
                                 aCamera.turnToTile(zombie);
@@ -162,8 +163,8 @@ public class Bridge extends Puzzle {
                 while (Player.isMoving() && tree.getModel() != null) {
                     General.sleep(50L);
                 }
+                long startTime = System.currentTimeMillis();
                 if (Timing.waitCondition(() -> Player.getAnimation() != -1, General.random(2000,3000))) {
-                    long startTime = System.currentTimeMillis();
                     while (Player.getAnimation() != -1) {
                         Antiban.get().timedActions();
                         General.sleep(50,70);

@@ -18,4 +18,9 @@ public class Snake extends CombatStrategy {
     public Prayer.PRAYERS useProtectionPrayer() {
         return Prayer.PRAYERS.PROTECT_FROM_MELEE;
     }
+
+    @Override
+    public boolean isMultiCombat() {
+        return true;
+    }
 }

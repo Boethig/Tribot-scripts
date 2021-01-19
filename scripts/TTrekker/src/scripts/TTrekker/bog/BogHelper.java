@@ -53,7 +53,7 @@ public class BogHelper {
         RSTile destination = path.get(path.size() - 1).getPosition();
         int playerIndex = getPlayerIndex(path);
         Logger.log("[BogHelper] Starting from player index: %s", Integer.toString(playerIndex));
-        for (int i = playerIndex; i < path.size(); ++i) {
+        for (int i = playerIndex; i < path.size(); i++) {
             RSObject bog = path.get(i).getBog();
             if (bog != null) {
                 if (!walkTo(bog)) {
@@ -69,7 +69,7 @@ public class BogHelper {
         return false;
     }
 
-    private static int getPlayerIndex(final ArrayList<BogNode> list) {
+    private static int getPlayerIndex(ArrayList<BogNode> list) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getPosition().equals(Player.getPosition())) {
                 return i + 1;

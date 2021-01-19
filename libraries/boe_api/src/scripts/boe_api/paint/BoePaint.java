@@ -2,6 +2,7 @@ package scripts.boe_api.paint;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.tribot.api.General;
 import org.tribot.api.Timing;
 import scripts.boe_api.scripting.BoeScript;
 
@@ -61,6 +62,6 @@ public class BoePaint {
     }
 
     public int getEstimatedPerHour(int amount) {
-        return (int)(amount * getTimeRanMs() / ONE_HOUR_MS);
+        return (int)(amount * ONE_HOUR_MS / getTimeRanMs());
     }
 }

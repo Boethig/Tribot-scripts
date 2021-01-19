@@ -40,11 +40,9 @@ public enum Escorts {
 
     public boolean isEscortingToBurgDeRott() {
         RSNPC escort = findInInstance();
-        if (escort != null) {
-            Escort e = Escort.fromInstanceId(escort.getID());
-            if (e != null) {
-                return e.isBurgDeRottRamble();
-            }
+        Escort e = escort != null ? Escort.fromInstanceId(escort.getID()) : Vars.get().currentEscort;
+        if (e != null) {
+            return e.isBurgDeRottRamble();
         }
 
         return false;

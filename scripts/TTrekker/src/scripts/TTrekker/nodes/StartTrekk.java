@@ -6,6 +6,7 @@ import org.tribot.api2007.Interfaces;
 import org.tribot.api2007.Inventory;
 import org.tribot.api2007.types.RSNPC;
 import scripts.TTrekker.data.Constants;
+import scripts.TTrekker.data.Escort;
 import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.utils.Utils;
 import scripts.boe_api.camera.ACamera;
@@ -31,8 +32,10 @@ public class StartTrekk extends Node {
     }
 
     public void execute() {
+
         RSNPC escort = Antiban.get().selectNextTarget(Vars.get().getSettings().escortDifficulty.find());
         if (escort != null) {
+            Vars.get().currentEscort = Escort.fromInstanceId(escort.getID());
             Logger.log("[Trekk] Escorting %s",escort.getName());
             if (!escort.isOnScreen() || !escort.isClickable()) {
                 aCamera.turnToTile(escort.getPosition());

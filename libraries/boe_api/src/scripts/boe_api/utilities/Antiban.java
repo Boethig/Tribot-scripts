@@ -1,6 +1,7 @@
 package scripts.boe_api.utilities;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.tribot.api.General;
 import org.tribot.api.Timing;
 import org.tribot.api.input.Mouse;
@@ -27,29 +28,6 @@ public class Antiban {
         this.should_open_menu = abc.shouldOpenMenu();
     }
 
-    @Getter
-    private final ABCUtil abc = new ABCUtil();
-
-    private boolean print_debug = true;
-
-    private boolean enableReactionSleep = true;
-
-    private int resources_won = 0;
-
-    private int resources_lost = 0;
-
-    private long last_under_attack_time = 0;
-
-    private double abcMultiplier = 1.0;
-
-    private int run_at;
-
-    private int eat_at;
-
-    private boolean should_hover;
-
-    private boolean should_open_menu;
-
     public static synchronized Antiban get() {
         if (antiban == null) {
             antiban = new Antiban();
@@ -57,28 +35,43 @@ public class Antiban {
         return antiban;
     }
 
+    @Getter
+    private final ABCUtil abc = new ABCUtil();
+
+    private boolean print_debug = true;
+
+    private boolean enableReactionSleep = true;
+
+    @Getter @Setter
+    private long last_under_attack_time = 0;
+
+    @Getter @Setter
+    private double abcMultiplier = 1.0;
+
+    // Action Conditions
+    @Getter
+    private int run_at;
+
+    @Getter
+    private int eat_at;
+
+    @Getter @Setter
+    private int resources_won = 0;
+
+    @Getter @Setter
+    private int resources_lost = 0;
+
+    @Getter
+    private boolean should_hover;
+
+    @Getter
+    private boolean should_open_menu;
+
+
+    private Positionable nextTarget;
+
     public void destroy() {
         abc.close();
-    }
-
-    public int getRunAt() {
-        return run_at;
-    }
-
-    public int getEatAt() {
-        return eat_at;
-    }
-
-    public boolean getShouldHover() {
-        return should_hover;
-    }
-
-    public boolean getShouldOpenMenu() {
-        return should_open_menu;
-    }
-
-    public long getLastUnderAttackTime() {
-        return last_under_attack_time;
     }
 
     public ABCProperties getProperties() {
@@ -89,14 +82,7 @@ public class Antiban {
         return getProperties().getWaitingTime();
     }
 
-    public double getAbcMultiplier() {
-        return abcMultiplier;
-    }
 
-    public void setAbcMultiplier(double multiplier) {
-        this.abcMultiplier = multiplier;
-    }
- 
     /**
      * Gets the reaction time that we should sleep for before performing our
      * next action. Examples:
@@ -130,32 +116,12 @@ public class Antiban {
         print_debug = state;
     }
 
-    public int getResourcesWon() {
-        return resources_won;
-    }
-
-    public int getResourcesLost() {
-        return resources_lost;
-    }
-
-    public void setResourcesWon(int amount) {
-        this.resources_won = amount;
-    }
-
-    public void setResourcesLost(int amount) {
-        this.resources_lost = amount;
-    }
-
     public void incrementResourcesWon() {
         resources_won++;
     }
 
     public void incrementResourcesLost() {
         this.resources_lost++;
-    }
-
-    public void setLastUnderAttackTime(long time_stamp) {
-        this.last_under_attack_time = time_stamp;
     }
 
     public void sleepReactionTime() {
@@ -184,6 +150,7 @@ public class Antiban {
         properties.setHovering(should_hover);
         properties.setMenuOpen(should_open_menu);
         properties.setWaitingFixed(false);
+        properties.setUnderAttack(Combat.isUnderAttack());
         properties.setWaitingTime(estimated_wait);
         abc.generateTrackers();
     }
@@ -293,7 +260,7 @@ public class Antiban {
 
     @SuppressWarnings("unchecked")
     public <T extends Positionable> T selectNextTarget(Positionable[] target) {
-        return (T) abc.selectNextTarget(target);
+        return (T) (nextTarget = abc.selectNextTarget(target));
     }
  
     /**

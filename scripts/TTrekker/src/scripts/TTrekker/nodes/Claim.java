@@ -33,27 +33,27 @@ public class Claim extends Node {
                         .actionContains("Claim")
                         .getFirstResult();
                 if (claimReward != null) {
-                    Logger.log("[Rewards] Claiming %s", Vars.get().reward.getName());
-                    //TODO: add antiban reaction times
+                    Logger.log("[Rewards] Claiming %s", Vars.get().getSettings().reward.getName());
                     if (AccurateMouse.click(claimReward, "Claim")) {
                         Timing.waitCondition(() -> {
                             General.sleep(100,300);
                             return !Interfaces.isInterfaceSubstantiated(Constants.REWARDS);
                         }, General.random(3000,5000));
+                        General.randomSD(500, 627);
                     }
                 } else {
                     RSInterface rewardSelect = Entities.find(InterfaceEntity::new)
                             .inMaster(Constants.REWARDS)
                             .isSubstantiated()
-                            .textContains(Vars.get().reward.getName())
+                            .textContains(Vars.get().getSettings().reward.getName())
                             .getFirstResult();
                     if (rewardSelect != null) {
-                        //TODO: add antiban reaction times
                         if (AccurateMouse.click(rewardSelect, "Details")) {
                             Timing.waitCondition(() -> {
                                 General.sleep(100,300);
                                 return Interfaces.isInterfaceSubstantiated(Constants.REWARDS, Constants.CLAIMCHILD);
                             }, General.random(2000,4000));
+                            General.randomSD(600, 828);
                         }
                     }
                 }
@@ -65,6 +65,7 @@ public class Claim extends Node {
                         Antiban.get().waitItemInteractionDelay();
                         return Interfaces.isInterfaceSubstantiated(Constants.REWARDS);
                     }, General.random(3000,5000));
+                    General.randomSD(300,500, 327);
                 }
             }
         }

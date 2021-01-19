@@ -34,6 +34,11 @@ public class Ghast extends CombatStrategy {
     public Prayer.PRAYERS useProtectionPrayer() { return Prayer.PRAYERS.PROTECT_FROM_MELEE; }
 
     @Override
+    public boolean isMultiCombat() {
+        return true;
+    }
+
+    @Override
     public boolean handle() {
         if (Vars.get().getSettings().useProtectionPrayers && Prayer.getPrayerPoints() > 0) {
             Prayer.enable(useProtectionPrayer());
@@ -69,8 +74,8 @@ public class Ghast extends CombatStrategy {
                         Timing.waitCondition(() -> {
                             General.sleep(100,300);
                             RSItem updatedPouch = OSInventory.findFirstNearestToMouse(Constants.FILLED_DRUID_POUCH);
-                            return updatedPouch != null && previousCharges > updatedPouch.getStack() && !Player.isMoving();
-                        }, General.random(8000,10000));
+                            return updatedPouch != null && previousCharges > updatedPouch.getStack() && Game.getItemSelectionState() != 1;
+                        }, General.random(6000,8000));
                     }
                 }
             } else {
