@@ -2,7 +2,6 @@ package scripts.TTrekker.combat;
 
 import org.tribot.api.General;
 import org.tribot.api.Timing;
-import org.tribot.api2007.Combat;
 import org.tribot.api2007.Player;
 import org.tribot.api2007.Prayer;
 import org.tribot.api2007.types.RSNPC;

@@ -1,19 +1,14 @@
 package scripts.TTrekker;
 
-import org.tribot.api.General;
 import org.tribot.api2007.Camera;
 import org.tribot.api2007.Login;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.*;
-import org.tribot.util.Util;
 import scripts.TTrekker.data.Constants;
 import scripts.TTrekker.data.TrekkScriptSettings;
 import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.nodes.*;
 import scripts.TTrekker.utils.Utils;
-import scripts.boe_api.event_dispatcher.events.ConfigureScriptCompletedEvent;
-import scripts.boe_api.event_dispatcher.EventDispatcher;
-import scripts.boe_api.event_dispatcher.EventListener;
 import scripts.boe_api.framework.Node;
 import scripts.boe_api.gui.WebGuiLoader;
 import scripts.boe_api.listeners.varbit.VarBitListener;
@@ -21,15 +16,15 @@ import scripts.boe_api.listeners.varbit.VarBitObserver;
 import scripts.boe_api.profile_manager.BasicScriptSettings;
 import scripts.boe_api.scripting.BoeScript;
 import scripts.boe_api.scripting.ScriptManager;
-import scripts.boe_api.utilities.Logger;
 import scripts.boe_api.utilities.ScriptArguments;
+import scripts.dax_api.api_lib.DaxConfigs;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 @ScriptManifest(authors = {"Boe123"}, category = "Minigames", name = "TTrekker")
-public class Main extends BoeScript implements Ending, Starting, Painting, VarBitListener, Arguments {
+public class Main extends BoeScript implements Ending, Starting, Painting, VarBitListener, Arguments, MessageListening07 {
 
     private VarBitObserver varBitObserver;
 
@@ -41,20 +36,21 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
     @Override
     public void run() {
         ScriptManager.create(this);
+        DaxConfigs.logging = false;
         Camera.setRotationMethod(Camera.ROTATION_METHOD.ONLY_KEYS);
-        EventDispatcher.get().addListener(ConfigureScriptCompletedEvent.class, new EventListener<ConfigureScriptCompletedEvent>((event) -> {
-            TrekkScriptSettings settings = (TrekkScriptSettings) event.getSettings();
-            if (settings != null) {
-                Vars.get().setSettings(settings);
-            }
-            setGuiLoaded(true);
-        }));
-
-        webGui.show();
-
-        while (!isGuiLoaded()) {
-            General.sleep(500,1000);
-        }
+//        EventDispatcher.get().addListener(ConfigureScriptCompletedEvent.class, new EventListener<ConfigureScriptCompletedEvent>((event) -> {
+//            TrekkScriptSettings settings = (TrekkScriptSettings) event.getSettings();
+//            if (settings != null) {
+//                Vars.get().setSettings(settings);
+//            }
+//            setGuiLoaded(true);
+//        }));
+//
+//        webGui.show();
+//
+//        while (!isGuiLoaded()) {
+//            General.sleep(500,1000);
+//        }
 
         while (isRunning) {
             if (Login.getLoginState() != Login.STATE.LOGINSCREEN) {
@@ -63,6 +59,7 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
                         Vars.get().status = node.status();
                         node.execute();
                     }
+                    Vars.get().subStatus = "";
                 }
             }
             sleep(100);
@@ -77,7 +74,7 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
                 "Trekks Completed: " + Vars.get().completed + " (" + getPaint().getEstimatedPerHour(Vars.get().completed) + ")",
                 "Escort Difficulty: " + Vars.get().getSettings().escortDifficulty.toString(),
                 "Route: " + Vars.get().getSettings().route.getName(),
-                "Reward: " + Vars.get().reward.getName()
+                "Reward: " + Vars.get().getSettings().reward.getName()
         };
     }
 
@@ -90,11 +87,12 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
     protected ArrayList<Node> nodeArrayList() {
         return new ArrayList<>() {{
             add(new Trekk(aCamera));
+            add(new EscortChat());
             add(new Claim());
             add(new StartTrekk(aCamera));
             add(new SupplyEscort(aCamera));
-            add(new Walking());
-            add(new Bank());
+            add(new Traveling());
+            add(new Restocking());
         }};
     }
 
@@ -121,13 +119,13 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
         super.onPaint(g);
     }
 
-    public void varBitChanged(final int varBit, final int newValue) {
-        if (newValue == 2) {
-            Vars.get().inTrekk = true;
-        } else if (newValue == 0) {
+    public void varBitChanged(int newValue) {
+        if (newValue == Constants.OUT_OF_INSTANCE) {
+            if (!Vars.get().isEscortDead) {
+                Vars.get().completed += 1;
+                daxTracker.trackData("trekks", 1);
+            }
             Vars.get().reset();
-            Vars.get().completed++;
-            daxTracker.trackData("trekks", 1);
         }
     }
 
@@ -139,4 +137,10 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
         }
     }
 
+    @Override
+    public void serverMessageReceived(String message) {
+        if (message.contains("Your companion has been killed.")) {
+            Vars.get().isEscortDead = true;
+        }
+    }
 }

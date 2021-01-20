@@ -5,13 +5,14 @@ import scripts.boe_api.profile_manager.BasicScriptSettings;
 public class TrekkScriptSettings extends BasicScriptSettings {
 
     public boolean shouldUseStaminas;
-    public boolean shouldLootBeastNails;
-    public boolean shouldEvadeCombat;
+    public boolean shouldLootBeastNails = true;
+    public boolean shouldEvadeCombat = false;
     public boolean burgDeRottRamble;
-    public Routes route = Routes.EASY;
+    public boolean useProtectionPrayers = true;
+    public Routes route = Routes.HARD;
     public Escorts escortDifficulty = Escorts.EASY;
     public EscortSupply escortSupply;
-    public TrekkReward reward = TrekkReward.XP_TOME;
+    public TrekkReward reward = TrekkReward.BOWSTRINGS;
 
     public TrekkScriptSettings() {
         super();

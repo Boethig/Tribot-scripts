@@ -3,16 +3,17 @@ package scripts.TTrekker.utils;
 import org.tribot.api.General;
 import org.tribot.api.Timing;
 import org.tribot.api2007.*;
-import org.tribot.api2007.types.*;
+import org.tribot.api2007.types.RSItem;
+import org.tribot.api2007.types.RSObject;
+import org.tribot.api2007.types.RSTile;
+import org.tribot.api2007.types.RSVarBit;
 import scripts.TTrekker.data.Constants;
-import scripts.TTrekker.data.Escorts;
 import scripts.TTrekker.data.Vars;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.ItemEntity;
 import scripts.boe_api.entities.finders.prefabs.ObjectEntity;
 import scripts.boe_api.utilities.Antiban;
 import scripts.dax_api.walker.utils.AccurateMouse;
-import scripts.dax_api.walker_engine.interaction_handling.NPCInteraction;
 
 public class Utils {
 

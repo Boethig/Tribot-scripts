@@ -3,7 +3,10 @@ package scripts.TTrekker.combat;
 import org.tribot.api.Clicking;
 import org.tribot.api.General;
 import org.tribot.api.Timing;
-import org.tribot.api2007.*;
+import org.tribot.api2007.Game;
+import org.tribot.api2007.Inventory;
+import org.tribot.api2007.Player;
+import org.tribot.api2007.Prayer;
 import org.tribot.api2007.types.*;
 import scripts.TTrekker.data.Constants;
 import scripts.TTrekker.data.Vars;
@@ -64,7 +67,7 @@ public class Ghast extends CombatStrategy {
         if (druidPouch != null) {
             if (Game.getItemSelectionState() == 1) {
                 RSNPC ghast = Antiban.get().selectNextTarget(hiddenGhasts);
-                if (ghast != null && ghast.isValid()) {
+                if (ghast != null && ghast.isValid() && !ghast.isInteractingWithMe()) {
                     int previousCharges = druidPouch.getStack();
                     if (!ghast.isOnScreen() || !ghast.isClickable()) {
                         aCamera.turnToTile(ghast);
@@ -73,9 +76,11 @@ public class Ghast extends CombatStrategy {
                         Logger.log("[Ghast] Making Ghast visible");
                         Timing.waitCondition(() -> {
                             General.sleep(100,300);
-                            RSItem updatedPouch = OSInventory.findFirstNearestToMouse(Constants.FILLED_DRUID_POUCH);
-                            return updatedPouch != null && previousCharges > updatedPouch.getStack() && Game.getItemSelectionState() != 1;
+                            return previousCharges > druidPouch.getStack();
                         }, General.random(6000,8000));
+                        if (Game.getItemSelectionState() == 1) {
+                            druidPouch.click();
+                        }
                     }
                 }
             } else {
@@ -100,11 +105,11 @@ public class Ghast extends CombatStrategy {
     }
 
     public boolean walkToRottingLog() {
-        RSObject rottingLog = Entities.find(ObjectEntity::new)
+        RSObject rottingLog = Antiban.get().selectNextTarget(Entities.find(ObjectEntity::new)
                 .nameContains("log")
-                .custom(log -> log.isClickable())
+                .custom(log -> log.isClickable() && log.isOnScreen())
                 .sortByDistance()
-                .getFirstResult();
+                .getResults());
         if (rottingLog != null) {
             if (Timing.waitCondition(() -> {
                 General.sleep(50,150);

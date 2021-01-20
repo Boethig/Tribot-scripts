@@ -1,10 +1,14 @@
 package scripts.TTrekker.combat;
 
-import lombok.AllArgsConstructor;
 import org.tribot.api.General;
 import org.tribot.api.Timing;
-import org.tribot.api2007.*;
-import org.tribot.api2007.types.*;
+import org.tribot.api2007.Combat;
+import org.tribot.api2007.Player;
+import org.tribot.api2007.Prayer;
+import org.tribot.api2007.types.RSCharacter;
+import org.tribot.api2007.types.RSItem;
+import org.tribot.api2007.types.RSItemDefinition;
+import org.tribot.api2007.types.RSNPC;
 import scripts.TTrekker.data.Vars;
 import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.entities.Entities;
@@ -82,7 +86,7 @@ public abstract class CombatStrategy {
     public void waitForKill() {
         Vars.get().subStatus = "AFKing";
         Logger.log("[CombatStrategy] Waiting for npc to be killed.");
-        Antiban.get().generateTrackers(5000);
+        Antiban.get().generateTrackers(3000);
         Timing.waitCondition(() -> {
             General.sleep(100,300);
             checkPrayer();

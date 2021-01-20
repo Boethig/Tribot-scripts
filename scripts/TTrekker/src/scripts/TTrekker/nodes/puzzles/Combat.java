@@ -1,7 +1,5 @@
 package scripts.TTrekker.nodes.puzzles;
 
-import org.tribot.api.General;
-import org.tribot.api2007.Camera;
 import org.tribot.api2007.Prayer;
 import org.tribot.api2007.types.RSNPC;
 import scripts.TTrekker.combat.CombatProvider;

@@ -6,7 +6,6 @@ import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.NpcEntity;
 
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.stream.IntStream;
 
 public enum Escorts {

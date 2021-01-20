@@ -13,7 +13,6 @@ import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.ObjectEntity;
 import scripts.boe_api.inventory.OSInventory;
 import scripts.boe_api.utilities.Antiban;
-import scripts.boe_api.utilities.Math;
 import scripts.dax_api.walker.utils.AccurateMouse;
 import scripts.dax_api.walker_engine.interaction_handling.NPCInteraction;
 

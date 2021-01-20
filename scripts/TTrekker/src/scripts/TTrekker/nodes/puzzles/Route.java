@@ -5,7 +5,6 @@ import org.tribot.api.Timing;
 import org.tribot.api2007.types.RSInterface;
 import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.utils.Utils;
-import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.InterfaceEntity;
 import scripts.boe_api.framework.Node;

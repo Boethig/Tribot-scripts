@@ -1,10 +1,7 @@
 package scripts.TTrekker.nodes;
 
 import org.tribot.api2007.Player;
-import org.tribot.api2007.WebWalking;
 import org.tribot.api2007.types.RSArea;
-import org.tribot.api2007.types.RSPlayer;
-import org.tribot.api2007.types.RSTile;
 import scripts.TTrekker.data.Constants;
 import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.utils.Utils;

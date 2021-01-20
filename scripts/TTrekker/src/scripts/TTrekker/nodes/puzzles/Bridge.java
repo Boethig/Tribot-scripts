@@ -1,6 +1,5 @@
 package scripts.TTrekker.nodes.puzzles;
 
-import org.tribot.api.Clicking;
 import org.tribot.api.General;
 import org.tribot.api.Timing;
 import org.tribot.api2007.Combat;
@@ -17,7 +16,6 @@ import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.GroundItemEntity;
 import scripts.boe_api.entities.finders.prefabs.NpcEntity;
 import scripts.boe_api.entities.finders.prefabs.ObjectEntity;
-import scripts.boe_api.inventory.OSInventory;
 import scripts.boe_api.utilities.Antiban;
 import scripts.dax_api.walker.utils.AccurateMouse;
 
