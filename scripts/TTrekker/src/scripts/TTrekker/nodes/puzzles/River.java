@@ -13,6 +13,7 @@ import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.ObjectEntity;
 import scripts.boe_api.inventory.OSInventory;
 import scripts.boe_api.utilities.Antiban;
+import scripts.boe_api.utilities.Logger;
 import scripts.dax_api.walker.utils.AccurateMouse;
 import scripts.dax_api.walker_engine.interaction_handling.NPCInteraction;
 
@@ -58,6 +59,7 @@ public class River extends Puzzle {
             if (!tree.isClickable() || !tree.isOnScreen()) {
                 aCamera.turnToTile(tree);
             }
+            Logger.log("[River] Cutting down vine.");
             if (AccurateMouse.click(tree, "Cut-vine")) {
                 Timing.waitCondition(() -> {
                     General.sleep(100, 300);
@@ -68,7 +70,7 @@ public class River extends Puzzle {
     }
 
     public void createRope() {
-        Vars.get().subStatus = "Creating Rope";
+        Logger.log("[River] Cutting down vine.");
         RSItem[] vines = OSInventory.findNearestToMouse(Constants.VINE);
         if (vines.length > 1) {
             if (Game.getItemSelectionState() == 1 && Game.getSelectedItemName().equals("Short vine")) {
@@ -85,7 +87,6 @@ public class River extends Puzzle {
     }
 
     public void attachRope() {
-        Vars.get().subStatus = "Attaching Rope";
         RSObject swampTreeBranch = Entities.find(ObjectEntity::new)
                 .nameContains("Swamp tree branch")
                 .sortByDistance()
@@ -96,6 +97,7 @@ public class River extends Puzzle {
                     rotateCamera();
                 }
                 if (swampTreeBranch.isOnScreen() && swampTreeBranch.isClickable()) {
+                    Logger.log("[River] Attaching rope to tree branch.");
                     if (AccurateMouse.click(swampTreeBranch, "Use Long vine")) {
                         Timing.waitCondition(() -> {
                             General.sleep(General.randomSD(100, 300, 2));
@@ -107,6 +109,7 @@ public class River extends Puzzle {
                 }
             } else {
                 RSItem rope = OSInventory.findFirstNearestToMouse(Constants.ROPE);
+                Logger.log("[River] Selecting rope.");
                 if (Utils.selectItem(rope)) {
                     Antiban.get().waitItemInteractionDelay();
                 }
@@ -120,11 +123,11 @@ public class River extends Puzzle {
     }
 
     public void swingOnVine(RSObject vine) {
-        Vars.get().subStatus = "Swinging Vine";
         if (!vine.isOnScreen() || !vine.isClickable()) {
             aCamera.turnToTile(vine);
         }
         if (Game.getItemSelectionState() != 1) {
+            Logger.log("[River] Swinging across tree branch.");
             if (AccurateMouse.click(vine,"Swing-from")) {
                 isPuzzleComplete = Timing.waitCondition(() -> {
                     General.sleep(100, 300);

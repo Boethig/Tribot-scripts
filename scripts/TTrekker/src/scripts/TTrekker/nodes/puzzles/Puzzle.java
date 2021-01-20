@@ -21,7 +21,6 @@ public abstract class Puzzle extends Node {
 
     abstract public void solvePuzzle();
 
-    // Resets any variables local to this puzzle
     abstract public void resetPuzzle();
 
     @Override
@@ -39,12 +38,11 @@ public abstract class Puzzle extends Node {
     public Puzzle(final ACamera aCamera) { super(aCamera); }
 
     public boolean continueTrek() {
-        Logger.log("[Trekk] Continuing the trekk");
+        Logger.log("[Trekk] Continuing the trekk.");
         return takePathAction("Continue-trek");
     }
 
     public boolean evadePath() {
-        Logger.log("[Trekk] Evading the trekk puzzle");
         return takePathAction("Evade-event");
     }
 
@@ -54,34 +52,39 @@ public abstract class Puzzle extends Node {
                 .actionsContains(action)
                 .getResults());
         if (path != null) {
-            if (!path.isOnScreen() || !path.isClickable()) {
-                aCamera.turnToTile(path);
-            }
-            if (path.isOnScreen() && AccurateMouse.click(path, action)) {
-                Timing.waitCondition(() -> {
-                    General.sleep(100,300);
-                    return Utils.isInTrekkRoute() || NPCInteraction.isConversationWindowUp();
-                }, General.random(10000,12500));
-                if (NPCInteraction.isConversationWindowUp()) {
-                    NPCInteraction.handleConversation();
+            if (path.isClickable()) {
+                if (AccurateMouse.click(path, action)) {
+                    return Timing.waitCondition(() -> {
+                        if (NPCInteraction.isConversationWindowUp()) {
+                            NPCInteraction.handleConversation();
+                        }
+                        General.sleep(100,300);
+                        return !Utils.isInTrekkPuzzle();
+                    }, General.random(10000,12500));
+                } else {
+                    if (AccurateMouse.clickMinimap(path)) {
+                        Timing.waitCondition(() -> {
+                            General.sleep(100,300);
+                            return path.isOnScreen() || !Player.isMoving();
+                        }, General.random(4000,6000));
+                    } else {
+                        WebWalking.walkTo(path.getPosition(), () -> path.isOnScreen(), General.random(300,500));
+                    }
                 }
-                return Utils.isInTrekkRoute();
-            }
-            if (AccurateMouse.clickMinimap(path)) {
-                Timing.waitCondition(() -> {
-                    General.sleep(100,300);
-                    return path.isOnScreen() || !Player.isMoving();
-                }, General.random(4000,6000));
             } else {
-                WebWalking.walkTo(path.getPosition(), () -> path.isOnScreen(), General.random(300,500));
+                aCamera.turnToTile(path.getPosition().toLocalTile());
             }
         } else {
-            Utils.findPath();
+            if (Utils.isInTrekkPuzzle()) {
+                Logger.log("[Trekk] Searching for path.");
+                Utils.findPath();
+            }
         }
         return false;
     }
 
+    @Override
     public String status() {
-        return this.getClass().getSimpleName() + " Puzzle";
+        return String.format("%s Puzzle", this.getClass().getSimpleName());
     }
 }

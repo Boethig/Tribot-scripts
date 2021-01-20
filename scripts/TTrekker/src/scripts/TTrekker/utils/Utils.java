@@ -18,11 +18,12 @@ import scripts.dax_api.walker.utils.AccurateMouse;
 public class Utils {
 
     public static boolean isInStartingArea() {
-        return Constants.BURG.contains(Player.getPosition()) || Constants.SALVE.contains(Player.getPosition());
+        return Entities.find(ObjectEntity::new).nameEquals("Well").getFirstResult() != null ||
+                Constants.SALVE.contains(Player.getPosition());
     }
 
     public static boolean isInTrekk() {
-        return RSVarBit.get(Constants.IN_TREKK).getValue() > 0 || Vars.get().getSettings().escortDifficulty.findInInstance() != null;
+        return RSVarBit.get(Constants.IN_TREKK).getValue() > 0;
     }
 
     public static boolean canTempleTrekk() {
@@ -38,9 +39,9 @@ public class Utils {
     }
 
     public static boolean isInTrekkRoute() {
-        return Interfaces.isInterfaceSubstantiated(329)
-                || Objects.findNearest(5, "Signpost").length > 0
-                || RSVarBit.get(Constants.IN_TREKK).getValue() == Constants.IN_INSTANCE;
+        return Interfaces.isInterfaceSubstantiated(329) ||
+                Objects.findNearest(5, "Signpost").length > 0 ||
+                RSVarBit.get(Constants.IN_TREKK).getValue() == Constants.IN_INSTANCE;
     }
 
     public static boolean isInTrekkCombatPuzzle() {

@@ -17,6 +17,7 @@ import scripts.boe_api.entities.finders.prefabs.GroundItemEntity;
 import scripts.boe_api.entities.finders.prefabs.NpcEntity;
 import scripts.boe_api.entities.finders.prefabs.ObjectEntity;
 import scripts.boe_api.utilities.Antiban;
+import scripts.boe_api.utilities.Logger;
 import scripts.dax_api.walker.utils.AccurateMouse;
 
 import java.util.Arrays;
@@ -38,42 +39,44 @@ public class Bridge extends Puzzle {
                 .getFirstResult();
         if (bridge != null) {
             if (isBridgeFixed(bridge)) {
-                walkAcrossBridge(bridge);
+                if (Player.getPosition().getX() > bridge.getPosition().getX()) {
+                    isPuzzleComplete = true;
+                } else {
+                    walkAcrossBridge(bridge);
+                }
             } else if (isBridgeFixable(bridge) || doWeHaveMaterials()) {
-                    if (bridge.isOnScreen() && bridge.isClickable()) {
-                        RSItem[] materials = Inventory.find(Constants.LOGS, Constants.PLANK);
-                        if (Game.getItemSelectionState() == 1) {
-                            Vars.get().subStatus = "Fixing Bridge";
-                            if (AccurateMouse.click(bridge, new String[]{"Use Plank", "Use Logs"})) {
-                                Timing.waitCondition(() -> Player.getAnimation() == Constants.FIX_BRIDGE_ANIMATION, General.random(7000,9000));
-                                if (materials.length > 1) {
-                                    Antiban.get().hoverEntity(materials[1]);
-                                }
-                                Timing.waitCondition(() -> {
-                                    General.sleep(100,300);
-                                    return Objects.find(10, bridge.getID() + 1).length > 0 && materials.length > Inventory.getCount(Constants.LOGS, Constants.PLANK);
-                                },General.random(3000,5000));
-                                Antiban.get().resetShouldHover();
-                            } else {
-                                Vars.get().subStatus = "Rotating camera";
-                                aCamera.turnToTile(bridge);
+                if (bridge.isOnScreen() && bridge.isClickable()) {
+                    RSItem[] materials = Inventory.find(Constants.LOGS, Constants.PLANK);
+                    if (Game.getItemSelectionState() == 1) {
+                        Logger.log("[Bridge] Fixing broken bridge.");
+                        if (AccurateMouse.click(bridge, new String[]{"Use Plank", "Use Logs"})) {
+                            Timing.waitCondition(() -> Player.getAnimation() == Constants.FIX_BRIDGE_ANIMATION, General.random(7000,9000));
+                            if (materials.length > 1) {
+                                Antiban.get().hoverEntity(materials[1]);
                             }
+                            Timing.waitCondition(() -> {
+                                General.sleep(100,300);
+                                return Objects.find(10, bridge.getID() + 1).length > 0 && materials.length > Inventory.getCount(Constants.LOGS, Constants.PLANK);
+                            },General.random(3000,5000));
+                            Antiban.get().resetShouldHover();
                         } else {
-                            Vars.get().subStatus = "Selecting Materials";
-                            Inventory.open();
-                            if (materials.length > 0) {
-                                Utils.selectItem(materials[0]);
-                            }
+                            aCamera.turnToTile(bridge);
                         }
-                    } else if (AccurateMouse.clickMinimap(bridge.getPosition())) {
-                        Timing.waitCondition(() -> {
-                            General.sleep(General.randomSD(100, 300, 2));
-                            return bridge.isOnScreen() && bridge.isClickable();
-                        }, General.random(750 + Vars.get().sleepOffset, 1500 + Vars.get().sleepOffset));
                     } else {
-                        Vars.get().subStatus = "Rotating camera";
-                        aCamera.turnToTile(bridge);
+                        Inventory.open();
+                        if (materials.length > 0) {
+                            Logger.log("[Bridge] Selecting materials.");
+                            Utils.selectItem(materials[0]);
+                        }
                     }
+                } else if (AccurateMouse.clickMinimap(bridge.getPosition())) {
+                    Timing.waitCondition(() -> {
+                        General.sleep(General.randomSD(100, 300, 2));
+                        return bridge.isOnScreen() && bridge.isClickable();
+                    }, General.random(750 + Vars.get().sleepOffset, 1500 + Vars.get().sleepOffset));
+                } else {
+                    aCamera.turnToTile(bridge);
+                }
             } else {
                 RSObject tree = Antiban.get().selectNextTarget(Entities.find(ObjectEntity::new)
                         .nameEquals("Dead tree")
@@ -81,19 +84,15 @@ public class Bridge extends Puzzle {
                 if (tree != null) {
                     chopTree(tree);
                 } else if (Inventory.getCount(Constants.PLANK) < 3) {
-                    RSNPC zombie = Antiban.get().selectNextTarget(
-                            Entities.find(NpcEntity::new)
-                                    .nameEquals("Undead Lumberjack")
-                                    .custom(rsnpc -> rsnpc.isClickable() && rsnpc.isInteractingWithMe())
-                                    .getResults());
-                    if (zombie != null) {
-                        if (Combat.getTargetEntity() == null) {
-                            if (!zombie.isOnScreen()) {
-                                aCamera.turnToTile(zombie);
-                            }
-                            Vars.get().subStatus = "Attacking Lumberjacks";
-                            if (AccurateMouse.click(zombie, "Attack") &&
-                                    Timing.waitCondition(() -> Combat.getTargetEntity() != null, General.random(2000, 3000))) {
+                    if (Player.getRSPlayer().getInteractingCharacter() == null || Combat.getTargetEntity() == null) {
+                        RSNPC zombie = Antiban.get().selectNextTarget(
+                                Entities.find(NpcEntity::new)
+                                        .nameEquals("Undead Lumberjack")
+                                        .custom(rsnpc -> rsnpc.getInteractingCharacter() != null)
+                                        .getResults());
+                        if (zombie != null) {
+                            Logger.log("[Bridge] Attacking undead lumberjack.");
+                            if (AccurateMouse.click(zombie, "Attack")) {
                                 Antiban.get().generateTrackers(2000);
                                 long startTime = System.currentTimeMillis();
                                 while (Combat.getTargetEntity() != null) {
@@ -103,14 +102,20 @@ public class Bridge extends Puzzle {
                                 }
                                 Antiban.get().setLast_under_attack_time(startTime);
                                 Antiban.get().sleepReactionTime();
-                            } else {
+                            } else if (!zombie.isOnScreen()) {
                                 aCamera.turnToTile(zombie);
                             }
+                        } else {
+                            Logger.log("[Bridge] Waiting for undead lumberjack to spawn.");
+                            lootPlank();
+                            Antiban.get().timedActions();
+                            General.sleep(100,300);
                         }
                     } else {
-                        Vars.get().subStatus = "Waiting for Spawn";
+                        Logger.log("[Bridge] Waiting for undead lumberjack to spawn.");
                         lootPlank();
                         Antiban.get().timedActions();
+                        General.sleep(100,300);
                     }
                 }
             }
@@ -134,11 +139,11 @@ public class Bridge extends Puzzle {
     }
 
     private void walkAcrossBridge(final RSObject bridge) {
-        Vars.get().subStatus = "Walking across fixed bridge";
         if (!bridge.isOnScreen() || !bridge.isClickable()) {
             aCamera.turnToTile(bridge);
         }
         if (Game.getItemSelectionState() != 1) {
+            Logger.log("[Bridge] Walking across fixed bridge.");
             if (AccurateMouse.click(bridge, "Cross") &&
                     Timing.waitCondition(() -> {
                         General.sleep(100,300);
@@ -157,6 +162,7 @@ public class Bridge extends Puzzle {
             if (!tree.isOnScreen() || !tree.isClickable()) {
                 aCamera.turnToTile(tree);
             }
+            Logger.log("[Bridge] Chopping down tree.");
             if (AccurateMouse.click(tree, "Chop down")) {
                 while (Player.isMoving() && tree.getModel() != null) {
                     General.sleep(50L);
@@ -176,12 +182,14 @@ public class Bridge extends Puzzle {
 
     private boolean lootPlank() {
         if (!Inventory.isFull() && Inventory.getCount(Constants.PLANK) < 3) {
-            Vars.get().subStatus = "Picking up plank";
             RSGroundItem plank = Entities.find(GroundItemEntity::new)
                     .idEquals(Constants.PLANK)
                     .getFirstResult();
-            int count = Inventory.getAll().length;
-            return AccurateMouse.click(plank, "Take") && Timing.waitCondition(() -> Inventory.getAll().length > count, General.random(1750, 2500));
+            if (plank != null) {
+                Logger.log("[Bridge] Picking up plank.");
+                int count = Inventory.getAll().length;
+                return AccurateMouse.click(plank, "Take") && Timing.waitCondition(() -> Inventory.getAll().length > count, General.random(1750, 2500));
+            }
         }
         return false;
     }

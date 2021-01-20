@@ -5,23 +5,27 @@ import lombok.Setter;
 import org.tribot.api2007.types.RSObject;
 import org.tribot.api2007.types.RSTile;
 
+@Getter
 public class BogNode {
 
-    @Getter @Setter
+    @Setter
     private BogNode parent;
-    @Getter
+
     private final RSObject bog;
-    @Getter
+
     private final RSTile position;
-    @Getter @Setter
+
+    @Setter
     private int f;
-    @Getter @Setter
+
+    @Setter
     private int g;
-    @Getter @Setter
+
+    @Setter
     private int h;
-    @Getter
+
     private final int x;
-    @Getter
+
     private final int y;
 
     public BogNode(final RSObject obj) {

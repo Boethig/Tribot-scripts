@@ -18,14 +18,16 @@ import java.util.stream.Collectors;
 
 public class BogHelper {
     public static ArrayList<RSObject> getStarting(final RSObject... objects) {
+        int lowerAxis = getMinY(objects);
         return (ArrayList<RSObject>) Arrays.stream(objects)
-                .filter((rsObject) -> rsObject.getPosition().getY() == getMinY(objects))
+                .filter((rsObject) -> rsObject.getPosition().getY() == lowerAxis)
                 .collect(Collectors.toList());
     }
 
     public static ArrayList<RSObject> getDestinations(final RSObject... objects) {
+        int upperAxis = getMaxY(objects);
         return (ArrayList<RSObject>) Arrays.stream(objects)
-                .filter((rsObject) -> rsObject.getPosition().getY() == getMaxY(objects))
+                .filter((rsObject) -> rsObject.getPosition().getY() == upperAxis)
                 .collect(Collectors.toList());
     }
 
@@ -47,22 +49,27 @@ public class BogHelper {
 
     public static boolean traverse(final ArrayList<BogNode> path) {
         if (Vars.get().getSettings().escortDifficulty.isEscortingToBurgDeRott()) {
-            Logger.log("[BogHelper] Traveling south, reversing path.");
-            Collections.reverse(path);
+            try {
+                Collections.reverse(path);
+                Logger.log("[BogHelper] Traveling south, reversing path.");
+            } catch (UnsupportedOperationException exception) {
+                exception.printStackTrace();
+            }
         }
-        RSTile destination = path.get(path.size() - 1).getPosition();
         int playerIndex = getPlayerIndex(path);
         Logger.log("[BogHelper] Starting from player index: %s", Integer.toString(playerIndex));
         for (int i = playerIndex; i < path.size(); i++) {
             RSObject bog = path.get(i).getBog();
             if (bog != null) {
-                if (!walkTo(bog)) {
+                if (walkTo(bog)) {
+                    Logger.log("[BogHelper] Clicked on Bog @ %s",bog.getPosition().toString());
+                } else {
                     Logger.log("[BogHelper] Error clicking on Bog @ %s",bog.getPosition().toString());
                     break;
                 }
-                Logger.log("[BogHelper] Clicked on Bog @ %s",bog.getPosition().toString());
             }
         }
+        RSTile destination = path.get(path.size() - 1).getPosition();
         if (Player.getPosition().equals(destination) && Objects.find(5, 13832).length > 0) {
             return true;
         }

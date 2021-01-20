@@ -30,7 +30,6 @@ public class StartTrekk extends Node {
     }
 
     public void execute() {
-
         RSNPC escort = Antiban.get().selectNextTarget(Vars.get().getSettings().escortDifficulty.find());
         if (escort != null) {
             Vars.get().currentEscort = Escort.fromInstanceId(escort.getID());

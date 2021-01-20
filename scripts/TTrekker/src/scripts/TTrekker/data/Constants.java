@@ -17,12 +17,7 @@ public class Constants {
     public static final int[] NPCS;
     public static final String[] NPC_NAMES;
     public static final int ZOMBIE = 5647;
-    public static final int BURGGATE = 12817;
-    public static final int WELL = 12897;
-    public static final int SIGN = 23278;
-    public static final int SIGNPOST = 13873;
     public static final int BOG = 13838;
-    public static final int BACKPACK = 13872;
     public static final int[] REWARDS_TOKEN;
     public static final int BOWSTRING = 1777;
     public static final int HAMMER = 2347;

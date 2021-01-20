@@ -11,6 +11,7 @@ import scripts.TTrekker.utils.Utils;
 import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.entities.Entities;
 import scripts.boe_api.entities.finders.prefabs.NpcEntity;
+import scripts.boe_api.utilities.Logger;
 import scripts.dax_api.walker.utils.AccurateMouse;
 import scripts.dax_api.walker_engine.interaction_handling.InteractionHelper;
 import scripts.dax_api.walker_engine.interaction_handling.NPCInteraction;
@@ -34,10 +35,9 @@ public class Abidor extends Puzzle {
                 isPuzzleComplete = true;
             } else {
                 if (InteractionHelper.click(abidor, "Talk-to")) {
-                    Vars.get().subStatus = "Talking to Abidor";
+                    Logger.log("[Abidor] Talking to abidor");
                     NPCInteraction.waitForConversationWindow();
                 } else if (!abidor.isOnScreen() && AccurateMouse.clickMinimap(abidor)) {
-                Vars.get().subStatus = "Clicking on Minimap";
                 Timing.waitCondition(() -> {
                     General.sleep(100,300);
                     return abidor.isOnScreen();
