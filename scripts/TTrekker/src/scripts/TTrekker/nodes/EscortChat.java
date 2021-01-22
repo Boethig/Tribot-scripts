@@ -8,6 +8,7 @@ import scripts.boe_api.utilities.Logger;
 import scripts.dax_api.walker_engine.interaction_handling.NPCInteraction;
 
 public class EscortChat extends Node {
+
     @Override
     public boolean validate() {
         return !Utils.isInTrekk() && NPCInteraction.isConversationWindowUp();
@@ -17,7 +18,7 @@ public class EscortChat extends Node {
     public void execute() {
         Logger.log("[EscortChat] Handling escort conversation");
         NPCInteraction.handleConversation();
-        Timing.waitCondition(() -> Utils.isInTrekkRoute() || Utils.hasRewardsToken(), General.random(2500,3500));
+        Timing.waitCondition(() -> Utils.isInTrekkRoute() || Utils.hasRewardsToken(), General.random(3000,5000));
     }
 
     @Override

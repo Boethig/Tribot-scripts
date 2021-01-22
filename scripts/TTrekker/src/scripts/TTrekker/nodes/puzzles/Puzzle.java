@@ -50,6 +50,7 @@ public abstract class Puzzle extends Node {
         RSObject path = Antiban.get().selectNextTarget(Entities.find(ObjectEntity::new)
                 .nameEquals("Path", "Boat")
                 .actionsContains(action)
+                .sortByDistance()
                 .getResults());
         if (path != null) {
             if (path.isClickable()) {
@@ -59,7 +60,7 @@ public abstract class Puzzle extends Node {
                             NPCInteraction.handleConversation();
                         }
                         General.sleep(100,300);
-                        return !Utils.isInTrekkPuzzle();
+                        return Utils.isInTrekkRoute();
                     }, General.random(10000,12500));
                 } else {
                     if (AccurateMouse.clickMinimap(path)) {
@@ -85,6 +86,6 @@ public abstract class Puzzle extends Node {
 
     @Override
     public String status() {
-        return String.format("%s Puzzle", this.getClass().getSimpleName());
+        return this.getClass().getSimpleName() + " Puzzle";
     }
 }

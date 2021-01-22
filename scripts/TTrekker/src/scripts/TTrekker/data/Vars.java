@@ -19,7 +19,6 @@ public class Vars  {
     private TrekkScriptSettings settings = new TrekkScriptSettings();
 
     public String status;
-    public String subStatus;
     public int completed;
     public boolean hasSelectedRoute;
     public boolean isEscortDead;
@@ -36,7 +35,6 @@ public class Vars  {
 
     private Vars() {
         this.status = "";
-        this.subStatus = "";
         this.completed = 0;
         this.claimCount = 1;
         this.abc2WaitTimes = new ArrayList<>();

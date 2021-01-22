@@ -40,7 +40,7 @@ public class Route extends Node {
                 General.sleep(50,150);
                 Antiban.get().timedActions();
                 return !Utils.isInTrekkRoute();
-            }, General.random(5000,10000));
+            }, General.random(10000,20000));
         }
     }
 

@@ -84,7 +84,6 @@ public abstract class CombatStrategy {
     }
 
     public void waitForKill() {
-        Vars.get().subStatus = "AFKing";
         Logger.log("[CombatStrategy] Waiting for npc to be killed.");
         Antiban.get().generateTrackers(3000);
         Timing.waitCondition(() -> {

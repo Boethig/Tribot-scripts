@@ -35,13 +35,13 @@ public class Combat extends Puzzle {
         if (canEvadeEvent()) {
             Logger.log("[Combat] Evading Combat Event");
             if (evadePath()) {
-                this.isPuzzleComplete = true;
+                resetPuzzle();
+                this.isPuzzleComplete = false;
             }
         } else {
             if (context != null) {
                 CombatStrategy strategy = context.getStrategy();
                 if (strategy != null) {
-                    Vars.get().subStatus = strategy.getClass().getSimpleName();
                     if (strategy.handle()) {
                         Logger.log("[Combat] All Npcs have been killed");
                         this.isPuzzleComplete = true;
@@ -61,15 +61,15 @@ public class Combat extends Puzzle {
     }
 
     public boolean canEvadeEvent() {
-        if (!Vars.get().getSettings().shouldEvadeCombat) {
-            return false;
+        if (Vars.get().getSettings().shouldEvadeCombat) {
+            Routes route = Vars.get().getSettings().route;
+            if (route.equals(Routes.EASY)) {
+                return true;
+            } else if (route.equals(Routes.MEDIUM)) {
+                return this.rsnpcs.length <= Vars.get().getSettings().escortDifficulty.ordinal() + 1;
+            }
         }
-        Routes route = Vars.get().getSettings().route;
-        if (route.equals(Routes.EASY)) {
-            return true;
-        } else if (route.equals(Routes.MEDIUM)) {
-            return this.rsnpcs.length <= Vars.get().getSettings().escortDifficulty.ordinal() + 1;
-        }
+
         return false;
     }
 

@@ -27,10 +27,8 @@ public class Bog extends Puzzle {
 
     public void solvePuzzle() {
         if (path == null || path.isEmpty()) {
-            Vars.get().subStatus = "Searching for Path";
             path = findPath();
         } else {
-            Vars.get().subStatus = "Walking Path";
             isPuzzleComplete = BogHelper.traverse(path);
         }
     }
@@ -54,7 +52,6 @@ public class Bog extends Puzzle {
                 for (final RSObject endPosition : endPositions) {
                     path = new AStar(bog, startPosition, endPosition, start, end).findPath();
                     if (!path.isEmpty()) {
-                        Vars.get().subStatus = "A Path has been found";
                         return path;
                     }
                 }

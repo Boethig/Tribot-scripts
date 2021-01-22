@@ -157,7 +157,6 @@ public class Bridge extends Puzzle {
     }
 
     private void chopTree(RSObject tree) {
-        Vars.get().subStatus = "Chopping Trees";
         if (!Inventory.isFull()) {
             if (!tree.isOnScreen() || !tree.isClickable()) {
                 aCamera.turnToTile(tree);

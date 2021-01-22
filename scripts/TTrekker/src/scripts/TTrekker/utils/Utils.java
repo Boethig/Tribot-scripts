@@ -18,12 +18,15 @@ import scripts.dax_api.walker.utils.AccurateMouse;
 public class Utils {
 
     public static boolean isInStartingArea() {
-        return Entities.find(ObjectEntity::new).nameEquals("Well").getFirstResult() != null ||
-                Constants.SALVE.contains(Player.getPosition());
+        return Constants.BURG.contains(Player.getPosition()) ||
+                Constants.SALVE.contains(Player.getPosition()) ||
+                Entities.find(ObjectEntity::new).nameEquals("Well").getFirstResult() != null ||
+                Entities.find(ObjectEntity::new).nameEquals("Tall Reeds").getFirstResult() != null;
     }
 
     public static boolean isInTrekk() {
-        return RSVarBit.get(Constants.IN_TREKK).getValue() > 0;
+        return RSVarBit.get(Constants.IN_TREKK).getValue() > 0 ||
+                (!isInStartingArea() && Vars.get().getSettings().escortDifficulty.findInInstance() != null);
     }
 
     public static boolean canTempleTrekk() {

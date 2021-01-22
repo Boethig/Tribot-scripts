@@ -20,15 +20,12 @@ public class Traveling extends Node {
         if (!Utils.hasTeleportsToStart() || Utils.shouldBank()) {
             RunescapeBank bank = null;
             if (Constants.SALVE.contains(Player.getPosition())) {
-                Vars.get().subStatus = "Canifis Bank";
                 bank = RunescapeBank.CANIFIS;
             } else if (Constants.BURG.contains(Player.getPosition())) {
-                Vars.get().subStatus = "Burgh de Rott Bank";
                 bank = RunescapeBank.BURG_DE_ROTT;
             }
             DaxWalker.walkToBank(bank);
         } else {
-            Vars.get().subStatus = "Start";
             RSArea area = Constants.BURG.getRandomTile().distanceTo(Player.getPosition()) > Constants.SALVE.getRandomTile().distanceTo(Player.getPosition()) ? Constants.SALVE : Constants.BURG;
             DaxWalker.walkTo(area.getRandomTile());
         }

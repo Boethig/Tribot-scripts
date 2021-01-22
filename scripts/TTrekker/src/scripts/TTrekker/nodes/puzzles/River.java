@@ -53,7 +53,6 @@ public class River extends Puzzle {
 
     public void collectVines(RSObject tree) {
         Inventory.open();
-        Vars.get().subStatus = "Collecting vines";
         if (!Inventory.isFull()) {
             int count = Inventory.getCount(Constants.VINE);
             if (!tree.isClickable() || !tree.isOnScreen()) {

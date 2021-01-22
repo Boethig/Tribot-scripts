@@ -151,9 +151,9 @@ public class WebGuiLoader extends Application implements Gui {
                 } catch (JSException exception) {
                     Logger.log(exception.getMessage());
                 }
-                webEngine.executeScript("console.log = function(message)\n" +
+                webEngine.executeScript("console.log = console.exception = console.error = function(...message)\n" +
                         "{\n" +
-                        "    java.log(message);\n" +
+                        "    message.map(function(m){ java.log(m); });" +
                         "};");
             }
         });
@@ -176,6 +176,9 @@ public class WebGuiLoader extends Application implements Gui {
     }
 
     public class JavaBridge {
+        public void log(Object obj) {
+            General.println(obj);
+        }
         public void log(String text) {
             General.println(text);
         }

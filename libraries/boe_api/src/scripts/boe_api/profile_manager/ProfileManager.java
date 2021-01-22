@@ -49,17 +49,21 @@ public class ProfileManager {
             File filePath = new File(getFolder(), File.separator);
             if (filePath != null) {
                 List<Profile> profiles = Arrays.stream(Objects.requireNonNull(filePath.listFiles((file) ->
-                        file.isFile())))
+                        file.isFile() && file.getName().matches(".*(_settings.ini)"))))
                         .sorted((o1, o2) -> o2.lastModified() - o1.lastModified() > 0 ? 1 : -1)
                         .map((file -> {
                             try {
                                 String profileName = file.getName().replace("_settings.ini", "");
-                                return new Profile(profileName, load(profileName));
+                                String settings = load(profileName);
+                                if (settings != null) {
+                                    return new Profile(profileName, settings);
+                                }
                             } catch (PatternSyntaxException exception) {
                                 exception.printStackTrace();
                                 error(exception.getMessage());
                                 return null;
                             }
+                            return null;
                         }))
                         .filter(profile -> profile != null)
                         .collect(Collectors.toList());
