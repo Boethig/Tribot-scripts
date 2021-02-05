@@ -148,13 +148,14 @@ public class WebGuiLoader extends Application implements Gui {
                     window.setMember("gui", this);
                     window.setMember("profileManager", ProfileManager.get());
                     window.setMember("java", bridge);
+                    webEngine.executeScript("console.log = console.exception = console.error = function(...message)\n" +
+                            "{ \n" +
+                            " message.map(function(m){ java.log(m); });\n" +
+                            "} ");
+                    webEngine.executeScript("const event = new CustomEvent('profileLoaded'); document.dispatchEvent(event);");
                 } catch (JSException exception) {
                     Logger.log(exception.getMessage());
                 }
-                webEngine.executeScript("console.log = console.exception = console.error = function(...message)\n" +
-                        "{\n" +
-                        "    message.map(function(m){ java.log(m); });" +
-                        "};");
             }
         });
 

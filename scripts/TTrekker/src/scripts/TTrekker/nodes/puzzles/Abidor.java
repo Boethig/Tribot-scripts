@@ -6,7 +6,6 @@ import org.tribot.api2007.Combat;
 import org.tribot.api2007.NPCs;
 import org.tribot.api2007.types.RSNPC;
 import scripts.TTrekker.data.Constants;
-import scripts.TTrekker.data.Vars;
 import scripts.TTrekker.utils.Utils;
 import scripts.boe_api.camera.ACamera;
 import scripts.boe_api.entities.Entities;

@@ -66,10 +66,10 @@ public abstract class Puzzle extends Node {
                     if (AccurateMouse.clickMinimap(path)) {
                         Timing.waitCondition(() -> {
                             General.sleep(100,300);
-                            return path.isOnScreen() || !Player.isMoving();
+                            return isCloseToPath(path) && (path.isOnScreen() || !Player.isMoving());
                         }, General.random(4000,6000));
                     } else {
-                        WebWalking.walkTo(path.getPosition(), () -> path.isOnScreen(), General.random(300,500));
+                        WebWalking.walkTo(path.getPosition(),() -> isCloseToPath(path) && path.isOnScreen(), General.random(300,500));
                     }
                 }
             } else {
@@ -82,6 +82,10 @@ public abstract class Puzzle extends Node {
             }
         }
         return false;
+    }
+
+    public boolean isCloseToPath(RSObject path) {
+        return Player.getPosition().distanceTo(path) <= General.randomSD(1,5,3);
     }
 
     @Override

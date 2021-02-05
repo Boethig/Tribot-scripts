@@ -93,7 +93,7 @@ public class Main extends BoeScript implements Ending, Starting, Painting, VarBi
             add(new StartTrekk(aCamera));
             add(new SupplyEscort(aCamera));
             add(new Traveling());
-            add(new Restocking());
+            add(new SupplyRestocking());
         }};
     }
 

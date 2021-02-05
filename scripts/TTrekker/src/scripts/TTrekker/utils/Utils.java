@@ -56,7 +56,11 @@ public class Utils {
     }
 
     public static boolean hasTools() {
-        return hasSilverWeapon() && hasAxe() && hasHammer() && hasKnife() && (!Vars.get().getSettings().shouldUseStaminas || hasStamina());
+        return (!Vars.get().getSettings().shouldEvadeCombat || (hasSilverWeapon() && hasDruidPouch())) &&
+                (!Vars.get().getSettings().shouldUseStaminas || hasStamina()) &&
+                hasAxe() &&
+                hasHammer() &&
+                hasKnife();
     }
 
     public static boolean hasRewardsToken() {
@@ -178,8 +182,8 @@ public class Utils {
         return Equipment.isEquipped(Constants.SILVER_WEAPONS) || Inventory.find(Constants.SILVER_WEAPONS).length > 0;
     }
 
-    public static boolean canAttackVampyres() {
-        return Equipment.isEquipped("Efaritay's aid");
+    public static boolean hasDruidPouch() {
+        return Inventory.find(Constants.EMPTY_DRUID_POUCH, Constants.FILLED_DRUID_POUCH).length > 0;
     }
 
     public static int escortFoodSupplyLeft() {
